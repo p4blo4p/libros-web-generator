@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ libro['book_title'] }}</title>
+</head>
+<body>
+    <h1>{{ libro['book_title'] }}</h1>
+    <img src="{{ libro['cover_image_uri'] }}" alt="Portada de {{ libro['book_title'] }}">
+    <p><strong>Autor:</strong> <a href="{{ libro['authorlink'] }}">{{ libro['author'] }}</a></p>
+    <p><strong>Detalles:</strong> {{ libro['book_details'] }}</p>
+    <p><strong>Formato:</strong> {{ libro['format'] }}</p>
+    <p><strong>Información de Publicación:</strong> {{ libro['publication_info'] }}</p>
+    <p><strong>Número de Páginas:</strong> {{ libro['num_pages'] }}</p>
+    <p><strong>Géneros:</strong> {{ libro['genres'] }}</p>
+    <p><strong>Número de Calificaciones:</strong> {{ libro['num_ratings'] }}</p>
+    <p><strong>Número de Reseñas:</strong> {{ libro['num_reviews'] }}</p>
+    <p><strong>Calificación Promedio:</strong> {{ libro['average_rating'] }}</p>
+    <p><strong>Distribución de Calificaciones:</strong> {{ libro['rating_distribution'] }}</p>
+    <a href="../index.html">Volver a la lista de libros</a>
+</body>
+</html>
