@@ -21,5 +21,8 @@ Luego, abre tu navegador web y ve a http://127.0.0.1:5000/ para ver la lista de 
 
 
 
-# kindle
+# Datasets
+## Amazon
+* https://www.kaggle.com/datasets/joebeachcapital/amazon-books
+## Kindle
 * https://www.kaggle.com/datasets/asaniczka/amazon-kindle-books-dataset-2023-130k-books
