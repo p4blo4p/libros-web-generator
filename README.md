@@ -18,3 +18,8 @@ python app.py
 ```
 
 Luego, abre tu navegador web y ve a http://127.0.0.1:5000/ para ver la lista de libros. Para exportar los archivos HTML estáticos, ve a http://127.0.0.1:5000/exportar y se descargará el archivo `index.html` generado.
+
+
+
+# kindle
+* https://www.kaggle.com/datasets/asaniczka/amazon-kindle-books-dataset-2023-130k-books
