@@ -4,6 +4,11 @@
 book_id, cover_image_uri, book_title, book_details, format, publication_info, authorlink, author, num_pages, genres, num_ratings, num_reviews, average_rating, rating_distribution, 
 ```
 
+```csv
+ISBN10, Brand, format, image_url, item_weight, product_dimensions, rating, reviews_count, title, url, categories
+```
+
+
 
 
 Usar un script independiente como el que te proporcioné anteriormente es una forma sencilla y directa de generar archivos HTML estáticos. Sin embargo, si prefieres mantener la funcionalidad dentro de Flask, puedes usar Flask para generar y exportar los archivos HTML estáticos. Aquí te muestro cómo hacerlo.
