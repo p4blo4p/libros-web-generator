@@ -1,57 +1,93 @@
-from flask import Flask, render_template, send_file
+from flask import Flask, render_template, request, url_for
 import csv
-import os
-from jinja2 import Environment, FileSystemLoader
 
 app = Flask(__name__)
 
-# Configurar Jinja2 para cargar plantillas desde el directorio 'templates'
-env = Environment(loader=FileSystemLoader('templates'))
-
-# Cargar datos del CSV
-def cargar_datos_csv():
-    libros = []
-    with open('libros.csv', newline='', encoding='utf-8') as csvfile:
+# Load books data from CSV
+def load_books(filename):
+    with open(filename, newline='', encoding='utf-8') as csvfile:
         reader = csv.DictReader(csvfile)
-        for row in reader:
-            libros.append(row)
-    return libros
+        books = [row for row in reader]
+    return books
 
-libros = cargar_datos_csv()
+books = load_books('books.csv')
+
+# Language translations
+translations = {
+    'es': {
+        'title': 'Lista de Libros',
+        'author': 'Autor',
+        'subtitle': 'Subtítulo',
+        'language': 'Idioma',
+        'categories': 'Categorías',
+        'description': 'Descripción',
+        'series': 'Serie',
+        'edition': 'Edición',
+        'firstPublishDate': 'Primera Publicación',
+        'published_year': 'Año de Publicación',
+        'characters': 'Personajes',
+        'format': 'Formato',
+        'genres': 'Géneros',
+        'isbn10': 'ISBN-10',
+        'isbn13': 'ISBN-13',
+        'asin': 'ASIN',
+        'average_rating': 'Calificación Promedio',
+        'awards': 'Premios',
+        'ratingsByStars': 'Distribución de Calificaciones',
+        'bbeVotes': 'Votos BBE',
+        'numRatings': 'Número de Calificaciones',
+        'product_dimensions': 'Dimensiones del Producto',
+        'publisher': 'Editorial',
+        'soldBy': 'Vendido por',
+        'weight': 'Peso',
+        'back_to_list': 'Volver a la lista de libros'
+    },
+    'en': {
+        'title': 'Book List',
+        'author': 'Author',
+        'subtitle': 'Subtitle',
+        'language': 'Language',
+        'categories': 'Categories',
+        'description': 'Description',
+        'series': 'Series',
+        'edition': 'Edition',
+        'firstPublishDate': 'First Publish Date',
+        'published_year': 'Published Year',
+        'characters': 'Characters',
+        'format': 'Format',
+        'genres': 'Genres',
+        'isbn10': 'ISBN-10',
+        'isbn13': 'ISBN-13',
+        'asin': 'ASIN',
+        'average_rating': 'Average Rating',
+        'awards': 'Awards',
+        'ratingsByStars': 'Ratings Distribution',
+        'bbeVotes': 'BBE Votes',
+        'numRatings': 'Number of Ratings',
+        'product_dimensions': 'Product Dimensions',
+        'publisher': 'Publisher',
+        'soldBy': 'Sold By',
+        'weight': 'Weight',
+        'back_to_list': 'Back to Book List'
+    }
+}
+
+def get_translation(lang, key):
+    return translations.get(lang, translations['en']).get(key, key)
 
 @app.route('/')
 def index():
-    return render_template('index.html', libros=libros)
+    lang = request.args.get('lang', 'en')
+    return render_template('index.html', books=books, lang=lang, t=lambda k: get_translation(lang, k))
 
-@app.route('/libro/<int:book_id>')
-def libro(book_id):
-    libro = next((libro for libro in libros if int(libro['book_id']) == book_id), None)
-    if libro:
-        return render_template('libro.html', libro=libro)
+@app.route('/book/<int:book_id>')
+def book(book_id):
+    lang = request.args.get('lang', 'en')
+    book = next((book for book in books if int(book['bookId']) == book_id), None)
+    if book:
+        return render_template('book.html', libro=book, lang=lang, t=lambda k: get_translation(lang, k))
     else:
-        return "Libro no encontrado", 404
-
-@app.route('/exportar')
-def exportar():
-    # Crear directorios para los archivos HTML generados
-    os.makedirs('output/libros', exist_ok=True)
-
-    # Generar archivo HTML para la lista de libros
-    index_template = env.get_template('index.html')
-    index_html = index_template.render(libros=libros)
-
-    with open('output/index.html', 'w', encoding='utf-8') as f:
-        f.write(index_html)
-
-    # Generar archivo HTML para cada libro
-    libro_template = env.get_template('libro.html')
-
-    for libro in libros:
-        libro_html = libro_template.render(libro=libro)
-        with open(f"output/libros/{libro['book_id']}.html", 'w', encoding='utf-8') as f:
-            f.write(libro_html)
-
-    return send_file('output/index.html', as_attachment=True)
+        return "Book not found", 404
 
 if __name__ == '__main__':
     app.run(debug=True)
