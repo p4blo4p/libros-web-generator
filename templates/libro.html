@@ -1,26 +1,26 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="{{ lang }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="{{ description }}">
-    <meta name="keywords" content="{{ keywords }}">
-    <meta name="author" content="{{ author }}">
-    <title>{{ libro['book_title'] }}</title>
-    <link rel="canonical" href="{{ canonical_url }}">
+    <meta name="description" content="{{ libro['description'] }}">
+    <meta name="keywords" content="{{ libro['categories'] }}">
+    <meta name="author" content="{{ libro['author'] }}">
+    <title>{{ libro['title'] }}</title>
+    <link rel="canonical" href="{{ url_for('book', book_id=libro['bookId'], lang=lang) }}">
     <!-- Open Graph Meta Tags for social media -->
-    <meta property="og:title" content="{{ title }}">
-    <meta property="og:description" content="{{ description }}">
-    <meta property="og:image" content="{{ og_image }}">
-    <meta property="og:url" content="{{ canonical_url }}">
+    <meta property="og:title" content="{{ libro['title'] }}">
+    <meta property="og:description" content="{{ libro['description'] }}">
+    <meta property="og:image" content="{{ libro['image_url'] }}">
+    <meta property="og:url" content="{{ url_for('book', book_id=libro['bookId'], lang=lang) }}">
     <meta property="og:type" content="website">
     <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="{{ title }}">
-    <meta name="twitter:description" content="{{ description }}">
-    <meta name="twitter:image" content="{{ twitter_image }}">
+    <meta name="twitter:title" content="{{ libro['title'] }}">
+    <meta name="twitter:description" content="{{ libro['description'] }}">
+    <meta name="twitter:image" content="{{ libro['image_url'] }}">
     <!-- Favicon -->
-    <link rel="icon" href="{{ favicon }}" type="image/x-icon">
+    <link rel="icon" href="{{ libro['image_url'] }}" type="image/x-icon">
     <!-- CSS Stylesheets -->
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <!-- Structured Data -->
@@ -28,25 +28,39 @@
     {
       "@context": "https://schema.org",
       "@type": "WebPage",
-      "name": "{{ title }}",
-      "description": "{{ description }}",
-      "url": "{{ canonical_url }}"
+      "name": "{{ libro['title'] }}",
+      "description": "{{ libro['description'] }}",
+      "url": "{{ url_for('book', book_id=libro['bookId'], lang=lang) }}"
     }
     </script>
 </head>
 <body>
-    <h1>{{ libro['book_title'] }}</h1>
-    <img src="{{ libro['cover_image_uri'] }}" alt="Portada de {{ libro['book_title'] }}">
-    <p><strong>Autor:</strong> <a href="{{ libro['authorlink'] }}">{{ libro['author'] }}</a></p>
-    <p><strong>Detalles:</strong> {{ libro['book_details'] }}</p>
-    <p><strong>Formato:</strong> {{ libro['format'] }}</p>
-    <p><strong>Información de Publicación:</strong> {{ libro['publication_info'] }}</p>
-    <p><strong>Número de Páginas:</strong> {{ libro['num_pages'] }}</p>
-    <p><strong>Géneros:</strong> {{ libro['genres'] }}</p>
-    <p><strong>Número de Calificaciones:</strong> {{ libro['num_ratings'] }}</p>
-    <p><strong>Número de Reseñas:</strong> {{ libro['num_reviews'] }}</p>
-    <p><strong>Calificación Promedio:</strong> {{ libro['average_rating'] }}</p>
-    <p><strong>Distribución de Calificaciones:</strong> {{ libro['rating_distribution'] }}</p>
-    <a href="../index.html">Volver a la lista de libros</a>
+    <h1>{{ libro['title'] }}</h1>
+    <img src="{{ libro['image_url'] }}" alt="Portada de {{ libro['title'] }}">
+    <p><strong>{{ t('author') }}:</strong> {{ libro['author'] }}</p>
+    <p><strong>{{ t('subtitle') }}:</strong> {{ libro['subtitle'] }}</p>
+    <p><strong>{{ t('language') }}:</strong> {{ libro['language'] }}</p>
+    <p><strong>{{ t('categories') }}:</strong> {{ libro['categories'] }}</p>
+    <p><strong>{{ t('description') }}:</strong> {{ libro['description'] }}</p>
+    <p><strong>{{ t('series') }}:</strong> {{ libro['series'] }}</p>
+    <p><strong>{{ t('edition') }}:</strong> {{ libro['edition'] }}</p>
+    <p><strong>{{ t('firstPublishDate') }}:</strong> {{ libro['firstPublishDate'] }}</p>
+    <p><strong>{{ t('published_year') }}:</strong> {{ libro['published_year'] }}</p>
+    <p><strong>{{ t('characters') }}:</strong> {{ libro['characters'] }}</p>
+    <p><strong>{{ t('format') }}:</strong> {{ libro['format'] }}</p>
+    <p><strong>{{ t('genres') }}:</strong> {{ libro['genres'] }}</p>
+    <p><strong>{{ t('isbn10') }}:</strong> {{ libro['isbn10'] }}</p>
+    <p><strong>{{ t('isbn13') }}:</strong> {{ libro['isbn13'] }}</p>
+    <p><strong>{{ t('asin') }}:</strong> {{ libro['asin'] }}</p>
+    <p><strong>{{ t('average_rating') }}:</strong> {{ libro['average_rating'] }}</p>
+    <p><strong>{{ t('awards') }}:</strong> {{ libro['awards'] }}</p>
+    <p><strong>{{ t('ratingsByStars') }}:</strong> {{ libro['ratingsByStars'] }}</p>
+    <p><strong>{{ t('bbeVotes') }}:</strong> {{ libro['bbeVotes'] }}</p>
+    <p><strong>{{ t('numRatings') }}:</strong> {{ libro['numRatings'] }}</p>
+    <p><strong>{{ t('product_dimensions') }}:</strong> {{ libro['product_dimensions'] }}</p>
+    <p><strong>{{ t('publisher') }}:</strong> {{ libro['publisher'] }}</p>
+    <p><strong>{{ t('soldBy') }}:</strong> {{ libro['soldBy'] }}</p>
+    <p><strong>{{ t('weight') }}:</strong> {{ libro['weight'] }}</p>
+    <a href="{{ url_for('index', lang=lang) }}">{{ t('back_to_list') }}</a>
 </body>
 </html>
