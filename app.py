@@ -80,10 +80,11 @@ def index():
     lang = request.args.get('lang', 'en')
     return render_template('index.html', books=books, lang=lang, t=lambda k: get_translation(lang, k))
 
-@app.route('/book/<int:book_id>')
-def book(book_id):
+@app.route('/<author>/<book>/<isbn>')
+def book_by_isbn(author, book, isbn):
     lang = request.args.get('lang', 'en')
-    book = next((book for book in books if int(book['bookId']) == book_id), None)
+    book = next((b for b in books if b['author'] == author and b['title'] == book and (b.get('isbn10') == isbn or b.get('isbn13') == isbn)), None)
+    
     if book:
         return render_template('book.html', libro=book, lang=lang, t=lambda k: get_translation(lang, k))
     else:
