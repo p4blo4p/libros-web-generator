@@ -108,5 +108,29 @@ def author_books(author):
     else:
         return "Books by author not found", 404
 
+@app.route('/sitemap.xml')
+def sitemap():
+    pages = []
+    ten_days_ago = (datetime.datetime.now() - datetime.timedelta(days=10)).date().isoformat()
+
+    # Static routes
+    for rule in app.url_map.iter_rules():
+        if "GET" in rule.methods and len(rule.arguments) == 0:
+            pages.append(
+                ["http://example.com{}".format(rule.rule), ten_days_ago]
+            )
+
+    # Dynamic routes
+    for book in books:
+        url = url_for('book_by_isbn', author=book['author'], book=book['title'], isbn=book.get('isbn10') or book.get('isbn13'))
+        pages.append(["http://example.com{}".format(url), ten_days_ago])
+
+    sitemap_xml = render_template('sitemap_template.xml', pages=pages)
+    response = make_response(sitemap_xml)
+    response.headers["Content-Type"] = "application/xml"
+
+    return response
+
+
 if __name__ == '__main__':
     app.run(debug=True)
