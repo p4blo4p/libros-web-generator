@@ -89,5 +89,23 @@ def book(book_id):
     else:
         return "Book not found", 404
 
+@app.route('/<author>/<book>/')
+def book_versions(author, book):
+    lang = request.args.get('lang', 'en')
+    book_versions = [b for b in books if b['author'] == author and b['title'] == book]
+    if book_versions:
+        return render_template('book_versions.html', books=book_versions, lang=lang, t=lambda k: get_translation(lang, k))
+    else:
+        return "Book versions not found", 404
+
+@app.route('/<author>/')
+def author_books(author):
+    lang = request.args.get('lang', 'en')
+    author_books = [b for b in books if b['author'] == author]
+    if author_books:
+        return render_template('author_books.html', books=author_books, lang=lang, t=lambda k: get_translation(lang, k))
+    else:
+        return "Books by author not found", 404
+
 if __name__ == '__main__':
     app.run(debug=True)
