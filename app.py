@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from flask import Flask, render_template, request, url_for
 import csv
 
@@ -5,7 +6,7 @@ app = Flask(__name__)
 
 # Load books data from CSV
 def load_books(filename):
-    with open(filename, newline='', encoding='utf-8') as csvfile:
+    with open(filename) as csvfile:
         reader = csv.DictReader(csvfile)
         books = [row for row in reader]
     return books
