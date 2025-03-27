@@ -7,12 +7,12 @@
 7|     <meta name="keywords" content="{{ libro['categories'] | default('') }}">
 8|     <meta name="author" content="{{ libro['author'] | default('') }}">
 9|     <title>{{ libro['title'] | default('') }}</title>
-10|     <link rel="canonical" href="{{ url_for('book', book_id=libro['bookId'] | default(''), lang=lang) }}">
+10|     <link rel="canonical" href="dump">
 11|     <!-- Open Graph Meta Tags for social media -->
 12|     <meta property="og:title" content="{{ libro['title'] | default('') }}">
 13|     <meta property="og:description" content="{{ libro['description'] | default('') }}">
 14|     <meta property="og:image" content="{{ libro['image_url'] | default('') }}">
-15|     <meta property="og:url" content="{{ url_for('book', book_id=libro['bookId'] | default(''), lang=lang) }}">
+15|     <meta property="og:url" content="dump">
 16|     <meta property="og:type" content="website">
 17|     <!-- Twitter Card Meta Tags -->
 18|     <meta name="twitter:card" content="summary_large_image">
@@ -22,7 +22,7 @@
 22|     <!-- Favicon -->
 23|     <link rel="icon" href="{{ libro['image_url'] | default('') }}" type="image/x-icon">
 24|     <!-- CSS Stylesheets -->
-25|     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+25|     <link rel="stylesheet" href="dump">
 26|     <!-- Structured Data -->
 27|     <script type="application/ld+json">
 28|     {
@@ -30,7 +30,7 @@
 30|       "@type": "WebPage",
 31|       "name": "{{ libro['title'] | default('') }}",
 32|       "description": "{{ libro['description'] | default('') }}",
-33|       "url": "{{ url_for('book', book_id=libro['bookId'] | default(''), lang=lang) }}"
+33|       url": "dump"
 34|     }
 35|     </script>
 36| </head>
