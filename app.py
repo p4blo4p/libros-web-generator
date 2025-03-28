@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 from flask import Flask, render_template, request, url_for
+import datetime
+
 import csv
 
 app = Flask(__name__)
@@ -81,6 +83,7 @@ def index():
     lang = request.args.get('lang', 'en')
     return render_template('index.html', books=books, lang=lang, t=lambda k: get_translation(lang, k))
 
+  # /George Orwell/1984/0452284236
 @app.route('/<author>/<book>/<isbn>')
 def book_by_isbn(author, book, isbn):
     lang = request.args.get('lang', 'en')
