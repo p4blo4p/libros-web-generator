@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from flask import Flask, render_template, request, url_for
+from flask import Flask, render_template, request, url_for, make_response
 import datetime
 
 import csv
@@ -84,7 +84,7 @@ def index():
     return render_template('index.html', books=books, lang=lang, t=lambda k: get_translation(lang, k))
 
   # /George Orwell/1984/0452284236
-@app.route('/<author>/<book>/<isbn>')
+@app.route('/<author>/<book>/<isbn>/')
 def book_by_isbn(author, book, isbn):
     lang = request.args.get('lang', 'en')
     book = next((b for b in books if b['author'] == author and b['title'] == book and (b.get('isbn10') == isbn or b.get('isbn13') == isbn)), None)
@@ -121,7 +121,7 @@ def sitemap():
     for rule in app.url_map.iter_rules():
         if "GET" in rule.methods and len(rule.arguments) == 0:
             pages.append(
-                ["http://example.com{}".format(rule.rule), ten_days_ago]
+                ["{}".format(rule.rule), ten_days_ago]#["https://example.com{}".format(rule.rule), ten_days_ago]
             )
 
     # Dynamic routes
