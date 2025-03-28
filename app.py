@@ -84,6 +84,7 @@ def index():
     return render_template('index.html', books=books, lang=lang, t=lambda k: get_translation(lang, k))
 
   # /George Orwell/1984/0452284236
+  # template https://github.com/xriley/DevBook-Theme
 @app.route('/<author>/<book>/<isbn>/')
 def book_by_isbn(author, book, isbn):
     lang = request.args.get('lang', 'en')
