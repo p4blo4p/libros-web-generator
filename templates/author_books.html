@@ -38,7 +38,6 @@
      {% for book in books %}
         <h1>{{ book['title'] | default('') }}</h1>
         <img src="{{ book['image_url']}}" alt="Portada de {{ book['title'] }}">
-        
         <p><strong>{{ t('edition') }}:</strong> {{ book['edition'] | default('') }}</p>
         <p><strong>{{ t('published_year') }}:</strong> {{ book['published_year'] | default('') }}</p>
         <p><strong>{{ t('format') }}:</strong> {{ book['format'] | default('') }}</p>
