@@ -95,6 +95,7 @@ def book_by_isbn(author, book, isbn):
     else:
         return "Book not found", 404
 
+# esto no incluye titulos como "1984 (Spanish Edition)"
 @app.route('/<author>/<book>/')
 def book_versions(author, book):
     lang = request.args.get('lang', 'en')
