@@ -1,66 +1,66 @@
-1| <!DOCTYPE html>
-2| <html lang="{{ lang }}">
-3| <head>
-4|     <meta charset="UTF-8">
-5|     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-6|     <meta name="description" content="{{ libro['description'] | default('') }}">
-7|     <meta name="keywords" content="{{ libro['categories'] | default('') }}">
-8|     <meta name="author" content="{{ libro['author'] | default('') }}">
-9|     <title>{{ libro['title'] | default('') }}</title>
-10|     <link rel="canonical" href="dump">
-11|     <!-- Open Graph Meta Tags for social media -->
-12|     <meta property="og:title" content="{{ libro['title'] | default('') }}">
-13|     <meta property="og:description" content="{{ libro['description'] | default('') }}">
-14|     <meta property="og:image" content="{{ libro['image_url'] | default('') }}">
-15|     <meta property="og:url" content="dump">
-16|     <meta property="og:type" content="website">
-17|     <!-- Twitter Card Meta Tags -->
-18|     <meta name="twitter:card" content="summary_large_image">
-19|     <meta name="twitter:title" content="{{ libro['title'] | default('') }}">
-20|     <meta name="twitter:description" content="{{ libro['description'] | default('') }}">
-21|     <meta name="twitter:image" content="{{ libro['image_url'] | default('') }}">
-22|     <!-- Favicon -->
-23|     <link rel="icon" href="{{ libro['image_url'] | default('') }}" type="image/x-icon">
-24|     <!-- CSS Stylesheets -->
-25|     <link rel="stylesheet" href="dump">
-26|     <!-- Structured Data -->
-27|     <script type="application/ld+json">
-28|     {
-29|       "@context": "https://schema.org",
-30|       "@type": "WebPage",
-31|       "name": "{{ libro['title'] | default('') }}",
-32|       "description": "{{ libro['description'] | default('') }}",
-33|       url": "dump"
-34|     }
-35|     </script>
-36| </head>
-37| <body>
-38|     <h1>{{ libro['title'] | default('') }}</h1>
-39|     <img src="{{ libro['image_url']}}" alt="Portada de {{ libro['title'] }}">
-40|     <p><strong>{{ t('isbn10') }}:</strong> {{ libro['isbn10'] | default('') }}</p>
-41|     <p><strong>{{ t('isbn13') }}:</strong> {{ libro['isbn13'] | default('') }}</p>    
-42|     <p><strong>{{ t('author') }}:</strong> {{ libro['author'] | default('') }}</p>
-43|     <p><strong>{{ t('subtitle') }}:</strong> {{ libro['subtitle'] | default('') }}</p>
-44|     <p><strong>{{ t('language') }}:</strong> {{ libro['language'] | default('') }}</p>
-45|     <p><strong>{{ t('categories') }}:</strong> {{ libro['categories'] | default('') }}</p>
-46|     <p><strong>{{ t('description') }}:</strong> {{ libro['description'] | default('') }}</p>
-47|     <p><strong>{{ t('series') }}:</strong> {{ libro['series'] | default('') }}</p>
-48|     <p><strong>{{ t('edition') }}:</strong> {{ libro['edition'] | default('') }}</p>
-49|     <p><strong>{{ t('firstPublishDate') }}:</strong> {{ libro['firstPublishDate'] | default('') }}</p>
-50|     <p><strong>{{ t('published_year') }}:</strong> {{ libro['published_year'] | default('') }}</p>
-51|     <p><strong>{{ t('characters') }}:</strong> {{ libro['characters'] | default('') }}</p>
-52|     <p><strong>{{ t('format') }}:</strong> {{ libro['format'] | default('') }}</p>
-53|     <p><strong>{{ t('genres') }}:</strong> {{ libro['genres'] | default('') }}</p>
-54|     <p><strong>{{ t('asin') }}:</strong> {{ libro['asin'] | default('') }}</p>
-55|     <p><strong>{{ t('average_rating') }}:</strong> {{ libro['average_rating'] | default('') }}</p>
-56|     <p><strong>{{ t('awards') }}:</strong> {{ libro['awards'] | default('') }}</p>
-57|     <p><strong>{{ t('ratingsByStars') }}:</strong> {{ libro['ratingsByStars'] | default('') }}</p>
-58|     <p><strong>{{ t('bbeVotes') }}:</strong> {{ libro['bbeVotes'] | default('') }}</p>
-59|     <p><strong>{{ t('numRatings') }}:</strong> {{ libro['numRatings'] | default('') }}</p>
-60|     <p><strong>{{ t('product_dimensions') }}:</strong> {{ libro['product_dimensions'] | default('') }}</p>
-61|     <p><strong>{{ t('publisher') }}:</strong> {{ libro['publisher'] | default('') }}</p>
-62|     <p><strong>{{ t('soldBy') }}:</strong> {{ libro['soldBy'] | default('') }}</p>
-63|     <p><strong>{{ t('weight') }}:</strong> {{ libro['weight'] | default('') }}</p>
-64|     <a href="{{ url_for('index', lang=lang) }}">{{ t('back_to_list') }}</a>
-65| </body>
-66| </html>
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="{{ libro['description'] | default('') }}">
+    <meta name="keywords" content="{{ libro['categories'] | default('') }}">
+    <meta name="author" content="{{ libro['author'] | default('') }}">
+    <title>{{ libro['title'] | default('') }}</title>
+    <link rel="canonical" href="dump">
+    <!-- Open Graph Meta Tags for social media -->
+    <meta property="og:title" content="{{ libro['title'] | default('') }}">
+    <meta property="og:description" content="{{ libro['description'] | default('') }}">
+    <meta property="og:image" content="{{ libro['image_url'] | default('') }}">
+    <meta property="og:url" content="dump">
+    <meta property="og:type" content="website">
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ libro['title'] | default('') }}">
+    <meta name="twitter:description" content="{{ libro['description'] | default('') }}">
+    <meta name="twitter:image" content="{{ libro['image_url'] | default('') }}">
+    <!-- Favicon -->
+    <link rel="icon" href="{{ libro['image_url'] | default('') }}" type="image/x-icon">
+    <!-- CSS Stylesheets -->
+    <link rel="stylesheet" href="dump">
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": "{{ libro['title'] | default('') }}",
+      "description": "{{ libro['description'] | default('') }}",
+      url": "dump"
+    }
+    </script>
+</head>
+<body>
+    <h1>{{ libro['title'] | default('') }}</h1>
+    <img src="{{ libro['image_url']}}" alt="Portada de {{ libro['title'] }}">
+    <p><strong>{{ t('isbn10') }}:</strong> {{ libro['isbn10'] | default('') }}</p>
+    <p><strong>{{ t('isbn13') }}:</strong> {{ libro['isbn13'] | default('') }}</p>    
+    <p><strong>{{ t('author') }}:</strong> {{ libro['author'] | default('') }}</p>
+    <p><strong>{{ t('subtitle') }}:</strong> {{ libro['subtitle'] | default('') }}</p>
+    <p><strong>{{ t('language') }}:</strong> {{ libro['language'] | default('') }}</p>
+    <p><strong>{{ t('categories') }}:</strong> {{ libro['categories'] | default('') }}</p>
+    <p><strong>{{ t('description') }}:</strong> {{ libro['description'] | default('') }}</p>
+    <p><strong>{{ t('series') }}:</strong> {{ libro['series'] | default('') }}</p>
+    <p><strong>{{ t('edition') }}:</strong> {{ libro['edition'] | default('') }}</p>
+    <p><strong>{{ t('firstPublishDate') }}:</strong> {{ libro['firstPublishDate'] | default('') }}</p>
+    <p><strong>{{ t('published_year') }}:</strong> {{ libro['published_year'] | default('') }}</p>
+    <p><strong>{{ t('characters') }}:</strong> {{ libro['characters'] | default('') }}</p>
+    <p><strong>{{ t('format') }}:</strong> {{ libro['format'] | default('') }}</p>
+    <p><strong>{{ t('genres') }}:</strong> {{ libro['genres'] | default('') }}</p>
+    <p><strong>{{ t('asin') }}:</strong> {{ libro['asin'] | default('') }}</p>
+    <p><strong>{{ t('average_rating') }}:</strong> {{ libro['average_rating'] | default('') }}</p>
+    <p><strong>{{ t('awards') }}:</strong> {{ libro['awards'] | default('') }}</p>
+    <p><strong>{{ t('ratingsByStars') }}:</strong> {{ libro['ratingsByStars'] | default('') }}</p>
+    <p><strong>{{ t('bbeVotes') }}:</strong> {{ libro['bbeVotes'] | default('') }}</p>
+    <p><strong>{{ t('numRatings') }}:</strong> {{ libro['numRatings'] | default('') }}</p>
+    <p><strong>{{ t('product_dimensions') }}:</strong> {{ libro['product_dimensions'] | default('') }}</p>
+    <p><strong>{{ t('publisher') }}:</strong> {{ libro['publisher'] | default('') }}</p>
+    <p><strong>{{ t('soldBy') }}:</strong> {{ libro['soldBy'] | default('') }}</p>
+    <p><strong>{{ t('weight') }}:</strong> {{ libro['weight'] | default('') }}</p>
+    <a href="{{ url_for('index', lang=lang) }}">{{ t('back_to_list') }}</a>
+</body>
+</html>
