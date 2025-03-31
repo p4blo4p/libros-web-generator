@@ -105,11 +105,11 @@ def book_versions(author, book):
         return "Book versions not found", 404
 
 @app.route('/<author>/')
-def author_books(author):
+def books(author):
     lang = request.args.get('lang', 'en')
-    author_books = [b for b in books if b['author'] == author]
-    if author_books:
-        return render_template('author_books.html', books=author_books, lang=lang, t=lambda k: get_translation(lang, k))
+    books = [b for b in books if b['author'] == author]
+    if books:
+        return render_template('author_books.html', books=books, lang=lang, t=lambda k: get_translation(lang, k))
     else:
         return "Books by author not found", 404
 
