@@ -41,6 +41,7 @@
 
         <!-- Theme CSS -->  
         <link id="theme-style" rel="stylesheet" href="assets/css/theme.css">
+  
 36| </head>
 <body>    
     <header class="header">	    
@@ -70,8 +71,30 @@
           <div class="col-12 col-md-6 mb-5">
 					    <div class="key-points mb-4 text-center">
 						    <ul class="key-points-list list-unstyled mb-4 mx-auto d-inline-block text-start">
-                  <li><i>ISBN:</i></li>
-							    
+                  <li><strong>{{ t('isbn10') }}:</strong> {{ libro['isbn10'] | default('') }}</li>
+          41|     <li><strong>{{ t('isbn13') }}:</strong> {{ libro['isbn13'] | default('') }}</li>    
+          42|     <li><strong>{{ t('author') }}:</strong> {{ libro['author'] | default('') }}</li>
+          43|     <li><strong>{{ t('subtitle') }}:</strong> {{ libro['subtitle'] | default('') }}</li>
+          44|     <li><strong>{{ t('language') }}:</strong> {{ libro['language'] | default('') }}</li>
+          45|     <li><strong>{{ t('categories') }}:</strong> {{ libro['categories'] | default('') }}</li>
+          46|     <li><strong>{{ t('description') }}:</strong> {{ libro['description'] | default('') }}</li>
+          47|     <li><strong>{{ t('series') }}:</strong> {{ libro['series'] | default('') }}</li>
+          48|     <li><strong>{{ t('edition') }}:</strong> {{ libro['edition'] | default('') }}</li>
+          49|     <li><strong>{{ t('firstPublishDate') }}:</strong> {{ libro['firstPublishDate'] | default('') }}</li>
+          50|     <li><strong>{{ t('published_year') }}:</strong> {{ libro['published_year'] | default('') }}</li>
+          51|     <li><strong>{{ t('characters') }}:</strong> {{ libro['characters'] | default('') }}</li>
+          52|     <li><strong>{{ t('format') }}:</strong> {{ libro['format'] | default('') }}</li>
+          53|     <li><strong>{{ t('genres') }}:</strong> {{ libro['genres'] | default('') }}</li>
+          54|     <li><strong>{{ t('asin') }}:</strong> {{ libro['asin'] | default('') }}</li>
+          55|     <li><strong>{{ t('average_rating') }}:</strong> {{ libro['average_rating'] | default('') }}</li>
+          56|     <li><strong>{{ t('awards') }}:</strong> {{ libro['awards'] | default('') }}</li>
+          57|     <li><strong>{{ t('ratingsByStars') }}:</strong> {{ libro['ratingsByStars'] | default('') }}</li>
+          58|     <li><strong>{{ t('bbeVotes') }}:</strong> {{ libro['bbeVotes'] | default('') }}</li>
+          59|     <li><strong>{{ t('numRatings') }}:</strong> {{ libro['numRatings'] | default('') }}</li>
+          60|     <li><strong>{{ t('product_dimensions') }}:</strong> {{ libro['product_dimensions'] | default('') }}</li>
+          61|     <li><strong>{{ t('publisher') }}:</strong> {{ libro['publisher'] | default('') }}</li>
+          62|     <li><strong>{{ t('soldBy') }}:</strong> {{ libro['soldBy'] | default('') }}</li>
+          63|     <li><strong>{{ t('weight') }}:</strong> {{ libro['weight'] | default('') }}</li>
 						    </ul>
 						    <div class="text-center"><a class="btn btn-primary" href="https://themes.3rdwavemedia.com/bootstrap-templates/startup/devbook-free-bootstrap-5-book-ebook-landing-page-template-for-developers/">I want this book</a></div>
 					    </div><!--//key-points-->
@@ -82,16 +105,6 @@
     </section><!--//hero-section-->
     
 
-    <footer class="footer">
-
-	    <div class="footer-bottom text-center py-5">
-
-	        <!--/* This template is free as long as you keep the footer attribution link. If you'd like to use the template without the attribution link, you can buy the commercial license via our website: themes.3rdwavemedia.com Thank you for your support. :) */-->
-            <small class="copyright">Designed with <span class="sr-only">love</span><svg class="svg-inline--fa fa-heart" style="color: #fb866a;" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="heart" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path fill="currentColor" d="M47.6 300.4L228.3 469.1c7.5 7 17.4 10.9 27.7 10.9s20.2-3.9 27.7-10.9L464.4 300.4c30.4-28.3 47.6-68 47.6-109.5v-5.8c0-69.9-50.5-129.5-119.4-141C347 36.5 300.6 51.4 268 84L256 96 244 84c-32.6-32.6-79-47.5-124.6-39.9C50.5 55.6 0 115.2 0 185.1v5.8c0 41.5 17.2 81.2 47.6 109.5z"></path></svg><!-- <i class="fas fa-heart" style="color: #fb866a;"></i> Font Awesome fontawesome.com --> by <a class="theme-link" href="http://themes.3rdwavemedia.com" target="_blank">Xiaoying Riley</a> for developers</small>
- 
-	    </div>
-	    
-    </footer>
        
     <!-- Javascript -->          
     <script src="assets/plugins/popper.min.js"></script>

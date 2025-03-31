@@ -91,7 +91,7 @@ def book_by_isbn(author, book, isbn):
     book = next((b for b in books if b['author'] == author and b['title'] == book and (b.get('isbn10') == isbn or b.get('isbn13') == isbn)), None)
     
     if book:
-        return render_template('bookcss.html', libro=book, lang=lang, t=lambda k: get_translation(lang, k))
+        return render_template('book.html', libro=book, lang=lang, t=lambda k: get_translation(lang, k))
     else:
         return "Book not found", 404
 

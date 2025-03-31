@@ -1,0 +1,54 @@
+1| <!DOCTYPE html>
+2| <html lang="{{ lang }}">
+3| <head>
+4|     <meta charset="UTF-8">
+5|     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+6|     <meta name="description" content="{{ books['description'] | default('') }}">
+7|     <meta name="keywords" content="{{ books['categories'] | default('') }}">
+8|     <meta name="author" content="{{ books['author'] | default('') }}">
+9|     <title>{{ books['title'] | default('') }}</title>
+10|     <link rel="canonical" href="dump">
+11|     <!-- Open Graph Meta Tags for social media -->
+12|     <meta property="og:title" content="{{ books['title'] | default('') }}">
+13|     <meta property="og:description" content="{{ books['description'] | default('') }}">
+14|     <meta property="og:image" content="{{ books['image_url'] | default('') }}">
+15|     <meta property="og:url" content="dump">
+16|     <meta property="og:type" content="website">
+17|     <!-- Twitter Card Meta Tags -->
+18|     <meta name="twitter:card" content="summary_large_image">
+19|     <meta name="twitter:title" content="{{ books['title'] | default('') }}">
+20|     <meta name="twitter:description" content="{{ books['description'] | default('') }}">
+21|     <meta name="twitter:image" content="{{ books['image_url'] | default('') }}">
+22|     <!-- Favicon -->
+23|     <link rel="icon" href="{{ books['image_url'] | default('') }}" type="image/x-icon">
+24|     <!-- CSS Stylesheets -->
+25|     <link rel="stylesheet" href="dump">
+26|     <!-- Structured Data -->
+27|     <script type="application/ld+json">
+28|     {
+29|       "@context": "https://schema.org",
+30|       "@type": "WebPage",
+31|       "name": "{{ books['title'] | default('') }}",
+32|       "description": "{{ books['description'] | default('') }}",
+33|       url": "dump"
+34|     }
+35|     </script>
+36| </head>
+37| <body>
+38|      {% for book in books %}
+        <h1>{{ book['title'] | default('') }}</h1>
+        <img src="{{ book['image_url']}}" alt="Portada de {{ book['title'] }}">
+        <p><strong>{{ t('isbn10') }}:</strong> {{ book['isbn10'] | default('') }}</p>
+        <p><strong>{{ t('isbn13') }}:</strong> {{ book['isbn13'] | default('') }}</p>
+        <p><strong>{{ t('author') }}:</strong> {{ book['author'] | default('') }}</p>
+        <p><strong>{{ t('subtitle') }}:</strong> {{ book['subtitle'] | default('') }}</p>
+        <p><strong>{{ t('language') }}:</strong> {{ book['language'] | default('') }}</p>
+        <p><strong>{{ t('edition') }}:</strong> {{ book['edition'] | default('') }}</p>
+49|     <p><strong>{{ t('firstPublishDate') }}:</strong> {{ book['firstPublishDate'] | default('') }}</p>
+50|     <p><strong>{{ t('published_year') }}:</strong> {{ book['published_year'] | default('') }}</p>
+        
+        <hr>  {# Separator between books #}
+    {% endfor %}
+  <a href="{{ url_for('index', lang=lang) }}">{{ t('back_to_list') }}</a>
+65| </body>
+66| </html>
