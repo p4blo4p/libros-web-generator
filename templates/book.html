@@ -45,16 +45,14 @@
         </div>
         <div class="book-info">
             <h2>{{ libro['title'] | default('') }}</h2>
-            <p>{{ t('author') }}:</strong> {{ libro['author'] | default('') }}</p>
+            <p>{{ libro['subtitle'] | default('') }}</p>
+            <p><strong>{{ t('author') }}:</strong> {{ libro['author'] | default('') }}</p>
         </div>
     </div>
   
   
-    <h1>{{ libro['title'] | default('') }}</h1>
-    <img src="{{ libro['image_url']}}" alt="Portada de {{ libro['title'] }}">
     <p><strong>{{ t('isbn10') }}:</strong> {{ libro['isbn10'] | default('') }}</p>
     <p><strong>{{ t('isbn13') }}:</strong> {{ libro['isbn13'] | default('') }}</p>    
-    <p><strong>{{ t('author') }}:</strong> {{ libro['author'] | default('') }}</p>
     <p><strong>{{ t('subtitle') }}:</strong> {{ libro['subtitle'] | default('') }}</p>
     <p><strong>{{ t('language') }}:</strong> {{ libro['language'] | default('') }}</p>
     <p><strong>{{ t('categories') }}:</strong> {{ libro['categories'] | default('') }}</p>
