@@ -37,6 +37,19 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}">
 </head>
 <body>
+  
+  <div class="book-display">
+        <div class="book-cover">
+            <img src="{{ libro['image_url']}}" alt="Portada de {{ libro['title'] }}">
+            <!-- Optional: Add elements for spine effect if desired -->
+        </div>
+        <div class="book-info">
+            <h2>{{ libro['title'] | default('') }}</h2>
+            <p>{{ t('author') }}:</strong> {{ libro['author'] | default('') }}</p>
+        </div>
+    </div>
+  
+  
     <h1>{{ libro['title'] | default('') }}</h1>
     <img src="{{ libro['image_url']}}" alt="Portada de {{ libro['title'] }}">
     <p><strong>{{ t('isbn10') }}:</strong> {{ libro['isbn10'] | default('') }}</p>
