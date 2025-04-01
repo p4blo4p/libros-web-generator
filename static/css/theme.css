@@ -1,3 +1,4 @@
+/* Basic Body Styling */
 body {
     font-family: 'Arial', sans-serif;
     background-color: #f0f0f0;
@@ -23,15 +24,19 @@ body {
 .book-cover {
     position: relative;
     margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .book-cover img {
     display: block;
-    width: auto;
-    height: auto;
+    max-width: 100%;
+    max-height: 150px; /* Set a maximum height for all images */
     border: 1px solid #ccc;
     box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
     transition: transform 0.2s ease-in-out;
+    object-fit: cover; /* Ensures the image covers the area properly */
 }
 
 .book-cover:hover img {
@@ -67,8 +72,8 @@ body {
     }
 
     .book-cover img {
-        width: 100%;
-        height: auto;
+        max-width: 100%;
+        max-height: 150px; /* Ensure images are responsive with fixed height */
     }
 }
 
