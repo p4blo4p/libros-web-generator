@@ -19,6 +19,9 @@ body {
     width: 300px;
     text-align: center;
     transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .book-cover {
@@ -46,6 +49,7 @@ body {
 
 .book-info {
     padding: 0 10px;
+    flex-grow: 1;
 }
 
 .book-info h2 {
