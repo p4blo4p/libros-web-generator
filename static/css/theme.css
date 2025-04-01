@@ -1,78 +1,83 @@
-/* Basic Body Styling (optional) */
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f0f0f0; /* Light background */
-    display: flex; /* Helps center content if needed */
+    font-family: 'Arial', sans-serif;
+    background-color: #f0f0f0;
+    display: flex;
     justify-content: center;
-    align-items: flex-start; /* Align items to the top */
+    align-items: flex-start;
     padding: 30px;
-    flex-wrap: wrap; /* Allow multiple books to wrap */
-    gap: 30px; /* Space between multiple books */
+    flex-wrap: wrap;
+    gap: 30px;
+    margin: 0;
 }
 
-/* Container for the whole book display */
 .book-display {
-    background-color: #ffffff; /* Optional background for the info area */
-    padding: 15px;
-    border-radius: 5px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Soft shadow for the container */
-    width: 300px; /* Match the placeholder width or adjust */
-    text-align: center; /* Center the info text */
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    text-align: center;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
 }
 
-/* Style the cover area */
 .book-cover {
-    position: relative; /* Needed for potential pseudo-elements (like spine) */
-    margin-bottom: 15px; /* Space between cover and info */
+    position: relative;
+    margin-bottom: 20px;
 }
 
 .book-cover img {
-    display: block; /* Remove extra space below image */
-    width: 100%;    /* Make image fill the container width */
-    height: auto;   /* Maintain aspect ratio */
-    border: 1px solid #cccccc; /* Subtle border around the image */
-    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3); /* 3D-like shadow for the cover */
-    transition: transform 0.2s ease-in-out; /* Smooth hover effect */
+    display: block;
+    width: auto;
+    height: auto;
+    border: 1px solid #ccc;
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s ease-in-out;
 }
 
-/* Optional: Slight lift effect on hover */
 .book-cover:hover img {
     transform: translateY(-5px) rotateZ(-1deg);
     box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.35);
 }
 
-
-/* Style the book info text */
 .book-info {
-    /* Styles for the text below the cover */
+    padding: 0 10px;
 }
 
 .book-info h2 {
-    font-size: 1.2em;
-    margin: 0 0 5px 0; /* Top/Right/Bottom/Left */
-    color: #333333;
+    font-size: 1.4em;
+    margin: 0 0 10px 0;
+    color: #333;
 }
 
 .book-info p {
-    font-size: 0.9em;
-    margin: 0;
-    color: #666666;
+    font-size: 1em;
+    margin: 0 0 10px 0;
+    color: #666;
 }
 
-/* --- Optional: Add a simple spine effect --- */
-/* Uncomment this section if you want a subtle spine */
-/*
-.book-cover::before {
-    content: '';
-    position: absolute;
-    left: -6px;
-    top: 3px;
-    width: 8px;
-    height: calc(100% - 6px);
-    background: linear-gradient(to right, rgba(0,0,0,0.2), rgba(0,0,0,0.05));
-    border-radius: 2px 0 0 2px;
-    box-shadow: -1px 0 2px rgba(0,0,0,0.2);
-    z-index: -1;
+@media (max-width: 768px) {
+    body {
+        flex-direction: column;
+        padding: 10px;
+    }
+
+    .book-display {
+        width: 100%;
+        margin-bottom: 20px;
+    }
+
+    .book-cover img {
+        width: 100%;
+        height: auto;
+    }
 }
-*/
-/* --- End Optional Spine --- */
+
+@media (max-width: 480px) {
+    .book-info h2 {
+        font-size: 1.2em;
+    }
+
+    .book-info p {
+        font-size: 0.9em;
+    }
+}
