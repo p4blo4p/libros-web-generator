@@ -33,6 +33,8 @@
       url": "dump"
     }
     </script>
+  
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}">
 </head>
 <body>
     <h1>{{ libro['title'] | default('') }}</h1>
