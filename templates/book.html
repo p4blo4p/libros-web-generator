@@ -150,6 +150,6 @@
 {% if libro['weight'] | default(None) %}
     <p><strong>{{ t('weight') }}:</strong> {{ libro['weight'] }}</p>
 {% endif %}
-    <a href="{{ url_for('index', lang=lang) }}">{{ t('back_to_list') }}</a>
+    <p><a href="{{ url_for('index', lang=lang) }}">{{ t('back_to_list') }}</a> </p>
 </body>
 </html>
