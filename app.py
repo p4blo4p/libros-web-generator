@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from flask import Flask, render_template, request, url_for, make_response
 import datetime
+from urllib.parse import urljoin
+
 
 import csv
 
@@ -125,11 +127,16 @@ def sitemap():
             pages.append(
                 ["{}".format(rule.rule), ten_days_ago]#["https://example.com{}".format(rule.rule), ten_days_ago]
             )
+            
+    base_url = "http://example.com/"
+    #relative_path = "users/profile?id=123" # Or "/users/profile?id=123"
+
+    #full_url = urljoin(base_url, relative_path)
 
     # Dynamic routes
     for book in books:
-        url = url_for('book_by_isbn', author=book['author'], book=book['title'], isbn=book.get('isbn10') or book.get('isbn13'))
-        pages.append(["http://example.com{}".format(url), ten_days_ago])
+        relative_path = url_for('book_by_isbn', author=book['author'], book=book['title'], isbn=book.get('isbn10') or book.get('isbn13'))
+        pages.append([urljoin(base_url, relative_path), ten_days_ago])
 
     sitemap_xml = render_template('sitemap_template.xml', pages=pages)
     response = make_response(sitemap_xml)
