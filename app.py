@@ -102,6 +102,7 @@ def book_by_isbn(author, book, isbn):
 def book_versions(author, book):
     lang = request.args.get('lang', 'en')
     book_versions = [b for b in books if b['author'] == author and b['title'] == book]
+    
     if book_versions:
         return render_template('book_versions.html', books=book_versions, lang=lang, t=lambda k: get_translation(lang, k))
     else:
