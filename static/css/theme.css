@@ -14,6 +14,7 @@ body {
 body h1, body h2{
     width: 100%;
     text-align: center;
+    margin: 0px;
 }
 
 .book-display {

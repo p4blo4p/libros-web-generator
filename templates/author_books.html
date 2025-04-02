@@ -36,8 +36,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}">
 </head>
 <body>
-    <h1>{{ books[0]['title'] | default('') }}</h1>
-    <p>{{ books[0]['author'] | default('') }}</p>
+    <h1>{{ books[0]['author'] | default('') }}</h1>
      {% for libro in books %}
         <div class="book-display">
         <div class="book-cover">
