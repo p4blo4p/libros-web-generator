@@ -31,5 +31,32 @@ Luego, abre tu navegador web y ve a http://127.0.0.1:5000/ para ver la lista de 
 # Datasets
 ## Amazon
 * https://www.kaggle.com/datasets/joebeachcapital/amazon-books
+## Flags
+* https://gist.github.com/jpluimers/9f80a94ba5987acac2ca60f4bf5faac9
+* https://alexsobolenko.github.io/flag-icons/
+
+ {
+    "us": "https://www.amazon.com",
+    "uk": "https://www.amazon.co.uk",
+    "ca": "https://www.amazon.ca",
+    "de": "https://www.amazon.de",
+    "es": "https://www.amazon.es",
+    "fr": "https://www.amazon.fr",
+    "it": "https://www.amazon.it",
+    "jp": "https://www.amazon.co.jp",
+    "in": "https://www.amazon.in",
+    "cn": "https://www.amazon.cn",
+    "sg": "https://www.amazon.com.sg",
+    "mx": "https://www.amazon.com.mx",
+    "ae": "https://www.amazon.ae",
+    "br": "https://www.amazon.com.br",
+    "nl": "https://www.amazon.nl",
+    "au": "https://www.amazon.com.au",
+    "tr": "https://www.amazon.com.tr",
+    "sa": "https://www.amazon.sa",
+    "se": "https://www.amazon.se",
+    "pl": "https://www.amazon.pl"
+ }
+ 
 ## Kindle
 * https://www.kaggle.com/datasets/asaniczka/amazon-kindle-books-dataset-2023-130k-books
