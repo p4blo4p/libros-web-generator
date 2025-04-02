@@ -7,7 +7,7 @@
 </head>
 <body>
     <h1>{{ books[0]['title'] | default('') }}</h1>
-    <p>{{ books[0]['author'] | default('') }}</p>
+    <h2>{{ books[0]['author'] | default('') }}</h2>
      {% for libro in books %}
         <div class="book-display">
         <div class="book-cover">

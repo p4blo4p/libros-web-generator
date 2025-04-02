@@ -11,6 +11,11 @@ body {
     margin: 0;
 }
 
+body h1, body h2{
+    width: 100%;
+    text-align: center;
+}
+
 .book-display {
     background-color: #ffffff;
     padding: 20px;
@@ -26,7 +31,7 @@ body {
 
 .book-cover {
     position: relative;
-    margin-bottom: 20px;
+    margin: 20px;
     display: flex;
     justify-content: center;
     align-items: center;
