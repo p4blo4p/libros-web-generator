@@ -67,10 +67,6 @@
     <p><strong>{{ t('published_year') }}:</strong> {{ libro['published_year'] }}</p>
 {% endif %}
 
-{% if libro['format'] | default(None) %}
-    <p><strong>{{ t('format') }}:</strong> {{ libro['format'] }}</p>
-{% endif %}
-
 
 {% if libro['asin'] | default(None) %}
     <p><strong>{{ t('asin') }}:</strong> {{ libro['asin'] }}</p>

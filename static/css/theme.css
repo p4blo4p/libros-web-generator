@@ -12,7 +12,7 @@ body {
 }
 
 .book-display {
-    background-color: #fff;
+    background-color: #ffffff;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
@@ -36,7 +36,7 @@ body {
     display: block;
     max-width: 100%;
     max-height: 150px; /* Set a maximum height for all images */
-    border: 1px solid #ccc;
+    border: 1px solid #cccccc;
     box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
     transition: transform 0.2s ease-in-out;
     object-fit: cover; /* Ensures the image covers the area properly */
@@ -55,13 +55,13 @@ body {
 .book-info h2 {
     font-size: 1.4em;
     margin: 0 0 10px 0;
-    color: #333;
+    color: #333333;
 }
 
 .book-info p {
     font-size: 1em;
     margin: 0 0 10px 0;
-    color: #666;
+    color: #666666;
 }
 
 @media (max-width: 768px) {
@@ -73,6 +73,7 @@ body {
     .book-display {
         width: 100%;
         margin-bottom: 20px;
+        padding: 0px;
     }
 
     .book-cover img {
