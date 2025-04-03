@@ -4,34 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Book Store</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin: 0;
-            padding: 0;
-        }
-        .search-bar {
-            margin-top: 50px;
-        }
-        .section {
-            margin: 50px 0;
-        }
-        .section h2 {
-            margin-bottom: 20px;
-        }
-        .books {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-        .book {
-            border: 1px solid #ddd;
-            margin: 10px;
-            padding: 10px;
-            width: 200px;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}">
 </head>
 <body>
     <div class="search-bar">
@@ -41,37 +14,12 @@
         </form>
     </div>
 
-    <div class="section">
-        <h2>Top Seller New Books This Month</h2>
-        <div class="books">
-            <!-- Add new books here -->
-            <div class="book">
-                <h3>Book Title 1</h3>
-                <p>Author 1</p>
-            </div>
-            <div class="book">
-                <h3>Book Title 2</h3>
-                <p>Author 2</p>
-            </div>
-            <!-- Add more books as needed -->
-        </div>
-    </div>
 
     <div class="section">
-        <h2>Top Seller Books</h2>
-        <div class="books">
-            <!-- Add top seller books here -->
-            <div class="book">
-                <h3>Book Title 3</h3>
-                <p>Author 3</p>
-            </div>
-            <div class="book">
-                <h3>Book Title 4</h3>
-                <p>Author 4</p>
-            </div>
+        <h2>Top Seller New Books This Month</h2>
             <!-- Add more books as needed -->
           {% for libro in books %}
-        <div class="book-display">
+      <div class="book-display">
         <div class="book-cover">
             <img src="{{ libro['image_url']}}" alt="Portada de {{ libro['title'] }}">
             <!-- Optional: Add elements for spine effect if desired -->
@@ -79,10 +27,10 @@
         <div class="book-info">
             
           {% if libro['title'] | default(None) %}
-    <p><strong>{{ t('title') }}:</strong> {{ libro['title'] }}</p>
+    <h3>{{ libro['title'] }}</h3>
 {% endif %}
           {% if libro['author'] | default(None) %}
-    <p><strong>{{ t('author') }}:</strong> {{ libro['author'] }}</p>
+    <p>{{ libro['author'] }}</p>
 {% endif %}
 
         </div>
