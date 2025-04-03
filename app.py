@@ -4,6 +4,7 @@ import datetime
 from urllib.parse import urljoin
 
 import sys # For printing errors to stderr
+
 import csv
 import json
 
@@ -16,29 +17,42 @@ def load_books(filename):
         books = [row for row in reader]
     return books
 
-books = load_books('books.csv')
-try:
-    # Open the file in read mode ('r') with UTF-8 encoding (recommended for JSON)
-    with open(file_path, 'r', encoding='utf-8') as f:
-        # Use json.load() to parse the JSON data from the file object
-        # Note: It's load() not loads() when reading from a file object
-        bestsellers = json.load(f)
+# --- Function to Load JSON Data ---
+def load_json_data(filepath):
+    """Loads JSON data from a specified file path.
 
-    # --- Now 'data' is a Python list containing dictionaries ---
-    print(f"Successfully loaded data from '{file_path}'")
-except FileNotFoundError:
-    print(f"Error: The file '{file_path}' was not found.", file=sys.stderr)
-    print("Please ensure the file exists in the correct directory.", file=sys.stderr)
-except json.JSONDecodeError as e:
-    # This error occurs if the file content is not valid JSON
-    print(f"Error decoding JSON from file '{file_path}': {e}", file=sys.stderr)
-    print("Please check that the file contains well-formed JSON.", file=sys.stderr)
-except IOError as e:
-    # Catch other potential file reading errors (e.g., permissions)
-    print(f"Error reading file '{file_path}': {e}", file=sys.stderr)
-except Exception as e:
-    # Catch any other unexpected errors
-    print(f"An unexpected error occurred: {e}", file=sys.stderr)
+    Args:
+        filepath (str): The path to the JSON file.
+
+    Returns:
+        list or dict or None: The loaded Python object (list/dict) 
+                               if successful, otherwise None.
+    """
+    try:
+        # Open the file in read mode ('r') with UTF-8 encoding
+        with open(filepath, 'r', encoding='utf-8') as f:
+            # Use json.load() to parse the JSON data from the file object
+            loaded_data = json.load(f)
+            print(f"Successfully loaded data from '{filepath}'")
+            return loaded_data
+    except FileNotFoundError:
+        print(f"Error: The file '{filepath}' was not found.", file=sys.stderr)
+        return None # Indicate failure by returning None
+    except json.JSONDecodeError as e:
+        print(f"Error decoding JSON from file '{filepath}': {e}", file=sys.stderr)
+        return None # Indicate failure
+    except IOError as e:
+        print(f"Error reading file '{filepath}': {e}", file=sys.stderr)
+        return None # Indicate failure
+    except Exception as e:
+        print(f"An unexpected error occurred during loading: {e}", file=sys.stderr)
+        return None # Indicate failure
+  
+  
+books = load_books('books.csv')
+# 2. Load the data using the function
+bestsellers = load_json_data("social/amazon_bestsellers_es.json") # Store the result in books_data
+
     
 # Language translations
 translations = {
