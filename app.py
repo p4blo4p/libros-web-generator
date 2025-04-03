@@ -16,6 +16,7 @@ def load_books(filename):
     return books
 
 books = load_books('books.csv')
+bestsellers = load_books('social/amazon_bestsellers_es.json')
 
 # Language translations
 translations = {
@@ -83,7 +84,7 @@ def get_translation(lang, key):
 @app.route('/')
 def index():
     lang = request.args.get('lang', 'en')
-    return render_template('index.html', books=books, lang=lang, t=lambda k: get_translation(lang, k))
+    return render_template('index.html', bestsellers=bestsellers, lang=lang, t=lambda k: get_translation(lang, k))
 
   # /George Orwell/1984/0452284236/
   # template https://github.com/xriley/DevBook-Theme
