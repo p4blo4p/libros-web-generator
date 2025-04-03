@@ -70,6 +70,59 @@
                 <p>Author 4</p>
             </div>
             <!-- Add more books as needed -->
+          {% for libro in books %}
+        <div class="book-display">
+        <div class="book-cover">
+            <img src="{{ libro['image_url']}}" alt="Portada de {{ libro['title'] }}">
+            <!-- Optional: Add elements for spine effect if desired -->
+        </div>
+        <div class="book-info">
+            
+          {% if libro['isbn10'] | default(None) %}
+    <p><strong>{{ t('isbn10') }}:</strong> {{ libro['isbn10'] }}</p>
+{% endif %}
+{% if libro['isbn13'] | default(None) %}
+    <p><strong>{{ t('isbn13') }}:</strong> {{ libro['isbn13'] }}</p>
+{% endif %}
+
+
+{% if libro['language'] | default(None) %}
+    <p><strong>{{ t('language') }}:</strong> {{ libro['language'] }}</p>
+{% endif %}
+
+{% if libro['edition'] | default(None) %}
+    <p><strong>{{ t('edition') }}:</strong> {{ libro['edition'] }}</p>
+{% endif %}
+
+{# Note: This will hide the label if published_year is 0 or empty #}
+{% if libro['published_year'] | default(None) %}
+    <p><strong>{{ t('published_year') }}:</strong> {{ libro['published_year'] }}</p>
+{% endif %}
+
+
+{% if libro['asin'] | default(None) %}
+    <p><strong>{{ t('asin') }}:</strong> {{ libro['asin'] }}</p>
+{% endif %}
+
+
+{% if libro['product_dimensions'] | default(None) %}
+    <p><strong>{{ t('product_dimensions') }}:</strong> {{ libro['product_dimensions'] }}</p>
+{% endif %}
+
+{% if libro['publisher'] | default(None) %}
+    <p><strong>{{ t('publisher') }}:</strong> {{ libro['publisher'] }}</p>
+{% endif %}
+
+{% if libro['soldBy'] | default(None) %}
+    <p><strong>{{ t('soldBy') }}:</strong> {{ libro['soldBy'] }}</p>
+{% endif %}
+
+{% if libro['weight'] | default(None) %}
+    <p><strong>{{ t('weight') }}:</strong> {{ libro['weight'] }}</p>
+{% endif %}
+        </div>
+    </div>
+    {% endfor %}
         </div>
     </div>
 </body>

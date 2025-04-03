@@ -84,7 +84,8 @@ def get_translation(lang, key):
 @app.route('/')
 def index():
     lang = request.args.get('lang', 'en')
-    return render_template('index.html', bestsellers=bestsellers, lang=lang, t=lambda k: get_translation(lang, k))
+    print(bestsellers)
+    return render_template('index.html', books=bestsellers, lang=lang, t=lambda k: get_translation(lang, k))
 
   # /George Orwell/1984/0452284236/
   # template https://github.com/xriley/DevBook-Theme
