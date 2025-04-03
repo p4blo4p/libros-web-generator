@@ -3,8 +3,9 @@ from flask import Flask, render_template, request, url_for, make_response
 import datetime
 from urllib.parse import urljoin
 
-
+import sys # For printing errors to stderr
 import csv
+import json
 
 app = Flask(__name__)
 
@@ -16,8 +17,29 @@ def load_books(filename):
     return books
 
 books = load_books('books.csv')
-bestsellers = load_books('social/amazon_bestsellers_es.json')
+try:
+    # Open the file in read mode ('r') with UTF-8 encoding (recommended for JSON)
+    with open(file_path, 'r', encoding='utf-8') as f:
+        # Use json.load() to parse the JSON data from the file object
+        # Note: It's load() not loads() when reading from a file object
+        bestsellers = json.load(f)
 
+    # --- Now 'data' is a Python list containing dictionaries ---
+    print(f"Successfully loaded data from '{file_path}'")
+except FileNotFoundError:
+    print(f"Error: The file '{file_path}' was not found.", file=sys.stderr)
+    print("Please ensure the file exists in the correct directory.", file=sys.stderr)
+except json.JSONDecodeError as e:
+    # This error occurs if the file content is not valid JSON
+    print(f"Error decoding JSON from file '{file_path}': {e}", file=sys.stderr)
+    print("Please check that the file contains well-formed JSON.", file=sys.stderr)
+except IOError as e:
+    # Catch other potential file reading errors (e.g., permissions)
+    print(f"Error reading file '{file_path}': {e}", file=sys.stderr)
+except Exception as e:
+    # Catch any other unexpected errors
+    print(f"An unexpected error occurred: {e}", file=sys.stderr)
+    
 # Language translations
 translations = {
     'es': {
