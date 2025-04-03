@@ -34,7 +34,10 @@
         <div class="book-info">
             
           {% if libro['title'] | default(None) %}
-    <p><strong>{{ t('isbn10') }}:</strong> {{ libro['isbn10'] }}</p>
+    <p><strong>{{ t('title') }}:</strong> {{ libro['title'] }}</p>
+{% endif %}
+          {% if libro['author'] | default(None) %}
+    <p><strong>{{ t('author') }}:</strong> {{ libro['author'] }}</p>
 {% endif %}
 
         </div>
