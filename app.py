@@ -75,6 +75,9 @@ translations = {
 def get_translation(lang, key):
     return translations.get(lang, translations['en']).get(key, key)
 
+def is_valid_isbn(isbn):
+    return re.match(r'^\d{10}(\d{3})?$', isbn)
+
 @app.route('/')
 def index():
     lang = request.args.get('lang', 'en')
@@ -82,6 +85,9 @@ def index():
 
 @app.route('/<author>/<book>/<isbn>')
 def book_by_isbn(author, book, isbn):
+    if not is_valid_isbn(isbn):
+        abort(400, description="Invalid ISBN")
+        
     lang = request.args.get('lang', 'en')
     book = next((b for b in books if b['author'] == author and b['title'] == book and (b.get('isbn10') == isbn or b.get('isbn13') == isbn)), None)
     
