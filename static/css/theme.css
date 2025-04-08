@@ -97,3 +97,24 @@ body h1, body h2{
         font-size: 0.9em;
     }
 }
+
+
+.amazon-button {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-decoration: none;
+    color: #000;
+    font-weight: bold;
+    background-color: #f7f7f7;
+    border-radius: 5px;
+}
+.amazon-button img {
+    margin-right: 10px;
+}
+.country-flag {
+    width: 20px;
+    height: 14px;
+    margin-left: 10px;
+}
