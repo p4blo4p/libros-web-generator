@@ -47,6 +47,7 @@
             <h2>{{ libro['title'] | default('') }}</h2>
             <p>{{ libro['subtitle'] | default('') }}</p>
             <p><strong>{{ t('author') }}:</strong> {{ libro['author'] | default('') }}</p>
+            <p><img src="{{ url_for('static', filename='images/flags/' + libro['country'] + '.png') }}" alt="Country Flag" class="country-flag"></p>
           {% if libro['isbn10'] | default(None) %}
     <p><strong>{{ t('isbn10') }}:</strong> {{ libro['isbn10'] }}</p>
 {% endif %}
