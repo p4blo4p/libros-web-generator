@@ -4,7 +4,7 @@ import datetime
 from urllib.parse import urljoin
 
 import sys # For printing errors to stderr
-
+import re
 import csv
 import json
 
@@ -131,6 +131,8 @@ def index():
   # template https://github.com/xriley/DevBook-Theme
 @app.route('/<author>/<book>/<isbn>/')
 def book_by_isbn(author, book, isbn):
+    if not is_valid_isbn(isbn):
+        abort(400, description="Invalid ISBN")
     lang = request.args.get('lang', 'en')
     book = next((b for b in books if b['author'] == author and b['title'] == book and (b.get('isbn10') == isbn or b.get('isbn13') == isbn)), None)
     
@@ -142,8 +144,7 @@ def book_by_isbn(author, book, isbn):
 # esto no incluye titulos como "1984 (Spanish Edition)"
 @app.route('/<author>/<book>/')
 def book_versions(author, book):
-    if not is_valid_isbn(isbn):
-        abort(400, description="Invalid ISBN")
+    
     
     lang = request.args.get('lang', 'en')
     book_versions = [b for b in books if b['author'] == author and b['title'] == book]
@@ -180,11 +181,12 @@ def sitemap():
     #full_url = urljoin(base_url, relative_path)
 
     # Dynamic routes
+    '''
     for book in books:
         relative_path = url_for('book_by_isbn', author=book['author'], book=book['title'], isbn=book.get('isbn10') or book.get('isbn13'))
         pages.append([urljoin(base_url, relative_path), ten_days_ago])
-
-    sitemap_xml = render_template('sitemap_template.xml', pages=pages)
+    '''
+    sitemap_xml = render_template('sitemap_template.xml', books=books)
     response = make_response(sitemap_xml)
     response.headers["Content-Type"] = "application/xml"
 
