@@ -2,7 +2,7 @@ import os
 import requests
 from math import ceil, sqrt
 import csv
-from PIL import Image, ImageOps
+from PIL import Image, ImageOps, ImageFont, ImageDraw
 
 #En glitch usar comando refresh para que aparezcan imagenes
 
@@ -109,8 +109,68 @@ def create_mosaic(image_paths, image_size, output_path, margin=10, background_co
         x = (i % cols) * cell_width
         y = (i // cols) * cell_height
         
-        mosaic.paste(bordered_image, (x, y))
+        
     
+    mosaic.save(output_path)
+    print(f"Mosaico creado y guardado en {output_path}")
+    
+def create_mosaic_with_footer(image_paths, image_size, output_path, margin=10, background_color=(255, 255, 255), footer_text=("Línea 1", "Línea 2"), font_path=None, font_size=130):
+    """
+    Crea un mosaico con imágenes y un texto único centrado debajo del mosaico.
+
+    Parameters:
+    - image_paths: Lista de rutas de imágenes.
+    - image_size: Tupla (ancho, alto) que define el tamaño de cada imagen.
+    - output_path: Ruta donde se guardará el mosaico final.
+    - margin: Espaciado entre las imágenes (en píxeles).
+    - background_color: Color del fondo para el mosaico.
+    - footer_text: Tupla con dos líneas de texto que se mostrará centrado debajo del mosaico.
+    - font_path: Ruta a la fuente TTF para el texto (opcional).
+    - font_size: Tamaño del texto.
+    """
+    num_images = len(image_paths)
+    cols = ceil(sqrt(num_images))  # Número de columnas
+    rows = ceil(num_images / cols)  # Número de filas
+
+    image_width, image_height = image_size
+    cell_width = image_width + margin
+    cell_height = image_height + margin
+
+    # Crea una nueva imagen en blanco para el mosaico con el color de fondo
+    mosaic_width = cols * cell_width - margin
+    mosaic_height = rows * cell_height - margin
+
+    # Espacio adicional para el texto del pie
+    footer_height = font_size * 3  # Altura del pie (ajustable)
+    total_height = mosaic_height + footer_height
+    mosaic = Image.new('RGB', (mosaic_width, total_height), background_color)
+
+    for i, image_path in enumerate(image_paths):
+        image = Image.open(image_path)
+        image.thumbnail((image_width, image_height), Image.ANTIALIAS)
+
+        # Calcula la posición de la imagen en el mosaico
+        x = (i % cols) * cell_width
+        y = (i // cols) * cell_height
+
+        # Pega la imagen en el mosaico
+        mosaic.paste(image, (x, y))
+
+    # Añadir el texto centrado en el pie
+    draw = ImageDraw.Draw(mosaic)
+    if font_path:
+        font = ImageFont.truetype(font_path, font_size)
+    else:
+        font = ImageFont.load_default()
+
+    # Dibujar las dos líneas de texto
+    for index, line in enumerate(footer_text):
+        text_width, text_height = draw.textsize(line, font=font)
+        text_x = (mosaic_width - text_width) // 2
+        text_y = mosaic_height + (font_size * index) + 10  # Espaciado entre líneas
+        draw.text((text_x, text_y), line, fill=(0, 0, 0), font=font)
+
+    # Guarda el mosaico resultante
     mosaic.save(output_path)
     print(f"Mosaico creado y guardado en {output_path}")
     
@@ -156,5 +216,17 @@ image_size = (100, 100)  # Tamaño de cada imagen en el mosaico
 output_path = 'mosaic.jpg'
 
 create_mosaic(image_paths, image_size, output_path)
+
+output_path = "mosaico_con_pie.jpg"
+
+create_mosaic_with_footer(
+    image_paths,
+    image_size=(100, 100),
+    output_path=output_path,
+    margin=40,
+    background_color=(255, 255, 255),
+    footer_text=("Título del Mosaico", "Nombre del Autor"),
+    font_size=130
+)
 
 # Nota: Limpieza del directorio temporal si es necesario.
