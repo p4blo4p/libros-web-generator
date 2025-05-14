@@ -1,95 +1,301 @@
 <!DOCTYPE html>
 <html lang="{{ lang }}">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="{{ books['description'] | default('') }}">
-    <meta name="keywords" content="{{ books['categories'] | default('') }}">
-    <meta name="author" content="{{ books['author'] | default('') }}">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="{{ books['description'] | default('') }}"
+    />
+    <meta name="keywords" content="{{ books['categories'] | default('') }}" />
+    <meta name="author" content="{{ books['author'] | default('') }}" />
     <title>{{ books['title'] | default('') }}</title>
-    <link rel="canonical" href="dump">
+    <link rel="canonical" href="dump" />
     <!-- Open Graph Meta Tags for social media -->
-    <meta property="og:title" content="{{ books['title'] | default('') }}">
-    <meta property="og:description" content="{{ books['description'] | default('') }}">
-    <meta property="og:image" content="{{ books['image_url'] | default('') }}">
-    <meta property="og:url" content="dump">
-    <meta property="og:type" content="website">
+    <meta property="og:title" content="{{ books['title'] | default('') }}" />
+    <meta
+      property="og:description"
+      content="{{ books['description'] | default('') }}"
+    />
+    <meta
+      property="og:image"
+      content="{{ books['image_url'] | default('') }}"
+    />
+    <meta property="og:url" content="dump" />
+    <meta property="og:type" content="website" />
     <!-- Twitter Card Meta Tags -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="{{ books['title'] | default('') }}">
-    <meta name="twitter:description" content="{{ books['description'] | default('') }}">
-    <meta name="twitter:image" content="{{ books['image_url'] | default('') }}">
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="{{ books['title'] | default('') }}" />
+    <meta
+      name="twitter:description"
+      content="{{ books['description'] | default('') }}"
+    />
+    <meta
+      name="twitter:image"
+      content="{{ books['image_url'] | default('') }}"
+    />
     <!-- Favicon -->
-    <link rel="icon" href="{{ books['image_url'] | default('') }}" type="image/x-icon">
+    <link
+      rel="icon"
+      href="{{ books['image_url'] | default('') }}"
+      type="image/x-icon"
+    />
     <!-- CSS Stylesheets -->
-    <link rel="stylesheet" href="dump">
+    <link rel="stylesheet" href="dump" />
     <!-- Structured Data -->
     <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebPage",
-      "name": "{{ books['title'] | default('') }}",
-      "description": "{{ books['description'] | default('') }}",
-      url": "dump"
-    }
+      {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "{{ books['title'] | default('') }}",
+        "description": "{{ books['description'] | default('') }}",
+        url": "dump"
+      }
     </script>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}">
-</head>
-<body>
-    <h1>{{ books[0]['author'] | default('') }}</h1>
-     {% for libro in books %}
-        <div class="book-display">
-        <div class="book-cover">
-            <img src="{{ libro['image_url']}}" alt="Portada de {{ libro['title'] }}">
-            <!-- Optional: Add elements for spine effect if desired -->
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/searchbar.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/theme.css') }}"
+    />
+  </head>
+  <body>
+    
+    <!-- Sección del Buscador -->
+  <section class="google-search-container">
+    <span class="search-icon">
+      <svg focusable="false" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" fill="#9aa0a6">
+        <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path>
+      </svg>
+    </span>
+    <input type="text" class="google-search-input" placeholder="Search Title, Author or ISBN">
+    <span class="mic-icon">
+      <!-- Aquí puedes agregar un ícono de micrófono -->
+    </span>
+    
+  </section>
+    <!-- Sección de Navegación -->
+    <nav class="header">
+        <a class="button" href="{{ url_for('index', lang=lang) }}">{{ t('back_to_list') }}</a>
+    </nav>
+    <h1>{{t('all_books')}}: {{ books[0]['author'] | default('') }}</h1>
+    {% for libro in books %}
+    <div class="book-display">
+      <div class="book-cover">
+        <a
+          href="{{ url_for('book_by_identifier', author=libro['author'], book=libro['title'], identifier=(libro.get('isbn13') or libro.get('isbn10')) ) }}"
+        >
+          <img
+            src="{{ libro['image_url']}}"
+            alt="Portada de {{ libro['title'] }}"
+          />
+        </a>
+        <!-- Optional: Add elements for spine effect if desired -->
+      </div>
+      <div class="book-info">
+        <p><strong><a
+        
+        href="{{ url_for('book_versions', author=libro['author'], book=libro['title']) }}"
+                                                >{{ libro['title'] | default('') }}</a></strong></p>
+        {% if libro['isbn10'] | default(None) %}
+        <p><strong>{{ t('isbn10') }}:</strong> {{ libro['isbn10'] }}</p>
+        {% endif %} {% if libro['isbn13'] | default(None) %}
+        <p><strong>{{ t('isbn13') }}:</strong> {{ libro['isbn13'] }}</p>
+        {% endif %} {% if libro['language'] | default(None) %}
+        <p><strong>{{ t('language') }}:</strong> {{ libro['language'] }}</p>
+        {% endif %} {% if libro['edition'] | default(None) %}
+        <p><strong>{{ t('edition') }}:</strong> {{ libro['edition'] }}</p>
+        {% endif %} {# Note: This will hide the label if published_year is 0 or
+        empty #} {% if libro['published_year'] | default(None) %}
+        <p>
+          <strong>{{ t('published_year') }}:</strong> {{ libro['published_year']
+          }}
+        </p>
+        {% endif %} {% if libro['asin'] | default(None) %}
+        <p><strong>{{ t('asin') }}:</strong> {{ libro['asin'] }}</p>
+        {% endif %} {% if libro['product_dimensions'] | default(None) %}
+        <p>
+          <strong>{{ t('product_dimensions') }}:</strong> {{
+          libro['product_dimensions'] }}
+        </p>
+        {% endif %} {% if libro['publisher'] | default(None) %}
+        <p><strong>{{ t('publisher') }}:</strong> {{ libro['publisher'] }}</p>
+        {% endif %} {% if libro['soldBy'] | default(None) %}
+        <p><strong>{{ t('soldBy') }}:</strong> {{ libro['soldBy'] }}</p>
+        {% endif %} {% if libro['weight'] | default(None) %}
+        <p><strong>{{ t('weight') }}:</strong> {{ libro['weight'] }}</p>
+        {% endif %}
+      </div>
+    </div>
+    {% if loop.index % (books | length) == 3 %}
+    <!-- Kindle Unlimited -->
+    <div class="book-display">
+      <div class="promo-item">
+        <div class="promo-image">
+          <!-- Nota: No hay un logo super oficial y común solo para KU, usamos el de Kindle -->
+          <img
+            src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Amazon_Kindle_logo.svg/388px-Amazon_Kindle_logo.svg.png"
+            alt="Logo de Kindle (para Kindle Unlimited)"
+          />
         </div>
         <div class="book-info">
-            
-          {% if libro['isbn10'] | default(None) %}
-    <p><strong>{{ t('isbn10') }}:</strong> {{ libro['isbn10'] }}</p>
-{% endif %}
-{% if libro['isbn13'] | default(None) %}
-    <p><strong>{{ t('isbn13') }}:</strong> {{ libro['isbn13'] }}</p>
-{% endif %}
-
-
-{% if libro['language'] | default(None) %}
-    <p><strong>{{ t('language') }}:</strong> {{ libro['language'] }}</p>
-{% endif %}
-
-{% if libro['edition'] | default(None) %}
-    <p><strong>{{ t('edition') }}:</strong> {{ libro['edition'] }}</p>
-{% endif %}
-
-{# Note: This will hide the label if published_year is 0 or empty #}
-{% if libro['published_year'] | default(None) %}
-    <p><strong>{{ t('published_year') }}:</strong> {{ libro['published_year'] }}</p>
-{% endif %}
-
-
-{% if libro['asin'] | default(None) %}
-    <p><strong>{{ t('asin') }}:</strong> {{ libro['asin'] }}</p>
-{% endif %}
-
-
-{% if libro['product_dimensions'] | default(None) %}
-    <p><strong>{{ t('product_dimensions') }}:</strong> {{ libro['product_dimensions'] }}</p>
-{% endif %}
-
-{% if libro['publisher'] | default(None) %}
-    <p><strong>{{ t('publisher') }}:</strong> {{ libro['publisher'] }}</p>
-{% endif %}
-
-{% if libro['soldBy'] | default(None) %}
-    <p><strong>{{ t('soldBy') }}:</strong> {{ libro['soldBy'] }}</p>
-{% endif %}
-
-{% if libro['weight'] | default(None) %}
-    <p><strong>{{ t('weight') }}:</strong> {{ libro['weight'] }}</p>
-{% endif %}
+          <h3>Prueba Kindle Unlimited</h3>
+          <p>
+            Acceso ilimitado a millones de eBooks y revistas seleccionadas en
+            cualquier dispositivo con la app Kindle. Ideal para lectores ávidos.
+          </p>
+          <div class="promo-link">
+            <!-- !!! REEMPLAZA ESTE ENLACE !!! -->
+            <a
+              href="#ENLACE_KINDLE_UNLIMITED_AQUI#"
+              target="_blank"
+              rel="sponsored noopener"
+              >Probar Kindle Unlimited</a
+            >
+          </div>
         </div>
+      </div>
     </div>
-    {% endfor %}
-  <a href="{{ url_for('index', lang=lang) }}">{{ t('back_to_list') }}</a>
-</body>
+    {% endif %} {% if loop.index % (books | length) == 6 or loop.index == (books
+    | length) %}
+    <div class="book-display">
+      <!-- Amazon Prime -->
+      <div class="promo-item">
+        <div class="promo-image">
+          <img
+            src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Amazon_Prime_Logo.svg/2560px-Amazon_Prime_Logo.svg.png"
+            alt="Logo de Amazon Prime"
+          />
+        </div>
+        <div class="book-info">
+          <h3>Prueba Amazon Prime Gratis</h3>
+          <p>
+            Ofrece a tus visitantes envío rápido y gratuito, Prime Video, Prime
+            Music, Prime Reading y mucho más con una prueba gratuita.
+          </p>
+          <div class="promo-link">
+            <!-- !!! REEMPLAZA ESTE ENLACE !!! -->
+            <a
+              href="#ENLACE_PRIME_AQUI#"
+              target="_blank"
+              rel="sponsored noopener"
+              >Obtener Prueba Prime</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endif %} {% if loop.index % (books | length) == 9 or loop.index == (books
+    | length) %}
+    <div class="book-display">
+      <!-- Amazon Music Unlimited -->
+      <div class="promo-item">
+        <div class="promo-image">
+          <img
+            src="https://upload.wikimedia.org/wikipedia/commons/9/92/Amazon_Music_logo.svg"
+            alt="Logo de Amazon Music"
+          />
+        </div>
+        <div class="book-info">
+          <h3>Prueba Amazon Music Unlimited</h3>
+          <p>
+            Millones de canciones y podcasts sin anuncios, con reproducción sin
+            conexión. Ofréceles una prueba gratuita.
+          </p>
+          <div class="promo-link">
+            <!-- !!! REEMPLAZA ESTE ENLACE !!! -->
+            <a
+              href="#ENLACE_MUSIC_AQUI#"
+              target="_blank"
+              rel="sponsored noopener"
+              >Probar Music Unlimited</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endif %} {% if loop.index % (books | length) == 12 or loop.index ==
+    (books | length) %}
+    <div class="book-display">
+      <!-- Amazon Business -->
+      <div class="promo-item">
+        <div class="promo-image">
+          <img
+            src="https://th.bing.com/th/id/OIP.OgB-A9ISmSvVaz8y8tDb5QHaBN?rs=1&pid=ImgDetMaing"
+            alt="Logo de Amazon Business"
+          />
+        </div>
+        <div class="book-info">
+          <h3>Registro Gratuito Amazon Business</h3>
+          <p>
+            Ideal para empresas y autónomos. Permite acceder a precios
+            exclusivos para empresas, facturas con IVA y más. El registro es
+            gratuito.
+          </p>
+          <div class="promo-link">
+            <!-- !!! REEMPLAZA ESTE ENLACE !!! -->
+            <a
+              href="#ENLACE_BUSINESS_AQUI#"
+              target="_blank"
+              rel="sponsored noopener"
+              >Registrarse en Amazon Business</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endif %} {% if loop.index == (books | length) or loop.index % (books |
+    length) == 15 %}
+
+    <div class="book-display">
+      <!-- Lista de Nacimiento / Boda -->
+      <div class="promo-item">
+        <div class="promo-image">
+          <!-- Usamos un logo genérico de Amazon ya que no hay uno específico muy conocido para ambas listas -->
+          <img
+            src="https://th.bing.com/th/id/OIP.OgB-A9ISmSvVaz8y8tDb5QHaBN?rs=1&pid=ImgDetMain"
+            alt="Logo de Amazon (para Listas)"
+          />
+        </div>
+        <div class="book-info">
+          <h3>Crea una Lista de Nacimiento o Boda</h3>
+          <p>
+            Ayuda a tus usuarios a crear su lista de deseos para ocasiones
+            especiales y gana una comisión cuando creen una.
+          </p>
+          <div
+            class="promo-link"
+            style="display: flex; flex-wrap: wrap; gap: 10px"
+          >
+            <!-- !!! REEMPLAZA ESTOS ENLACES !!! -->
+            <a
+              href="#ENLACE_LISTA_NACIMIENTO_AQUI#"
+              target="_blank"
+              rel="sponsored noopener"
+              >Crear Lista Nacimiento</a
+            >
+            <a
+              href="#ENLACE_LISTA_BODA_AQUI#"
+              target="_blank"
+              rel="sponsored noopener"
+              >Crear Lista Boda</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endif %} {% endfor %}
+    <!-- Sección de Navegación -->
+    <nav class="footer">
+        <a class="button" href="{{ url_for('index', lang=lang) }}">{{ t('back_to_list') }}</a>
+    </nav>
+
+    <div class="disclaimer">
+      <strong>Aviso Importante:</strong> Como Afiliado de Amazon, gano por las
+      compras y registros cualificados que se realicen a través de mis enlaces.
+      Las imágenes de logos se utilizan con fines ilustrativos.
+    </div>
+  </body>
 </html>

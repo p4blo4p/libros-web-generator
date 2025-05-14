@@ -1,9 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-    {% for page in pages %}
-    <url>
-        <loc>{{ page[0] }}</loc>
-        <lastmod>{{ page[1] }}</lastmod>
-    </url>
+    {% for book in books %}
+      {% if book['isbn13'] | default(None) %}
+      <url>
+        <loc>{{ url_for('book_by_identifier', author=book['author'], book=book['title'], identifier=book['isbn13']) }}</loc> <!-- URL del libro -->
+        <lastmod>Now</lastmod> <!-- Fecha de última modificación -->
+        <changefreq>weekly</changefreq> <!-- Frecuencia de cambio -->
+        <priority>0.8</priority> <!-- Prioridad del libro -->
+        <image:image xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+            <image:loc>{{ book.image_url }}</image:loc> <!-- URL de la imagen de la portada -->
+            <image:title>{{ book.title }}</image:title> <!-- Título del libro -->
+        </image:image>
+      </url>
+      {% endif %}
+      {% if book['isbn10'] | default(None) %}
+      <url>
+        <loc>{{ url_for('book_by_identifier', author=book['author'], book=book['title'], identifier=book['isbn10']) }}</loc> <!-- URL del libro -->
+        <lastmod>Now</lastmod> <!-- Fecha de última modificación -->
+        <changefreq>weekly</changefreq> <!-- Frecuencia de cambio -->
+        <priority>0.8</priority> <!-- Prioridad del libro -->
+        <image:image xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+            <image:loc>{{ book.image_url }}</image:loc> <!-- URL de la imagen de la portada -->
+            <image:title>{{ book.title }}</image:title> <!-- Título del libro -->
+        </image:image>
+      </url>
+      {% endif %}
+     
+    
     {% endfor %}
 </urlset>

@@ -59,6 +59,8 @@ translations = {
     'es': {
         'title': 'Lista de Libros',
         'author': 'Autor',
+        'all_versions': 'Versiones de',
+        'all_books': 'Libros de',
         'subtitle': 'Subtítulo',
         'language': 'Idioma',
         'categories': 'Categorías',
@@ -82,11 +84,15 @@ translations = {
         'publisher': 'Editorial',
         'soldBy': 'Vendido por',
         'weight': 'Peso',
+        'top_seller': 'Más vendidos',
+        'googlesearch_placeholder': 'Buscar Título, Autor o ISBN',
         'back_to_list': 'Volver a la lista de libros'
     },
     'en': {
         'title': 'Book List',
         'author': 'Author',
+        'all_versions': 'Differents versions of',
+        'all_books': 'Books of',
         'subtitle': 'Subtitle',
         'language': 'Language',
         'categories': 'Categories',
@@ -110,6 +116,8 @@ translations = {
         'publisher': 'Publisher',
         'soldBy': 'Sold By',
         'weight': 'Weight',
+      'googlesearch_placeholder': 'Search Title, Author or ISBN',
+        'top_seller': 'Top sellers',
         'back_to_list': 'Back to Book List'
     }
 }
@@ -127,19 +135,32 @@ def index():
     print(bestsellers)
     return render_template('index.html', books=bestsellers, lang=lang, t=lambda k: get_translation(lang, k))
 
+    
   # /George Orwell/1984/0452284236/
   # template https://github.com/xriley/DevBook-Theme
-@app.route('/<author>/<book>/<isbn>/')
-def book_by_isbn(author, book, isbn):
-    if not is_valid_isbn(isbn):
-        abort(400, description="Invalid ISBN")
+@app.route('/<author>/<book>/<identifier>/')
+def book_by_identifier(author, book, identifier):
+    # Validar si el identificador es un ISBN o un ASIN
+    if not (is_valid_isbn(identifier) or is_valid_asin(identifier)):
+        abort(400, description="Invalid ISBN or ASIN")
+    
     lang = request.args.get('lang', 'en')
-    book = next((b for b in books if b['author'] == author and b['title'] == book and (b.get('isbn10') == isbn or b.get('isbn13') == isbn)), None)
+
+    # Buscar el libro por ISBN o ASIN
+    book = next((b for b in books if b['author'] == author and b['title'] == book and 
+                 (b.get('isbn10') == identifier or b.get('isbn13') == identifier or b.get('asin') == identifier)), None)
     
     if book:
         return render_template('book.html', libro=book, lang=lang, t=lambda k: get_translation(lang, k))
     else:
         return "Book not found", 404
+
+def is_valid_asin(asin):
+    """
+    Validar si un identificador es un ASIN.
+    Un ASIN es un alfanumérico de 10 caracteres válido en Amazon.
+    """
+    return re.match(r'^[A-Z0-9]{10}$', asin)
 
 # esto no incluye titulos como "1984 (Spanish Edition)"
 @app.route('/<author>/<book>/')
@@ -147,7 +168,7 @@ def book_versions(author, book):
     
     
     lang = request.args.get('lang', 'en')
-    book_versions = [b for b in books if b['author'] == author and b['title'] == book]
+    book_versions = [b for b in books if b['author'] == author and b['title'].startswith(book)]
     
     if book_versions:
         return render_template('book_versions.html', books=book_versions, lang=lang, t=lambda k: get_translation(lang, k))
@@ -163,6 +184,26 @@ def author_books(author):
     else:
         return "Books by author not found", 404
 
+# Nueva ruta para mostrar enlaces del sitemap.xml
+@app.route('/test/')
+def test_sitemap():
+    # Reutilizar la función sitemap para obtener el XML
+    sitemap_response = sitemap()
+    xml_content = sitemap_response.data.decode('utf-8')
+
+    # Extraer enlaces de las etiquetas <loc>
+    import xml.etree.ElementTree as ET
+    root = ET.fromstring(xml_content)
+    namespace = {'ns': 'http://www.sitemaps.org/schemas/sitemap/0.9'}
+    links = [loc.text for loc in root.findall('.//ns:loc', namespace)]
+    
+    
+    # Renderizar la plantilla HTML con los enlaces
+    return render_template('test_sitemap.html', links=links)
+
+      
+      
+      
 @app.route('/sitemap.xml')
 def sitemap():
     pages = []
@@ -181,11 +222,11 @@ def sitemap():
     #full_url = urljoin(base_url, relative_path)
 
     # Dynamic routes
-    '''
+    
     for book in books:
-        relative_path = url_for('book_by_isbn', author=book['author'], book=book['title'], isbn=book.get('isbn10') or book.get('isbn13'))
+        relative_path = url_for('book_by_identifier', author=book['author'], book=book['title'], identifier=book.get('isbn10') or book.get('isbn13'))
         pages.append([urljoin(base_url, relative_path), ten_days_ago])
-    '''
+    
     sitemap_xml = render_template('sitemap_template.xml', books=books)
     response = make_response(sitemap_xml)
     response.headers["Content-Type"] = "application/xml"

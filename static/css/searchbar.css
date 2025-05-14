@@ -1,10 +1,12 @@
+
 .google-search-container {
   display: flex; /* Arrange items horizontally */
   align-items: center; /* Vertically center items */
   width: 100%;
   max-width: 580px;
   height: 44px;
-  margin: 20px auto; /* Center container */
+  gap: 10px;
+  margin-bottom: 20px;
   background-color: #ffffff;
   border: 1px solid #dfe1e5;
   box-shadow: none;

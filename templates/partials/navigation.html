@@ -1,0 +1,4 @@
+<!-- templates/partials/navigation.html -->
+  <a class="button" href="{{ url_for('index', lang=lang) }}">{{ t('back_to_list') }}</a>
+  <a class="button" href="{{ url_for('author_books', author=libro['author']) }}">{{ libro['author'] }}</a>
+  <a class="button" href="{{ url_for('book_versions', author=libro['author'], book=libro['title']) }}">{{ libro['title'] }}</a>
