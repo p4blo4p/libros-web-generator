@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from flask import Flask, render_template, request, url_for, make_response
-import datetime
+from datetime import datetime, timezone, timedelta # Importar datetime
+
 from urllib.parse import urljoin
 
 import sys # For printing errors to stderr
@@ -9,6 +10,17 @@ import csv
 import json
 
 app = Flask(__name__)
+
+# 1. DEFINE LA FUNCIÓN DEL FILTRO
+def ensure_https_filter(url_string):
+    if not url_string: # Si es None, cadena vacía, etc.
+        return ''
+    if isinstance(url_string, str) and url_string.startswith('http://'):
+        return url_string.replace('http://', 'https://', 1)
+    return url_string
+
+# 2. REGISTRA EL FILTRO CON EL ENTORNO JINJA2 DE FLASK
+app.jinja_env.filters['ensure_https'] = ensure_https_filter
 
 # Load books data from CSV
 def load_books(filename):
@@ -207,7 +219,7 @@ def test_sitemap():
 @app.route('/sitemap.xml')
 def sitemap():
     pages = []
-    ten_days_ago = (datetime.datetime.now() - datetime.timedelta(days=10)).date().isoformat()
+    ten_days_ago = (datetime.now() - timedelta(days=10)).date().isoformat()
 
     # Static routes
     for rule in app.url_map.iter_rules():
@@ -222,12 +234,14 @@ def sitemap():
     #full_url = urljoin(base_url, relative_path)
 
     # Dynamic routes
-    
+    # Obtener la fecha actual formateada
+    current_formatted_date = datetime.now(timezone.utc).strftime('%Y-%m-%d') # Importante usar timezone.utc
+    """
     for book in books:
         relative_path = url_for('book_by_identifier', author=book['author'], book=book['title'], identifier=book.get('isbn10') or book.get('isbn13'))
         pages.append([urljoin(base_url, relative_path), ten_days_ago])
-    
-    sitemap_xml = render_template('sitemap_template.xml', books=books)
+    """
+    sitemap_xml = render_template('sitemap_template.xml', books=books, current_date_for_sitemap=current_formatted_date)
     response = make_response(sitemap_xml)
     response.headers["Content-Type"] = "application/xml"
 

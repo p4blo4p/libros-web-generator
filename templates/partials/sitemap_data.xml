@@ -1,0 +1,29 @@
+<lastmod>{{ book.publication_date | default(current_date_for_sitemap) }}</lastmod> {# Usa fecha de publicación o la actual #}
+<changefreq>monthly</changefreq>
+<priority>0.8</priority>
+{% if book.image_url %}
+<image:image>
+    <image:loc>{{ book.image_url | ensure_https }}</image:loc>
+    <image:title>{{ book.title | e }}</image:title> {# Escapar caracteres especiales #}
+    {% if book.description %}
+    <image:caption>{{ book.description | truncate(120, True) | e }}</image:caption> {# Opcional: leyenda de imagen #}
+    {% endif %}
+</image:image>
+{% endif %}
+{# Las siguientes etiquetas son personalizadas y serán ignoradas por los rastreadores estándar #}
+{# <description>{{ book.description | default("Descripción no disponible") | e }}</description>
+<genres>{{ book.genres | join(', ') | e }}</genres>
+<publication_date>{{ {{ book.publication_date | default(current_date_for_sitemap) }} }}</publication_date>
+<language>{{ book.language | default("Idioma no especificado") | e }}</language>
+<authors>{{ book.authors | join(', ') | e }}</authors>
+<page_count>{{ book.page_count | default("Número de páginas no disponible") }}</page_count>
+<price>{{ book.price | default("Precio no disponible") | e }}</price>
+<rating>{{ book.rating | default("Calificación no disponible") }}</rating>
+{% if book.related_links %}
+<related_links>
+    {% for link in book.related_links %}
+    <link>{{ link | e }}</link>
+    {% endfor %}
+</related_links>
+{% endif %}
+<format>{{ book.format | default("Formato no especificado") | e }}</format> #}

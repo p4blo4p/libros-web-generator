@@ -19,7 +19,7 @@
     />
     <meta
       property="og:image"
-      content="{{ books['image_url'] | default('') }}"
+      content="{{ books['image_url'] | ensure_https | default('') }}"
     />
     <meta property="og:url" content="dump" />
     <meta property="og:type" content="website" />
@@ -32,26 +32,15 @@
     />
     <meta
       name="twitter:image"
-      content="{{ books['image_url'] | default('') }}"
+      content="{{ books['image_url'] | ensure_https | default('') }}"
     />
     <!-- Favicon -->
     <link
       rel="icon"
-      href="{{ books['image_url'] | default('') }}"
+      href="{{ books[0]['image_url'] | ensure_https | ensure_https | default('') }}"
       type="image/x-icon"
     />
     <!-- CSS Stylesheets -->
-    <link rel="stylesheet" href="dump" />
-    <!-- Structured Data -->
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "WebPage",
-        "name": "{{ books['title'] | default('') }}",
-        "description": "{{ books['description'] | default('') }}",
-        url": "dump"
-      }
-    </script>
     <link
       rel="stylesheet"
       href="{{ url_for('static', filename='css/searchbar.css') }}"
@@ -60,6 +49,17 @@
       rel="stylesheet"
       href="{{ url_for('static', filename='css/theme.css') }}"
     />
+    <!-- Structured Data -->
+    <script type="application/ld+json" defer>  <!-- Added defer -->
+      {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "{{ books['title'] | default('') }}",
+        "description": "{{ books['description'] | default('') }}",
+        url": "dump"
+      }
+    </script>
+    
   </head>
   <body>
     
@@ -90,7 +90,8 @@
           <img
             src="{{ libro['image_url']}}"
             alt="Portada de {{ libro['title'] }}"
-          />
+            loading="lazy"/>
+          
         </a>
         <!-- Optional: Add elements for spine effect if desired -->
       </div>
@@ -138,6 +139,7 @@
           <img
             src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Amazon_Kindle_logo.svg/388px-Amazon_Kindle_logo.svg.png"
             alt="Logo de Kindle (para Kindle Unlimited)"
+            loading="lazy" <!-- Added lazy loading -->
           />
         </div>
         <div class="book-info">
@@ -167,6 +169,7 @@
           <img
             src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Amazon_Prime_Logo.svg/2560px-Amazon_Prime_Logo.svg.png"
             alt="Logo de Amazon Prime"
+            loading="lazy" <!-- Added lazy loading -->
           />
         </div>
         <div class="book-info">
@@ -196,6 +199,7 @@
           <img
             src="https://upload.wikimedia.org/wikipedia/commons/9/92/Amazon_Music_logo.svg"
             alt="Logo de Amazon Music"
+            loading="lazy" <!-- Added lazy loading -->
           />
         </div>
         <div class="book-info">
@@ -225,6 +229,7 @@
           <img
             src="https://th.bing.com/th/id/OIP.OgB-A9ISmSvVaz8y8tDb5QHaBN?rs=1&pid=ImgDetMaing"
             alt="Logo de Amazon Business"
+            loading="lazy" <!-- Added lazy loading -->
           />
         </div>
         <div class="book-info">
@@ -257,6 +262,7 @@
           <img
             src="https://th.bing.com/th/id/OIP.OgB-A9ISmSvVaz8y8tDb5QHaBN?rs=1&pid=ImgDetMain"
             alt="Logo de Amazon (para Listas)"
+            loading="lazy" <!-- Added lazy loading -->
           />
         </div>
         <div class="book-info">
