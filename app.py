@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from flask import Flask, render_template, request, url_for, make_response
+from flask_htmlmin import HTMLMIN
 from datetime import datetime, timezone, timedelta # Importar datetime
 
 from urllib.parse import urljoin
@@ -10,6 +11,10 @@ import csv
 import json
 
 app = Flask(__name__)
+app.config['MINIFY_HTML'] = True
+#app.config['SERVER_NAME'] = 'example.com' # Reemplaza con tu dominio o usa localhost:5000 para pruebas
+
+htmlmin = HTMLMIN(app)
 
 # 1. DEFINE LA FUNCIÓN DEL FILTRO
 def ensure_https_filter(url_string):
@@ -212,11 +217,10 @@ def test_sitemap():
     
     # Renderizar la plantilla HTML con los enlaces
     return render_template('test_sitemap.html', links=links)
-
-      
       
       
 @app.route('/sitemap.xml')
+@htmlmin.exempt
 def sitemap():
     pages = []
     ten_days_ago = (datetime.now() - timedelta(days=10)).date().isoformat()

@@ -4,7 +4,7 @@
   "description": "Scrapes YouTube channel videos",
   "main": "app.py", 
   "scripts": {
-    "start": "python app.py" 
+    "start": "python3 app.py" 
   },
   "dependencies": {},
   "engines": {

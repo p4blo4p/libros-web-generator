@@ -1,6 +1,7 @@
 Flask
 jinja2
 Pillow
-urllib
 beautifulsoup4
 youtube_dl
+Flask-HTMLmin
+urllib
