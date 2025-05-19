@@ -5,3 +5,5 @@ beautifulsoup4
 youtube_dl
 Flask-HTMLmin
 urllib3
+Unidecode
+kaggle

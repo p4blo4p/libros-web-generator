@@ -1,256 +1,245 @@
 # -*- coding: utf-8 -*-
-from flask import Flask, render_template, request, url_for, make_response
+from flask import Flask, render_template, request, url_for, make_response, abort
 from flask_htmlmin import HTMLMIN
-from datetime import datetime, timezone, timedelta # Importar datetime
+from datetime import datetime, timezone, timedelta
 
-from urllib.parse import urljoin
-
-import sys # For printing errors to stderr
+import sys
 import re
 import csv
 import json
 
+from unidecode import unidecode # Asegúrate de haber hecho: pip install Unidecode
+
 app = Flask(__name__)
 app.config['MINIFY_HTML'] = True
-#app.config['SERVER_NAME'] = 'example.com' # Reemplaza con tu dominio o usa localhost:5000 para pruebas
+# Descomenta y configura si usas url_for con _external=True y necesitas un dominio específico
+# app.config['SERVER_NAME'] = 'localhost:5000' # o tu dominio real
 
 htmlmin = HTMLMIN(app)
 
-# 1. DEFINE LA FUNCIÓN DEL FILTRO
+# --- FUNCIÓN SLUGIFY (ROBUSTA) ---
+def slugify_ascii(text):
+    if text is None:
+        return ""
+    text = str(text) # Asegurar que es string
+    text = unidecode(text) # Transliterar a ASCII
+    text = text.lower()
+    text = re.sub(r'[^\w\s-]', '', text)  # Eliminar no alfanuméricos (excepto espacio, guion)
+    text = re.sub(r'\s+', '-', text)      # Espacios a guiones
+    text = re.sub(r'--+', '-', text)     # Múltiples guiones a uno
+    text = text.strip('-')               # Quitar guiones al inicio/final
+    if not text: # Si el slug queda vacío después de limpiar
+        return "na" # o alguna otra cadena por defecto
+    return text
+
+# --- Filtro Jinja2 para HTTPS ---
 def ensure_https_filter(url_string):
-    if not url_string: # Si es None, cadena vacía, etc.
+    if not url_string:
         return ''
     if isinstance(url_string, str) and url_string.startswith('http://'):
         return url_string.replace('http://', 'https://', 1)
     return url_string
-
-# 2. REGISTRA EL FILTRO CON EL ENTORNO JINJA2 DE FLASK
 app.jinja_env.filters['ensure_https'] = ensure_https_filter
 
-# Load books data from CSV
+
+# --- Cargar datos de libros y añadir slugs ---
 def load_books(filename):
-    with open(filename) as csvfile:
-        reader = csv.DictReader(csvfile)
-        books = [row for row in reader]
-    return books
-
-# --- Function to Load JSON Data ---
-def load_json_data(filepath):
-    """Loads JSON data from a specified file path.
-
-    Args:
-        filepath (str): The path to the JSON file.
-
-    Returns:
-        list or dict or None: The loaded Python object (list/dict) 
-                               if successful, otherwise None.
-    """
+    processed_books = []
     try:
-        # Open the file in read mode ('r') with UTF-8 encoding
+        with open(filename, encoding='utf-8') as csvfile:
+            reader = csv.DictReader(csvfile)
+            for i, row in enumerate(reader): # Contador para depuración
+                author = row.get('author')
+                title = row.get('title')
+
+                row['author_slug'] = slugify_ascii(author)
+                row['title_slug'] = slugify_ascii(title)
+                
+                base_title = title.split('(')[0].strip() if title else ""
+                row['base_title_slug'] = slugify_ascii(base_title)
+                
+                # Depuración: Imprime slugs de los primeros libros
+                if i < 5: # Ajusta este número según necesites
+                    print(f"DEBUG load_books - Original Author: '{author}', Author Slug: '{row['author_slug']}'")
+                    print(f"DEBUG load_books - Original Title: '{title}', Title Slug: '{row['title_slug']}', Base Title Slug: '{row['base_title_slug']}'")
+
+                processed_books.append(row)
+    except FileNotFoundError:
+        print(f"ERROR: El archivo de libros '{filename}' no fue encontrado.", file=sys.stderr)
+    except Exception as e:
+        print(f"ERROR cargando libros desde '{filename}': {e}", file=sys.stderr)
+    return processed_books
+
+# --- Cargar datos JSON genérica ---
+def load_json_data(filepath):
+    try:
         with open(filepath, 'r', encoding='utf-8') as f:
-            # Use json.load() to parse the JSON data from the file object
             loaded_data = json.load(f)
             print(f"Successfully loaded data from '{filepath}'")
             return loaded_data
     except FileNotFoundError:
-        print(f"Error: The file '{filepath}' was not found.", file=sys.stderr)
-        return None # Indicate failure by returning None
+        print(f"ERROR: The file '{filepath}' was not found.", file=sys.stderr)
+        return None
     except json.JSONDecodeError as e:
-        print(f"Error decoding JSON from file '{filepath}': {e}", file=sys.stderr)
-        return None # Indicate failure
-    except IOError as e:
-        print(f"Error reading file '{filepath}': {e}", file=sys.stderr)
-        return None # Indicate failure
+        print(f"ERROR decoding JSON from file '{filepath}': {e}", file=sys.stderr)
+        return None
     except Exception as e:
-        print(f"An unexpected error occurred during loading: {e}", file=sys.stderr)
-        return None # Indicate failure
-  
-  
-books = load_books('books.csv')
-# 2. Load the data using the function
-bestsellers = load_json_data("social/amazon_bestsellers_es.json") # Store the result in books_data
+        print(f"ERROR: An unexpected error occurred loading JSON from '{filepath}': {e}", file=sys.stderr)
+        return None
 
-    
-# Language translations
-translations = {
-    'es': {
-        'title': 'Lista de Libros',
-        'author': 'Autor',
-        'all_versions': 'Versiones de',
-        'all_books': 'Libros de',
-        'subtitle': 'Subtítulo',
-        'language': 'Idioma',
-        'categories': 'Categorías',
-        'description': 'Descripción',
-        'series': 'Serie',
-        'edition': 'Edición',
-        'firstPublishDate': 'Primera Publicación',
-        'published_year': 'Año de Publicación',
-        'characters': 'Personajes',
-        'format': 'Formato',
-        'genres': 'Géneros',
-        'isbn10': 'ISBN-10',
-        'isbn13': 'ISBN-13',
-        'asin': 'ASIN',
-        'average_rating': 'Calificación Promedio',
-        'awards': 'Premios',
-        'ratingsByStars': 'Distribución de Calificaciones',
-        'bbeVotes': 'Votos BBE',
-        'numRatings': 'Número de Calificaciones',
-        'product_dimensions': 'Dimensiones del Producto',
-        'publisher': 'Editorial',
-        'soldBy': 'Vendido por',
-        'weight': 'Peso',
-        'top_seller': 'Más vendidos',
-        'googlesearch_placeholder': 'Buscar Título, Autor o ISBN',
-        'back_to_list': 'Volver a la lista de libros'
-    },
-    'en': {
-        'title': 'Book List',
-        'author': 'Author',
-        'all_versions': 'Differents versions of',
-        'all_books': 'Books of',
-        'subtitle': 'Subtitle',
-        'language': 'Language',
-        'categories': 'Categories',
-        'description': 'Description',
-        'series': 'Series',
-        'edition': 'Edition',
-        'firstPublishDate': 'First Publish Date',
-        'published_year': 'Published Year',
-        'characters': 'Characters',
-        'format': 'Format',
-        'genres': 'Genres',
-        'isbn10': 'ISBN-10',
-        'isbn13': 'ISBN-13',
-        'asin': 'ASIN',
-        'average_rating': 'Average Rating',
-        'awards': 'Awards',
-        'ratingsByStars': 'Ratings Distribution',
-        'bbeVotes': 'BBE Votes',
-        'numRatings': 'Number of Ratings',
-        'product_dimensions': 'Product Dimensions',
-        'publisher': 'Publisher',
-        'soldBy': 'Sold By',
-        'weight': 'Weight',
-      'googlesearch_placeholder': 'Search Title, Author or ISBN',
-        'top_seller': 'Top sellers',
-        'back_to_list': 'Back to Book List'
+# Carga principal de datos
+books = load_books('books.csv')
+bestsellers_raw = load_json_data("social/amazon_bestsellers_es.json")
+
+# Procesar bestsellers para añadir slugs
+bestsellers = []
+if bestsellers_raw:
+    for item in bestsellers_raw:
+        # Asumimos que los bestsellers podrían no tener todos los campos de 'books.csv'
+        # pero al menos 'author' y 'title' para slugificar.
+        item_author = item.get('author')
+        item_title = item.get('title')
+        item['author_slug'] = slugify_ascii(item_author)
+        item['title_slug'] = slugify_ascii(item_title)
+        # Podrías añadir base_title_slug si es relevante para bestsellers
+        bestsellers.append(item)
+else:
+    print("ADVERTENCIA: No se cargaron datos de bestsellers.")
+
+
+# --- Traducciones ---
+TRANSLATIONS_FILE = 'translations.json'
+translations = load_json_data(TRANSLATIONS_FILE)
+if translations is None:
+    print(f"ADVERTENCIA: No se pudieron cargar las traducciones desde '{TRANSLATIONS_FILE}'. Se usarán valores por defecto.", file=sys.stderr)
+    translations = { # Fallback mínimo
+        'en': {'title': 'Book List (Default)', 'author': 'Author (Default)'},
+        'es': {'title': 'Lista de Libros (Por Defecto)', 'author': 'Autor (Por Defecto)'}
     }
-}
 
 def get_translation(lang, key):
-    return translations.get(lang, translations['en']).get(key, key)
-
-def is_valid_isbn(isbn):
-    return re.match(r'^\d{10}(\d{3})?$', isbn)
+    lang_translations = translations.get(lang, translations.get('en', {}))
+    return lang_translations.get(key, key)
 
 
+# --- Funciones de validación ---
+def is_valid_isbn(isbn_str):
+    return re.match(r'^\d{10}(\d{3})?$', str(isbn_str or ''))
+
+def is_valid_asin(asin_str):
+    return re.match(r'^[A-Z0-9]{10}$', str(asin_str or ''))
+
+
+# --- RUTAS DE LA APLICACIÓN ---
 @app.route('/')
 def index():
-    lang = request.args.get('lang', 'en')
-    print(bestsellers)
-    return render_template('index.html', books=bestsellers, lang=lang, t=lambda k: get_translation(lang, k))
-
+    #lang = request.args.get('lang', 'en')
+    return render_template('index.html', books_data=bestsellers, lang=lang, t=lambda k: get_translation(lang, k))
     
-  # /George Orwell/1984/0452284236/
-  # template https://github.com/xriley/DevBook-Theme
-@app.route('/<author>/<book>/<identifier>/')
-def book_by_identifier(author, book, identifier):
-    # Validar si el identificador es un ISBN o un ASIN
+@app.route('/book/<author_slug>/<book_slug>/<identifier>/')
+def book_by_identifier(author_slug, book_slug, identifier):
+    print(f"DEBUG book_by_identifier - Request for: /book/{author_slug}/{book_slug}/{identifier}/")
     if not (is_valid_isbn(identifier) or is_valid_asin(identifier)):
+        print(f"DEBUG book_by_identifier - Invalid identifier: {identifier}")
         abort(400, description="Invalid ISBN or ASIN")
     
     lang = request.args.get('lang', 'en')
 
-    # Buscar el libro por ISBN o ASIN
-    book = next((b for b in books if b['author'] == author and b['title'] == book and 
-                 (b.get('isbn10') == identifier or b.get('isbn13') == identifier or b.get('asin') == identifier)), None)
+    found_book = next((b for b in books if b.get('author_slug') == author_slug and \
+                                         b.get('title_slug') == book_slug and \
+                                         (b.get('isbn10') == identifier or \
+                                          b.get('isbn13') == identifier or \
+                                          b.get('asin') == identifier)), None)
     
-    if book:
-        return render_template('book.html', libro=book, lang=lang, t=lambda k: get_translation(lang, k))
+    if found_book:
+        return render_template('book.html', libro=found_book, lang=lang, t=lambda k: get_translation(lang, k))
     else:
-        return "Book not found", 404
+        print(f"DEBUG book_by_identifier - Book not found for slugs: author='{author_slug}', book='{book_slug}', id='{identifier}'")
+        # Opcional: Imprimir algunos datos para ayudar a depurar la no coincidencia
+        # for i, b_item in enumerate(books):
+        #     if i < 3:
+        #          print(f"  Sample book in data: author_slug='{b_item.get('author_slug')}', title_slug='{b_item.get('title_slug')}', asin='{b_item.get('asin')}'")
+        abort(404)
 
-def is_valid_asin(asin):
-    """
-    Validar si un identificador es un ASIN.
-    Un ASIN es un alfanumérico de 10 caracteres válido en Amazon.
-    """
-    return re.match(r'^[A-Z0-9]{10}$', asin)
-
-# esto no incluye titulos como "1984 (Spanish Edition)"
-@app.route('/<author>/<book>/')
-def book_versions(author, book):
-    
-    
+@app.route('/versions/<author_slug>/<base_book_slug>/')
+def book_versions(author_slug, base_book_slug):
+    print(f"DEBUG book_versions - Request for: /versions/{author_slug}/{base_book_slug}/")
     lang = request.args.get('lang', 'en')
-    book_versions = [b for b in books if b['author'] == author and b['title'].startswith(book)]
     
-    if book_versions:
-        return render_template('book_versions.html', books=book_versions, lang=lang, t=lambda k: get_translation(lang, k))
+    matched_versions = [b for b in books if b.get('author_slug') == author_slug and \
+                                           b.get('base_title_slug') == base_book_slug]
+    
+    if matched_versions:
+        display_author = matched_versions[0].get('author', author_slug)
+        display_base_title = matched_versions[0].get('title','').split('(')[0].strip() or base_book_slug
+        return render_template('book_versions.html', 
+                               books=matched_versions, 
+                               lang=lang, 
+                               t=lambda k: get_translation(lang, k),
+                               page_author_display=display_author,
+                               page_base_title_display=display_base_title)
     else:
-        return "Book versions not found", 404
+        print(f"DEBUG book_versions - Versions not found for slugs: author='{author_slug}', base_book='{base_book_slug}'")
+        abort(404)
 
-@app.route('/<author>/')
-def author_books(author):
+@app.route('/author/<author_slug>/')
+def author_books(author_slug):
+    print(f"DEBUG author_books - Request for: /author/{author_slug}/")
     lang = request.args.get('lang', 'en')
-    author_books = [b for b in books if b['author'] == author]
-    if author_books:
-        return render_template('author_books.html', books=author_books, lang=lang, t=lambda k: get_translation(lang, k))
+    
+    # Depuración adicional para esta ruta específica
+    print(f"DEBUG author_books - Searching for author_slug: '{author_slug}'")
+    # Imprime algunos author_slugs de la lista 'books' para comparar
+    if books and len(books) > 0:
+        print("DEBUG author_books - Sample author_slugs from 'books' data (first 5):")
+        for i, b_item in enumerate(books):
+            if i < 5:
+                print(f"  - '{b_item.get('author_slug')}' (Original Author: '{b_item.get('author')}')")
+            else:
+                break
     else:
-        return "Books by author not found", 404
+        print("DEBUG author_books - 'books' list is empty or not loaded.")
 
-# Nueva ruta para mostrar enlaces del sitemap.xml
-@app.route('/test/')
+    matched_books = [b for b in books if b.get('author_slug') == author_slug]
+    
+    if matched_books:
+        display_author = matched_books[0].get('author', author_slug)
+        return render_template('author_books.html', 
+                               books=matched_books, 
+                               lang=lang, 
+                               t=lambda k: get_translation(lang, k),
+                               page_author_display=display_author)
+    else:
+        print(f"DEBUG author_books - Author not found for slug: '{author_slug}'")
+        abort(404)
+
+@app.route('/test/') # Ruta para probar enlaces del sitemap
 def test_sitemap():
-    # Reutilizar la función sitemap para obtener el XML
     sitemap_response = sitemap()
     xml_content = sitemap_response.data.decode('utf-8')
-
-    # Extraer enlaces de las etiquetas <loc>
-    import xml.etree.ElementTree as ET
-    root = ET.fromstring(xml_content)
-    namespace = {'ns': 'http://www.sitemaps.org/schemas/sitemap/0.9'}
-    links = [loc.text for loc in root.findall('.//ns:loc', namespace)]
-    
-    
-    # Renderizar la plantilla HTML con los enlaces
+    # Es mejor usar un parser XML real, pero para una prueba rápida:
+    try:
+        import xml.etree.ElementTree as ET
+        root = ET.fromstring(xml_content)
+        namespace = {'ns': 'http://www.sitemaps.org/schemas/sitemap/0.9'}
+        links = [loc.text for loc in root.findall('.//ns:loc', namespace)]
+    except Exception as e:
+        print(f"Error parsing sitemap XML for test: {e}")
+        links = ["Error parsing sitemap XML"]
     return render_template('test_sitemap.html', links=links)
       
-      
 @app.route('/sitemap.xml')
-@htmlmin.exempt
+@htmlmin.exempt # Excluir de la minificación HTML
 def sitemap():
-    pages = []
-    ten_days_ago = (datetime.now() - timedelta(days=10)).date().isoformat()
-
-    # Static routes
-    for rule in app.url_map.iter_rules():
-        if "GET" in rule.methods and len(rule.arguments) == 0:
-            pages.append(
-                ["{}".format(rule.rule), ten_days_ago]#["https://example.com{}".format(rule.rule), ten_days_ago]
-            )
-            
-    base_url = "http://example.com/"
-    #relative_path = "users/profile?id=123" # Or "/users/profile?id=123"
-
-    #full_url = urljoin(base_url, relative_path)
-
-    # Dynamic routes
-    # Obtener la fecha actual formateada
-    current_formatted_date = datetime.now(timezone.utc).strftime('%Y-%m-%d') # Importante usar timezone.utc
-    """
-    for book in books:
-        relative_path = url_for('book_by_identifier', author=book['author'], book=book['title'], identifier=book.get('isbn10') or book.get('isbn13'))
-        pages.append([urljoin(base_url, relative_path), ten_days_ago])
-    """
-    sitemap_xml = render_template('sitemap_template.xml', books=books, current_date_for_sitemap=current_formatted_date)
+    current_formatted_date = datetime.now(timezone.utc).strftime('%Y-%m-%d')
+    sitemap_xml = render_template('sitemap_template.xml', 
+                                  all_books_data=books, # 'books' ya tiene los _slug
+                                  current_date_for_sitemap=current_formatted_date)
     response = make_response(sitemap_xml)
     response.headers["Content-Type"] = "application/xml"
-
     return response
 
-
 if __name__ == '__main__':
+    # Para ejecutar: python tu_app_flask.py
+    # Accede a http://127.0.0.1:5000/ en tu navegador
     app.run(debug=True)

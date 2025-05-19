@@ -2,9 +2,9 @@
   "name": "youtube-scraper",
   "version": "0.0.1",
   "description": "Scrapes YouTube channel videos",
-  "main": "app.py", 
+  "main": "run.py", 
   "scripts": {
-    "start": "python3 app.py" 
+    "start": "python3 run.py" 
   },
   "dependencies": {},
   "engines": {

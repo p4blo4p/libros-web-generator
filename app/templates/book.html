@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="{{ libro.description | striptags | truncate(160) | default('') }}"
+    />
+    <meta name="keywords" content="{{ libro.categories | default('') }}{% if libro.genres %}, {{ libro.genres }}{% endif %}, {{ libro.author | default('') }}, {{ libro.title | default('') }}" />
+    <meta name="author" content="{{ libro.author | default('') }}" />
+    <title>{{ libro.title | default('') }} - {{ libro.author | default('') }}</title>
+
+    {# CORREGIDO: url_for con prefijo 'main.' y lang_code #}
+    <link rel="canonical" href="{{ url_for('main.book_by_identifier', lang_code=lang, author_slug=libro.author_slug, book_slug=libro.title_slug, identifier=(libro.isbn10 or libro.isbn13 or libro.asin), _external=True) }}" />
+
+    <!-- Open Graph Meta Tags for social media -->
+    <meta property="og:title" content="{{ libro.title | default('') }} - {{ libro.author | default('') }}" />
+    <meta
+      property="og:description"
+      content="{{ libro.description | striptags | truncate(200) | default('') }}"
+    />
+    <meta
+      property="og:image"
+      content="{{ libro.image_url | ensure_https | default('') }}"
+    />
+    {# CORREGIDO: url_for con prefijo 'main.' y lang_code #}
+    <meta property="og:url" content="{{ url_for('main.book_by_identifier', lang_code=lang, author_slug=libro.author_slug, book_slug=libro.title_slug, identifier=(libro.isbn10 or libro.isbn13 or libro.asin), _external=True) }}" />
+    <meta property="og:type" content="book" />
+    {% if libro.isbn13 %}<meta property="book:isbn" content="{{ libro.isbn13 }}" />{% endif %}
+    {# CORREGIDO: url_for con prefijo 'main.' y lang_code #}
+    {% if libro.author %}<meta property="book:author" content="{{ url_for('main.author_books', lang_code=lang, author_slug=libro.author_slug, _external=True) }}" />{% endif %}
+
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="{{ libro.title | default('') }} - {{ libro.author | default('') }}" />
+    <meta
+      name="twitter:description"
+      content="{{ libro.description | striptags | truncate(200) | default('') }}"
+    />
+    <meta
+      name="twitter:image"
+      content="{{ libro.image_url | ensure_https | default('') }}"
+    />
+
+    <!-- Favicon -->
+    <link
+      rel="icon"
+      href="{{ url_for('static', filename='favicon.ico') }}"
+      type="image/x-icon"
+    />
+
+    <!-- CSS Stylesheets -->
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/theme.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/searchbar.css') }}"
+    />
+
+    <!-- Structured Data (Schema.org for Book) -->
+    <script type="application/ld+json" defer>
+      {
+        "@context": "https://schema.org",
+        "@type": "Book",
+        "name": "{{ libro.title | escape | default('') }}",
+        "author": {
+          "@type": "Person",
+          "name": "{{ libro.author | escape | default('') }}"
+        },
+        {% if libro.isbn13 %}"isbn": "{{ libro.isbn13 | escape | default('') }}",{% endif %}
+        {% if libro.asin %}"productID": "urn:asin:{{ libro.asin | escape | default('') }}",{% endif %}
+        "description": "{{ libro.description | striptags | escape | default('') }}",
+        "image": "{{ libro.image_url | ensure_https | default('') }}",
+        {# CORREGIDO: url_for con prefijo 'main.' y lang_code #}
+        "url": "{{ url_for('main.book_by_identifier', lang_code=lang, author_slug=libro.author_slug, book_slug=libro.title_slug, identifier=(libro.isbn10 or libro.isbn13 or libro.asin), _external=True) }}",
+        {% if libro.publisher %}"publisher": {
+            "@type": "Organization",
+            "name": "{{ libro.publisher | escape | default('') }}"
+        },{% endif %}
+        {% if libro.published_year %}"datePublished": "{{ libro.published_year | escape | default('') }}",{% endif %}
+        {% if libro.language %}"inLanguage": "{{ libro.language | escape | default('') }}",{% endif %}
+        {% if libro.numRatings and libro.average_rating %}
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "{{ libro.average_rating | escape | default('') }}",
+          "ratingCount": "{{ libro.numRatings | escape | default('') }}"
+        },
+        {% endif %}
+        "offers": {
+            "@type": "Offer",
+            "availability": "https://schema.org/InStock",
+            "priceCurrency": "USD",
+            "url": "https://www.amazon.com/dp/{{ libro.asin or libro.isbn10 or libro.isbn13 }}?tag=YOUR_AMAZON_TAG"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div class="header">
+      {# CORREGIDO: url_for con prefijo 'main.' y lang_code #}
+      <a class="button" href="{{ url_for('main.index', lang_code=lang) }}"
+        >{{ t('back_to_list') }}</a
+      >
+      {# CORREGIDO: url_for con prefijo 'main.' y lang_code #}
+      <a
+        class="button"
+        href="{{ url_for('main.author_books', lang_code=lang, author_slug=libro.author_slug) }}"
+        >{{ libro.author | default('') }}</a
+      >
+      {# CORREGIDO: url_for con prefijo 'main.' y lang_code #}
+      <a
+        class="button"
+        href="{{ url_for('main.book_versions', lang_code=lang, author_slug=libro.author_slug, base_book_slug=libro.base_title_slug) }}"
+        >{{ t('all_versions') }} {{ libro.title.split('(')[0].strip() | default('') }}</a
+      >
+    </div>
+
+    <div class="google-search-container">
+      <span class="search-icon">
+        <svg
+          focusable="false"
+          xmlns="http://www.w3.org/2000/svg"
+          viewbox="0 0 24 24"
+          fill="#9aa0a6"
+        >
+          <path
+            d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"
+          ></path>
+        </svg>
+      </span>
+      <input
+        type="text"
+        class="google-search-input"
+        placeholder="{{ t('googlesearch_placeholder') }}"
+      />
+      <span class="mic-icon">
+      </span>
+    </div>
+
+    <div class="book-display-full">
+      <div class="book-cover">
+        <img
+          src="{{ libro.image_url | ensure_https | default('') }}"
+          alt="{{ t('cover_of') | default('Cover of') }} {{ libro.title | default('') }}"
+          loading="lazy" />
+      </div>
+      <div class="book-info">
+        {# CORREGIDO: url_for con prefijo 'main.' y lang_code #}
+        <h2> <a
+          href="{{ url_for('main.book_versions', lang_code=lang, author_slug=libro.author_slug, base_book_slug=libro.base_title_slug) }}"
+        >{{ libro.title | default('') }}</a></h2>
+
+        {% if libro.subtitle %}<h3>{{ libro.subtitle }}</h3>{% endif %}
+
+        {# CORREGIDO: url_for con prefijo 'main.' y lang_code #}
+        <h3>
+          <a href="{{ url_for('main.author_books', lang_code=lang, author_slug=libro.author_slug) }}"
+            >{{ libro.author | default('') }}</a
+          >
+        </h3>
+      </div>
+      <div class="book-details">
+        {% if libro.isbn10 %}<p><strong>{{ t('isbn10') }}:</strong> {{ libro.isbn10 }}</p>{% endif %}
+        {% if libro.isbn13 %}<p><strong>{{ t('isbn13') }}:</strong> {{ libro.isbn13 }}</p>{% endif %}
+        {% if libro.subtitle %}<p><strong>{{ t('subtitle') }}:</strong> {{ libro.subtitle }}</p>{% endif %}
+        {% if libro.language %}<p><strong>{{ t('language') }}:</strong> {{ libro.language }}</p>{% endif %}
+        {% if libro.categories %}<p><strong>{{ t('categories') }}:</strong> {{ libro.categories }}</p>{% endif %}
+        {% if libro.description %}<p><strong>{{ t('description') }}:</strong> {{ libro.description | safe }}</p>{% endif %}
+        {% if libro.series %}<p><strong>{{ t('series') }}:</strong> {{ libro.series }}</p>{% endif %}
+        {% if libro.edition %}<p><strong>{{ t('edition') }}:</strong> {{ libro.edition }}</p>{% endif %}
+        {% if libro.firstPublishDate %}<p><strong>{{ t('firstPublishDate') }}:</strong> {{ libro.firstPublishDate }}</p>{% endif %}
+        {% if libro.published_year %}<p><strong>{{ t('published_year') }}:</strong> {{ libro.published_year }}</p>{% endif %}
+        {% if libro.characters %}<p><strong>{{ t('characters') }}:</strong> {{ libro.characters }}</p>{% endif %}
+        {% if libro.genres %}<p><strong>{{ t('genres') }}:</strong> {{ libro.genres }}</p>{% endif %}
+        {% if libro.asin %}<p><strong>{{ t('asin') }}:</strong> {{ libro.asin }}</p>{% endif %}
+        {% if libro.average_rating %}<p><strong>{{ t('average_rating') }}:</strong> {{ libro.average_rating }}</p>{% endif %}
+        {% if libro.awards %}<p><strong>{{ t('awards') }}:</strong> {{ libro.awards }}</p>{% endif %}
+        {% if libro.ratingsByStars %}<p><strong>{{ t('ratingsByStars') }}:</strong> {{ libro.ratingsByStars }}</p>{% endif %}
+        {% if libro.bbeVotes %}<p><strong>{{ t('bbeVotes') }}:</strong> {{ libro.bbeVotes }}</p>{% endif %}
+        {% if libro.numRatings %}<p><strong>{{ t('numRatings') }}:</strong> {{ libro.numRatings }}</p>{% endif %}
+        {% if libro.product_dimensions %}<p><strong>{{ t('product_dimensions') }}:</strong> {{ libro.product_dimensions }}</p>{% endif %}
+        {% if libro.publisher %}<p><strong>{{ t('publisher') }}:</strong> {{ libro.publisher }}</p>{% endif %}
+        {% if libro.soldBy %}<p><strong>{{ t('soldBy') }}:</strong> {{ libro.soldBy }}</p>{% endif %}
+        {% if libro.weight %}<p><strong>{{ t('weight') }}:</strong> {{ libro.weight }}</p>{% endif %}
+
+        {% set amazon_identifier = libro.asin or libro.isbn10 or libro.isbn13 %}
+        {% if amazon_identifier %}
+        
+        <div class="amazon-buttons">
+          Buy on: 
+          <a
+            href="https://www.amazon.com/dp/{{ amazon_identifier }}?tag=YOUR_AMAZON_TAG"
+            class="amazon-button" target="_blank" rel="sponsored noopener"
+            ><img src="https://flagcdn.com/us.svg" alt="🇨🇦" class="flag" loading="lazy" />
+            <span class="domain">Amazon.com</span>
+          </a>
+          <a
+            href="https://www.amazon.ca/dp/{{ amazon_identifier }}?tag=YOUR_AMAZON_TAG_CA"
+            class="amazon-button" target="_blank" rel="sponsored noopener"
+          >
+            <img src="https://flagcdn.com/ca.svg" alt="🇨🇦" class="flag" loading="lazy" />
+            <span class="domain">Amazon.ca</span>
+          </a>
+          <a
+            href="https://www.amazon.co.uk/dp/{{ amazon_identifier }}?tag=YOUR_AMAZON_TAG_UK"
+            class="amazon-button" target="_blank" rel="sponsored noopener"
+          >
+            <img src="https://flagcdn.com/gb.svg" alt="🇬🇧" class="flag" loading="lazy" />
+            <span class="domain">Amazon.co.uk</span>
+          </a>
+          <a
+            href="https://www.amazon.de/dp/{{ amazon_identifier }}?tag=YOUR_AMAZON_TAG_DE"
+            class="amazon-button" target="_blank" rel="sponsored noopener"
+          >
+            <img src="https://flagcdn.com/de.svg" alt="🇩🇪" class="flag" loading="lazy" />
+            <span class="domain">Amazon.de</span>
+          </a>
+          <a
+            href="https://www.amazon.fr/dp/{{ amazon_identifier }}?tag=YOUR_AMAZON_TAG_FR"
+            class="amazon-button" target="_blank" rel="sponsored noopener"
+          >
+            <img src="https://flagcdn.com/fr.svg" alt="🇫🇷" class="flag" loading="lazy" />
+            <span class="domain">Amazon.fr</span>
+          </a>
+          <a
+            href="https://www.amazon.it/dp/{{ amazon_identifier }}?tag=YOUR_AMAZON_TAG_IT"
+            class="amazon-button" target="_blank" rel="sponsored noopener"
+          >
+            <img src="https://flagcdn.com/it.svg" alt="🇮🇹" class="flag" loading="lazy" />
+            <span class="domain">Amazon.it</span>
+          </a>
+          <a
+            href="https://www.amazon.es/dp/{{ amazon_identifier }}?tag=YOUR_AMAZON_TAG_ES"
+            class="amazon-button" target="_blank" rel="sponsored noopener"
+          >
+            <img src="https://flagcdn.com/es.svg" alt="🇪🇸" class="flag" loading="lazy" />
+            <span class="domain">Amazon.es</span>
+          </a>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  <div class="footer">
+      {# CORREGIDO: url_for con prefijo 'main.' y lang_code #}
+      <a class="button" href="{{ url_for('main.index', lang_code=lang) }}"
+        >{{ t('back_to_list') }}</a
+      >
+      {# CORREGIDO: url_for con prefijo 'main.' y lang_code #}
+      <a
+        class="button"
+        href="{{ url_for('main.author_books', lang_code=lang, author_slug=libro.author_slug) }}"
+        >{{ libro.author | default('') }}</a
+      >
+      {# CORREGIDO: url_for con prefijo 'main.' y lang_code #}
+      <a
+        class="button"
+        href="{{ url_for('main.book_versions', lang_code=lang, author_slug=libro.author_slug, base_book_slug=libro.base_title_slug) }}"
+        >{{ t('all_versions') }} {{ libro.title.split('(')[0].strip() | default('') }}</a
+      >
+    </div>
+    <div class="disclaimer">
+      <strong>{{ t('important_notice_strong') | default('Aviso Importante:') }}</strong> {{ t('amazon_affiliate_notice') | default('Como Afiliado de Amazon, gano por las compras y registros cualificados que se realicen a través de mis enlaces. Las imágenes de logos se utilizan con fines ilustrativos.') }}
+    </div>
+  </body>
+</html>

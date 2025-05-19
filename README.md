@@ -1,3 +1,100 @@
+¡Claro! Aquí tienes un resumen explicando la estructura del proyecto Flask refactorizado:
+
+**Objetivo de la Estructura:**
+
+La estructura está diseñada para organizar el código de manera lógica y modular, siguiendo las mejores prácticas de desarrollo con Flask. Esto facilita:
+
+- **Mantenibilidad**: Encontrar y modificar partes específicas del código es más sencillo.
+- **Escalabilidad**: Añadir nuevas funcionalidades o rutas es más ordenado.
+- **Claridad**: El propósito de cada archivo y directorio es más evidente.
+- **Testing**: Separar la lógica facilita la creación de pruebas unitarias y de integración.
+
+---
+
+**Resumen de la Estructura del Proyecto:**
+
+```
+.
+├── run.py                     # 🚀 Punto de entrada para EJECUTAR la aplicación Flask.
+├── generate_static.py         # ⚙️ Script para GENERAR el sitio web estático.
+│
+├── app/                       # 📦 Directorio principal de la APLICACIÓN FLASK.
+│   ├── __init__.py            # 🏭 Fábrica de la aplicación: crea y configura la instancia de Flask.
+│   ├── config.py                # 🛠️ Configuraciones de la aplicación (claves, rutas a datos, etc.).
+│   │
+│   ├── routes/                  # 🛣️ Definición de las RUTAS (endpoints) de la aplicación.
+│   │   ├── __init__.py          # (Archivo de inicialización del paquete de rutas)
+│   │   ├── main_routes.py       # Rutas principales (índice, detalles de libro, autor, versiones).
+│   │   └── sitemap_routes.py    # Rutas para el sitemap.xml y la página de prueba del sitemap.
+│   │
+│   ├── models/                  # 🧱 Lógica de DATOS (carga y procesamiento de libros, bestsellers).
+│   │   ├── __init__.py
+│   │   └── data_loader.py       # Funciones para cargar y procesar `books.csv` y JSONs.
+│   │
+│   ├── utils/                   # 🔧 Funciones de UTILIDAD y ayuda.
+│   │   ├── __init__.py
+│   │   ├── helpers.py           # Funciones genéricas (slugify, validaciones de ISBN/ASIN, etc.).
+│   │   └── translations.py      # Gestión de las traducciones.
+│   │
+│   ├── static/                  # 🖼️ Archivos ESTÁTICOS (CSS, JavaScript, imágenes, favicon).
+│   │   ├── css/
+│   │   └── favicon.ico
+│   │
+│   └── templates/               # 📄 Plantillas HTML (Jinja2) para renderizar las páginas.
+│       ├── index.html
+│       ├── book.html
+│       └── ... (otras plantillas)
+│
+├── books.csv                  # 💾 Archivo de datos principal de los libros.
+├── social/                    # 📂 Directorio para otros archivos de datos.
+│   └── amazon_bestsellers_es.json # Archivo de datos de bestsellers.
+└── translations.json          # 🌐 Archivo JSON con las cadenas de texto traducidas.
+```
+
+---
+
+**Explicación Detallada de Componentes Clave:**
+
+1.  **Directorio Raíz:**
+
+    - **`run.py`**: Un script simple que importa la fábrica de la aplicación (`create_app` desde `app/__init__.py`) y ejecuta el servidor de desarrollo de Flask. Mantiene limpio el inicio de la aplicación.
+    - **`generate_static.py`**: El script que "congela" la aplicación Flask en archivos HTML estáticos. Ahora también usa `create_app` para obtener una instancia de la aplicación y acceder a sus datos y configuración.
+    - **Archivos de Datos (`books.csv`, `social/`, `translations.json`)**: Los datos brutos que utiliza la aplicación.
+
+2.  **Directorio `app/` (El Corazón de la Aplicación Flask):**
+    - **`__init__.py` (Application Factory)**:
+      - Contiene la función `create_app()`. Este es el patrón recomendado para crear aplicaciones Flask.
+      - Inicializa la instancia de Flask (`Flask(__name__, ...)`).
+      - Carga la configuración desde `config.py`.
+      - Inicializa extensiones (como `Flask-HTMLMin`).
+      - Registra filtros Jinja2 (como `ensure_https`).
+      - **Carga los datos principales** (libros, bestsellers) y el **gestor de traducciones** una vez al inicio y los "adjunta" a la instancia de la aplicación (`app.books_data`, `app.translations_manager`). Esto evita recargar datos en cada solicitud.
+      - Registra los **Blueprints** (grupos de rutas) definidos en el directorio `routes/`.
+    - **`config.py`**:
+      - Define una clase `Config` con todas las variables de configuración (claves secretas, rutas a archivos, configuraciones de extensiones). Ayuda a mantener la configuración separada del código de la aplicación.
+    - **`routes/` (Blueprints)**:
+      - Los Blueprints permiten organizar las rutas en módulos.
+      - `main_routes.py`: Contiene las rutas principales de la aplicación (página de inicio, detalles de un libro, libros de un autor, versiones de un libro).
+      - `sitemap_routes.py`: Contiene las rutas para generar el `sitemap.xml` y la página de prueba del sitemap.
+      - Dentro de las funciones de las rutas, se accede a los datos y al gestor de traducciones a través de `current_app` (ej. `current_app.books_data`, `current_app.translations_manager.get_translation_func()`).
+    - **`models/`**:
+      - `data_loader.py`: Contiene la lógica para cargar los datos desde los archivos CSV y JSON, y para preprocesarlos (ej. añadir los campos `_slug`). Mantiene la lógica de acceso a datos separada de las rutas.
+    - **`utils/`**:
+      - `helpers.py`: Funciones de utilidad reutilizables como `slugify_ascii`, validadores de ISBN/ASIN, y el filtro `ensure_https`.
+      - `translations.py`: Define una clase `TranslationManager` para cargar y gestionar las traducciones desde `translations.json`. Proporciona una función `t(key)` para usar en las plantillas y rutas.
+    - **`static/`**: Donde se almacenan los archivos CSS, JavaScript, imágenes y otros recursos estáticos que el navegador del cliente descargará directamente.
+    - **`templates/`**: Contiene todas las plantillas HTML que Jinja2 utiliza para renderizar las páginas dinámicamente.
+
+**Flujo General:**
+
+1.  Al ejecutar `run.py` (o `generate_static.py`), se llama a `create_app()` en `app/__init__.py`.
+2.  `create_app()` configura la aplicación, carga los datos (`books_data`, `bestsellers_data`), inicializa el `translations_manager`, y registra los blueprints de `app/routes/`.
+3.  Cuando una solicitud HTTP llega a una URL, Flask la dirige al blueprint y a la función de ruta correspondiente.
+4.  La función de ruta utiliza los datos cargados (ej. `current_app.books_data`) y el gestor de traducciones para obtener la información necesaria.
+5.  Finalmente, renderiza una plantilla HTML de `app/templates/`, pasándole los datos y la función de traducción.
+
+Esta estructura promueve un código más organizado, fácil de entender y de mantener a medida que el proyecto evoluciona.
+
 # Objetivos
 
 # Scripts

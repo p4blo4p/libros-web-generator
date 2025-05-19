@@ -6,7 +6,7 @@ from pathlib import Path
 # Asegúrate de que tu_app_flask.py se pueda importar
 # Esto podría requerir ajustar sys.path si está en una subcarpeta o es un módulo
 # from nombre_de_tu_archivo_flask import app, books, bestsellers
-from app import app, books, bestsellers # Asumiendo que el archivo es tu_app_flask.py
+from app import app, books, bestsellers#, slugify # Asumiendo que el archivo es tu_app_flask.py
 
 # Configuración
 OUTPUT_DIR = "_site"
@@ -15,17 +15,6 @@ LANGUAGES = ['en', 'es']
 # app.config['SERVER_NAME'] = 'yourdomain.com' # O localhost:5000
 # app.config['APPLICATION_ROOT'] = '/'
 # app.config['PREFERRED_URL_SCHEME'] = 'http' # o https
-
-def slugify(text):
-    """
-    Genera un slug simple para nombres de archivo/directorio.
-    """
-    text = text.lower()
-    text = urllib.parse.quote_plus(text) # Codifica para URL, luego reemplaza '+'
-    text = text.replace('+', '-') # Usa guiones en lugar de +
-    # Elimina caracteres que no sean alfanuméricos o guiones, excepto % para codificación URL
-    text = "".join(c if c.isalnum() or c == '-' or c == '%' else "" for c in text)
-    return text
 
 
 def save_page(client, url_path, file_path):
