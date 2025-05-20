@@ -9,6 +9,10 @@ main_bp = Blueprint('main', __name__)
 SUPPORTED_LANGUAGES = ['en', 'es', 'fr', 'it', 'de']
 DEFAULT_LANGUAGE = 'en'
 
+# Función para obtener el segmento URL traducido
+def get_url_segment(segment_key, lang_code, default_segment='book'):
+    segments = current_app.config['URL_SEGMENT_TRANSLATIONS'].get(segment_key, {})
+    return segments.get(lang_code, segments.get(DEFAULT_LANGUAGE, default_segment))
 
 # Funciones de ayuda para obtener datos y la función de traducción
 def get_books_data():

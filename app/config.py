@@ -18,3 +18,9 @@ class Config:
     TEMPLATE_FOLDER = 'templates'
     SUPPORTED_LANGUAGES = ['en', 'es', 'fr', 'it', 'de']
     DEFAULT_LANGUAGE = 'en'
+    URL_SEGMENT_TRANSLATIONS = {
+        'book': {'en': 'book', 'es': 'libro', 'fr': 'livre', 'it': 'libro', 'de': 'buch'},
+        'author': {'en': 'author', 'es': 'autor', 'fr': 'auteur', 'it': 'autore', 'de': 'autor'},
+        'versions': {'en': 'versions', 'es': 'versiones', 'fr': 'versions', 'it': 'versioni', 'de': 'versionen'}
+        # Añade otros segmentos estructurales si los tienes
+    }
