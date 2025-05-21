@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ t('all_versions') }} {{ page_base_title_display | default('') }} - {{ page_author_display | default('') }}</title>
+    <meta name="description" content="{{ t('all_versions') }} '{{ page_base_title_display | default('') }}' {{ t('by_author') | default('by') }} {{ page_author_display | default('') }}." />
+    <meta name="keywords" content="{{ page_base_title_display | default('') }}, {{ page_author_display | default('') }}, {{ t('all_versions') | lower | default('all versions') }}, libros, books" />
+    <meta name="author" content="{{ page_author_display | default('') }}" />
+
+    {# CORREGIDO: url_for con prefijo 'main.' y lang_code #}
+    <link rel="canonical" href="{{ url_for('main.book_versions', lang_code=lang, author_slug=(books[0].author_slug if books else ''), base_book_slug=(books[0].base_title_slug if books else ''), _external=True) }}" />
+
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="{{ t('all_versions') }} {{ page_base_title_display | default('') }} - {{ page_author_display | default('') }}" />
+    <meta property="og:description" content="{{ t('all_versions') }} '{{ page_base_title_display | default('') }}' {{ t('by_author') | default('by') }} {{ page_author_display | default('') }}." />
+    <meta property="og:image" content="{{ (books[0].image_url if books else '') | ensure_https | default('') }}" />
+    {# CORREGIDO: url_for con prefijo 'main.' y lang_code #}
+    <meta property="og:url" content="{{ url_for('main.book_versions', lang_code=lang, author_slug=(books[0].author_slug if books else ''), base_book_slug=(books[0].base_title_slug if books else ''), _external=True) }}" />
+    <meta property="og:type" content="website" />
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="{{ t('all_versions') }} {{ page_base_title_display | default('') }} - {{ page_author_display | default('') }}" />
+    <meta name="twitter:description" content="{{ t('all_versions') }} '{{ page_base_title_display | default('') }}' {{ t('by_author') | default('by') }} {{ page_author_display | default('') }}." />
+    <meta name="twitter:image" content="{{ (books[0].image_url if books else '') | ensure_https | default('') }}" />
+
+    <!-- Favicon -->
+    <link
+      rel="icon"
+      href="{{ url_for('static', filename='favicon.ico') }}"
+      type="image/x-icon"
+    />
+
+    <!-- CSS Stylesheets -->
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/searchbar.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/theme.css') }}"
+    />
+
+    <!-- Structured Data -->
+    <script type="application/ld+json" defer>
+    {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      "name": "{{ t('all_versions') }} {{ page_base_title_display | escape | default('') }} - {{ page_author_display | escape | default('') }}",
+      "description": "Diferentes versiones y ediciones del libro '{{ page_base_title_display | escape | default('') }}' por {{ page_author_display | escape | default('') }}.",
+      {# CORREGIDO: url_for con prefijo 'main.' y lang_code #}
+      "url": "{{ url_for('main.book_versions', lang_code=lang, author_slug=(books[0].author_slug if books else ''), base_book_slug=(books[0].base_title_slug if books else ''), _external=True) }}",
+      "mainEntity": {
+        "@type": "ItemList",
+        "itemListElement": [
+          {% for libro in books %}
+          {
+            "@type": "ListItem",
+            "position": {{ loop.index }},
+            "item": {
+              "@type": "Book",
+              "name": "{{ libro.title | escape | default('') }}",
+              "author": {
+                "@type": "Person",
+                "name": "{{ libro.author | escape | default('') }}"
+              },
+              {% if libro.isbn13 %}"isbn": "{{ libro.isbn13 | escape | default('') }}",{% endif %}
+              {% if libro.asin %}"productID": "urn:asin:{{ libro.asin | escape | default('') }}",{% endif %}
+              {# CORREGIDO: url_for con prefijo 'main.' y lang_code #}
+              "url": "{{ url_for('main.book_by_identifier', lang_code=lang, author_slug=libro.author_slug, book_slug=libro.title_slug, identifier=(libro.isbn10 or libro.isbn13 or libro.asin), _external=True) }}",
+              "image": "{{ libro.image_url | ensure_https | default('') }}"
+            }
+          }{{ "," if not loop.last else "" }}
+          {% endfor %}
+        ]
+      }
+    }
+    </script>
+  </head>
+  <body>
+
+  <section class="google-search-container">
+    <span class="search-icon">
+      <svg focusable="false" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" fill="#9aa0a6">
+        <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path>
+      </svg>
+    </span>
+    <input type="text" class="google-search-input" placeholder="{{ t('googlesearch_placeholder') }}">
+    <span class="mic-icon">
+    </span>
+  </section>
+
+    <nav class="header">
+        {# CORREGIDO: url_for con prefijo 'main.' y lang_code #}
+        <a class="button" href="{{ url_for('main.index', lang_code=lang) }}">{{ t('back_to_list') }}</a>
+        {% if books %}
+        {# CORREGIDO: url_for con prefijo 'main.' y lang_code #}
+        <a class="button" href="{{ url_for('main.author_books', lang_code=lang, author_slug=books[0].author_slug) }}">{{ page_author_display | default('') }}</a>
+        {% endif %}
+    </nav>
+
+    <h1>{{t('all_versions')}} {{ page_base_title_display | default('') }}</h1>
+    <h2>
+      {# CORREGIDO: url_for con prefijo 'main.' y lang_code #}
+      <a href="{{ url_for('main.author_books', lang_code=lang, author_slug=(books[0].author_slug if books else '')) }}"
+        >{{ page_author_display | default('') }}</a
+      >
+    </h2>
+
+    {% for libro in books %}
+    <div class="book-display">
+      <div class="book-cover">
+        {% set identifier = libro.get('isbn13') or libro.get('isbn10') or libro.get('asin') %}
+        {# CORREGIDO: url_for con prefijo 'main.' y lang_code #}
+        <a
+          href="{{ url_for('main.book_by_identifier', lang_code=lang, author_slug=libro.author_slug, book_slug=libro.title_slug, identifier=identifier) }}"
+        >
+          <img
+            src="{{ libro.image_url | ensure_https | default('') }}"
+            alt="{{ t('cover_of') | default('Cover of') }} {{ libro.title | default('') }}"
+            loading="lazy"
+            />
+        </a>
+      </div>
+      <div class="book-info">
+        <p><strong><a
+          {# CORREGIDO: url_for con prefijo 'main.' y lang_code #}
+          href="{{ url_for('main.book_by_identifier', lang_code=lang, author_slug=libro.author_slug, book_slug=libro.title_slug, identifier=identifier) }}"
+        >{{ libro.title | default('') }}</a></strong></p>
+
+        {% if libro.isbn10 %}<p><strong>{{ t('isbn10') }}:</strong> {{ libro.isbn10 }}</p>{% endif %}
+        {% if libro.isbn13 %}<p><strong>{{ t('isbn13') }}:</strong> {{ libro.isbn13 }}</p>{% endif %}
+        {% if libro.language %}<p><strong>{{ t('language') }}:</strong> {{ libro.language }}</p>{% endif %}
+        {% if libro.edition %}<p><strong>{{ t('edition') }}:</strong> {{ libro.edition }}</p>{% endif %}
+        {% if libro.published_year %}<p><strong>{{ t('published_year') }}:</strong> {{ libro.published_year }}</p>{% endif %}
+        {% if libro.asin %}<p><strong>{{ t('asin') }}:</strong> {{ libro.asin }}</p>{% endif %}
+        {% if libro.product_dimensions %}<p><strong>{{ t('product_dimensions') }}:</strong> {{ libro.product_dimensions }}</p>{% endif %}
+        {% if libro.publisher %}<p><strong>{{ t('publisher') }}:</strong> {{ libro.publisher }}</p>{% endif %}
+        {% if libro.soldBy %}<p><strong>{{ t('soldBy') }}:</strong> {{ libro.soldBy }}</p>{% endif %}
+        {% if libro.weight %}<p><strong>{{ t('weight') }}:</strong> {{ libro.weight }}</p>{% endif %}
+      </div>
+    </div>
+
+    {% if books %}
+      {% if loop.index % (books | length) == 3 %}
+      <!-- Kindle Unlimited -->
+      <div class="book-display">
+        <div class="promo-item">
+          <div class="promo-image">
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Amazon_Kindle_logo.svg/388px-Amazon_Kindle_logo.svg.png"
+              alt="Logo de Kindle (para Kindle Unlimited)"
+              loading="lazy"
+            />
+          </div>
+          <div class="book-info">
+            <h3>Prueba Kindle Unlimited</h3>
+            <p>
+              Acceso ilimitado a millones de eBooks y revistas seleccionadas en
+              cualquier dispositivo con la app Kindle. Ideal para lectores ávidos.
+            </p>
+            <div class="promo-link">
+              <a
+                href="#ENLACE_KINDLE_UNLIMITED_AQUI#"
+                target="_blank"
+                rel="sponsored noopener"
+                >Probar Kindle Unlimited</a
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+      {% if loop.index % (books | length) == 6 or loop.index == (books | length) %}
+      <div class="book-display">
+        <!-- Amazon Prime -->
+        <div class="promo-item">
+          <div class="promo-image">
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Amazon_Prime_Logo.svg/2560px-Amazon_Prime_Logo.svg.png"
+              alt="Logo de Amazon Prime"
+              loading="lazy"
+            />
+          </div>
+          <div class="book-info">
+            <h3>Prueba Amazon Prime Gratis</h3>
+            <p>
+              Ofrece a tus visitantes envío rápido y gratuito, Prime Video, Prime
+              Music, Prime Reading y mucho más con una prueba gratuita.
+            </p>
+            <div class="promo-link">
+              <a
+                href="#ENLACE_PRIME_AQUI#"
+                target="_blank"
+                rel="sponsored noopener"
+                >Obtener Prueba Prime</a
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+      {% if loop.index % (books | length) == 9 or loop.index == (books | length) %}
+      <div class="book-display">
+        <!-- Amazon Music Unlimited -->
+        <div class="promo-item">
+          <div class="promo-image">
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/9/92/Amazon_Music_logo.svg"
+              alt="Logo de Amazon Music"
+              loading="lazy"
+            />
+          </div>
+          <div class="book-info">
+            <h3>Prueba Amazon Music Unlimited</h3>
+            <p>
+              Millones de canciones y podcasts sin anuncios, con reproducción sin
+              conexión. Ofréceles una prueba gratuita.
+            </p>
+            <div class="promo-link">
+              <a
+                href="#ENLACE_MUSIC_AQUI#"
+                target="_blank"
+                rel="sponsored noopener"
+                >Probar Music Unlimited</a
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+    {% endif %}
+    {% endfor %}
+
+    <nav class="footer">
+        {# CORREGIDO: url_for con prefijo 'main.' y lang_code #}
+        <a class="button" href="{{ url_for('main.index', lang_code=lang) }}">{{ t('back_to_list') }}</a>
+        {% if books %}
+        {# CORREGIDO: url_for con prefijo 'main.' y lang_code #}
+        <a class="button" href="{{ url_for('main.author_books', lang_code=lang, author_slug=books[0].author_slug) }}">{{ page_author_display | default('') }}</a>
+        {% endif %}
+    </nav>
+    <div class="disclaimer">
+      <strong>{{ t('important_notice_strong') | default('Aviso Importante:') }}</strong> {{ t('amazon_affiliate_notice') | default('Como Afiliado de Amazon, gano por las compras y registros cualificados que se realicen a través de mis enlaces. Las imágenes de logos se utilizan con fines ilustrativos.') }}
+    </div>
+  </body>
+</html>

@@ -47,7 +47,7 @@ def main(ruta_csv, ruta_plantillas, ruta_salida):
     print("Exportación completada.")
 
 if __name__ == "__main__":
-    ruta_csv = 'libros.csv'
+    ruta_csv = 'books.csv'
     ruta_plantillas = 'templates'
     ruta_salida = 'output'
     

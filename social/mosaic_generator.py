@@ -2,7 +2,7 @@ import os
 import requests
 from math import ceil, sqrt
 import csv
-from PIL import Image, ImageOps, ImageFont, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 
 #En glitch usar comando refresh para que aparezcan imagenes
 
@@ -114,7 +114,7 @@ def create_mosaic(image_paths, image_size, output_path, margin=10, background_co
     mosaic.save(output_path)
     print(f"Mosaico creado y guardado en {output_path}")
     
-def create_mosaic_with_footer(image_paths, image_size, output_path, margin=10, background_color=(255, 255, 255), footer_text=("Línea 1", "Línea 2"), font_path=None, font_size=130):
+def create_mosaic_with_footer(image_paths, image_size, output_path, margin=10, background_color=(255, 255, 255), footer_text=("Línea 1", "Línea 2"), font_path=None, font_size=30):
     """
     Crea un mosaico con imágenes y un texto único centrado debajo del mosaico.
 
@@ -147,7 +147,7 @@ def create_mosaic_with_footer(image_paths, image_size, output_path, margin=10, b
 
     for i, image_path in enumerate(image_paths):
         image = Image.open(image_path)
-        image.thumbnail((image_width, image_height), Image.ANTIALIAS)
+        image.thumbnail((image_width, image_height), Image.LANCZOS)
 
         # Calcula la posición de la imagen en el mosaico
         x = (i % cols) * cell_width
@@ -165,7 +165,9 @@ def create_mosaic_with_footer(image_paths, image_size, output_path, margin=10, b
 
     # Dibujar las dos líneas de texto
     for index, line in enumerate(footer_text):
-        text_width, text_height = draw.textsize(line, font=font)
+        text_bbox = draw.textbbox((0, 0), line, font=font)  # Devuelve (x0, y0, x1, y1)
+        text_width = text_bbox[2] - text_bbox[0]  # Ancho del texto
+        text_height = text_bbox[3] - text_bbox[1]  # Alto del texto
         text_x = (mosaic_width - text_width) // 2
         text_y = mosaic_height + (font_size * index) + 10  # Espaciado entre líneas
         draw.text((text_x, text_y), line, fill=(0, 0, 0), font=font)

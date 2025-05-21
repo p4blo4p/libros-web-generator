@@ -1,0 +1,17 @@
+{
+  "install": "pip3 install --upgrade pip && pip3 install --upgrade yt-dlp -r requirements.txt --user",
+  "start": "python3 run.py", 
+  "watch": {
+    "throttle": 1000,
+    "paths": [
+      "*.py",
+      "requirements.txt",
+      "glitch.json",
+      "package.json",
+      "videos_juegos_mesa.json"
+    ],
+    "extensions": [
+      ".py", ".json", ".txt"
+    ]
+  }
+}
