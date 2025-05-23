@@ -16,39 +16,54 @@ La estructura está diseñada para organizar el código de manera lógica y modu
 ```
 .
 ├── run.py                     # 🚀 Punto de entrada para EJECUTAR la aplicación Flask.
-├── generate_static.py         # ⚙️ Script para GENERAR el sitio web estático.
+├── generate_static.py         # ⚙️ Script para GENERAR contenido estático (ej. sitemaps, páginas pre-renderizadas).
 │
 ├── app/                       # 📦 Directorio principal de la APLICACIÓN FLASK.
 │   ├── __init__.py            # 🏭 Fábrica de la aplicación: crea y configura la instancia de Flask.
-│   ├── config.py                # 🛠️ Configuraciones de la aplicación (claves, rutas a datos, etc.).
+│   ├── config.py              # 🛠️ Configuraciones de la aplicación (claves secretas, modos debug, etc.).
 │   │
-│   ├── routes/                  # 🛣️ Definición de las RUTAS (endpoints) de la aplicación.
-│   │   ├── __init__.py          # (Archivo de inicialización del paquete de rutas)
-│   │   ├── main_routes.py       # Rutas principales (índice, detalles de libro, autor, versiones).
-│   │   └── sitemap_routes.py    # Rutas para el sitemap.xml y la página de prueba del sitemap.
+│   ├── routes/                # 🛣️ Definición de las RUTAS (endpoints) de la aplicación.
+│   │   ├── __init__.py        # (Archivo de inicialización del paquete de rutas)
+│   │   ├── main_routes.py     # Rutas principales (índice, detalles de libro, autor, versiones).
+│   │   └── sitemap_routes.py  # Rutas para generar el sitemap.xml.
 │   │
-│   ├── models/                  # 🧱 Lógica de DATOS (carga y procesamiento de libros, bestsellers).
-│   │   ├── __init__.py
-│   │   └── data_loader.py       # Funciones para cargar y procesar `books.csv` y JSONs.
+│   ├── models/                # 🧱 Lógica de DATOS (carga y procesamiento de libros).
+│   │   ├── __init__.py        # (Archivo de inicialización del paquete de modelos)
+│   │   └── data_loader.py     # Funciones para cargar y procesar datos desde `data/books_collection/*.csv` y `data/translations.json`.
 │   │
-│   ├── utils/                   # 🔧 Funciones de UTILIDAD y ayuda.
-│   │   ├── __init__.py
-│   │   ├── helpers.py           # Funciones genéricas (slugify, validaciones de ISBN/ASIN, etc.).
-│   │   └── translations.py      # Gestión de las traducciones.
+│   ├── utils/                 # 🔧 Funciones de UTILIDAD y ayuda.
+│   │   ├── __init__.py        # (Archivo de inicialización del paquete de utilidades)
+│   │   ├── context_processors.py # Inyecta variables globales en las plantillas Jinja2.
+│   │   ├── helpers.py         # Funciones genéricas de ayuda.
+│   │   └── translations.py    # Gestión de las traducciones, usando `data/translations.json`.
 │   │
-│   ├── static/                  # 🖼️ Archivos ESTÁTICOS (CSS, JavaScript, imágenes, favicon).
-│   │   ├── css/
-│   │   └── favicon.ico
+│   ├── static/                # 🖼️ Archivos ESTÁTICOS (CSS, imágenes, robots.txt).
+│   │   ├── css/               # Hojas de estilo CSS (theme.css, searchbar.css).
+│   │   ├── images/            # Imágenes (incluyendo banderas).
+│   │   └── robots.txt         # Directivas para los crawlers de motores de búsqueda.
 │   │
-│   └── templates/               # 📄 Plantillas HTML (Jinja2) para renderizar las páginas.
-│       ├── index.html
-│       ├── book.html
-│       └── ... (otras plantillas)
+│   └── templates/             # 📄 Plantillas HTML (Jinja2) para renderizar las páginas.
+│       ├── base.html          # Plantilla base común.
+│       ├── index.html         # Plantilla para la página de inicio.
+│       ├── book.html          # Plantilla para la página de un libro.
+│       ├── author_books.html  # Plantilla para los libros de un autor.
+│       ├── book_versions.html # Plantilla para las versiones de un libro.
+│       ├── sitemap_template.xml # Plantilla para generar el sitemap.
+│       └── partials/          # Fragmentos de plantillas reutilizables (_banner_promotional.html, navigation.html).
 │
-├── books.csv                  # 💾 Archivo de datos principal de los libros.
-├── social/                    # 📂 Directorio para otros archivos de datos.
-│   └── amazon_bestsellers_es.json # Archivo de datos de bestsellers.
-└── translations.json          # 🌐 Archivo JSON con las cadenas de texto traducidas.
+├── data/                      # 💾 Directorio para los archivos de datos crudos que utiliza la aplicación.
+│   ├── books_collection/      # 📚 Colección de libros en formato CSV (ej. `20__aa.csv`).
+│   └── translations.json      # 🌐 Archivo JSON con las cadenas de texto para internacionalización (i18n).
+│
+├── social/                    # 📊 Scripts y datos relacionados con redes sociales, scraping o análisis externos.
+│   ├── amazon_bestsellers_es.json # Archivo de datos de bestsellers de Amazon (ejemplo).
+│   ├── mosaic_generator.py    # Script para generar mosaicos de imágenes (ejemplo).
+│   └── yt.py                  # Script relacionado con YouTube (ejemplo).
+│
+├── requirements.txt           # 📜 Lista de dependencias Python del proyecto.
+├── notes/                     # 📝 Notas de desarrollo, scripts auxiliares no productivos.
+├── csv/                       # (Directorio actualmente vacío, posiblemente para futuros CSVs)
+└── public/                    # 🏞️ Archivos públicos adicionales (ej. `mosaic.jpg`).
 ```
 
 ---

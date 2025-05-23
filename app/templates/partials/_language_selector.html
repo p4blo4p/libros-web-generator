@@ -1,0 +1,44 @@
+{# app/templates/partials/_language_selector.html #}
+{% if SUPPORTED_LANGUAGES and SUPPORTED_LANGUAGES | length > 1 %}
+<div class="language-selector">
+    <span>{{ t('select_language') | default('Language:') }}</span>
+    {% for lang_code_option in SUPPORTED_LANGUAGES %}
+        {% if lang_code_option != lang %} 
+            {% set view_args_for_link = current_view_args_for_selector.copy() %}
+            {# Actualizar lang_code para el nuevo idioma #}
+            {% set _ = view_args_for_link.update({'lang_code': lang_code_option}) %}
+            
+            {# !!! ELIMINAR LOS SEGMENTOS ANTIGUOS PARA QUE url_defaults LOS RECALCULE !!! #}
+            {% if 'book_segment' in view_args_for_link %}{% set _ = view_args_for_link.pop('book_segment') %}{% endif %}
+            {% if 'author_segment' in view_args_for_link %}{% set _ = view_args_for_link.pop('author_segment') %}{% endif %}
+            {% if 'versions_segment' in view_args_for_link %}{% set _ = view_args_for_link.pop('versions_segment') %}{% endif %}
+            
+            <a href="{{ url_for(current_endpoint_for_selector, **view_args_for_link) }}" hreflang="{{ lang_code_option }}" class="lang-flag lang-{{ lang_code_option }}">
+                {{ lang_code_option | upper }}
+            </a>
+        {% else %}
+            <span class="lang-flag lang-{{ lang_code_option }} current">
+                {{ lang_code_option | upper }}
+            </span>
+        {% endif %}
+        {% if not loop.last %} | {% endif %}
+    {% endfor %}
+</div>
+{% endif %}
+
+{# Mueve este CSS a tu archivo CSS global (ej. theme.css) o déjalo aquí si es solo para el selector #}
+<style>
+.language-selector {
+    position: fixed; 
+    top: 10px;
+    right: 10px;
+    background-color: #f8f9fa;
+    padding: 8px 12px;
+    border: 1px solid #dee2e6;
+    border-radius: .25rem;
+    box-shadow: 0 .125rem .25rem rgba(0,0,0,.075);
+    z-index: 1030;
+    font-size: 0.9em;
+}
+/* ... resto del CSS ... */
+</style>

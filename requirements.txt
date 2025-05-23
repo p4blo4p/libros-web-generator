@@ -6,4 +6,4 @@ youtube_dl
 Flask-HTMLmin
 urllib3
 Unidecode
-kaggle
+python-dotenv

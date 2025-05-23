@@ -90,6 +90,7 @@ def main():
             # El test_client seguirá la redirección a /DEFAULT_LANGUAGE/
             # y guardará el contenido de esa página en _site/index.html
             save_page(client, "/", Path(OUTPUT_DIR) / "index.html")
+            save_page(client, "/robots.txt", Path(OUTPUT_DIR) / "robots.txt")
 
             for lang in LANGUAGES:
                 # Generar la página de índice específica del idioma (ej. /en/, /es/)

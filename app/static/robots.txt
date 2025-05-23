@@ -1,0 +1,28 @@
+User-agent: *
+
+# Allow crawling of the main content pages under each supported language
+Allow: /en/
+Allow: /es/
+Allow: /fr/
+Allow: /it/
+Allow: /de/
+
+# If you have static assets (CSS, JS, images) in a specific folder like /static/
+# and want to ensure crawlers can access them for page rendering, you can add:
+# Allow: /static/
+# (This is often the default behavior if not disallowed, but can be made explicit)
+
+# Disallow any specific paths you don't want indexed.
+# For example, if you had an admin section:
+# Disallow: /admin/
+# Or internal API endpoints:
+# Disallow: /api/internal/
+# (Based on your provided routes, there are no obvious paths to disallow yet)
+
+# Specify the location of your sitemap(s)
+# Replace 'https://www.yourdomain.com' with your actual domain
+Sitemap: https://www.yourdomain.com/sitemap.xml
+# If you have multiple sitemaps, for instance, one per language:
+# Sitemap: https://www.yourdomain.com/sitemap_en.xml
+# Sitemap: https://www.yourdomain.com/sitemap_es.xml
+# ... and so on for other languages.
