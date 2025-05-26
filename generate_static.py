@@ -52,7 +52,7 @@ def save_page(client, url_path, file_path_obj):
         # Por ejemplo, acumulando mensajes y escribiéndolos en lotes, o a un archivo.
         # Pero para un build, a menudo es mejor solo reducir la salida.
         # pass # O un log más simple
-        current_app.logger.debug(f"Intento de E/S bloqueado para: {url_path}")
+        print(f"Intento de E/S bloqueado para: {url_path}")
     try:
         response = client.get(url_path)
         if response.status_code == 200:
