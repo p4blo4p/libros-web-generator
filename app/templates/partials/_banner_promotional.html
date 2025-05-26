@@ -1,0 +1,61 @@
+{# Archivo: _promotional_banners.html #}
+{# Variables esperadas: current_index (0-based), total_items #}
+
+{# Banner 1: Después del 3er item (índice 2) #}
+{% if current_index == 2 or current_index >= total_items - 1 %}
+<!-- Kindle Unlimited -->
+                    <div class="book-display promo-container">
+                        <div class="promo-item">
+                            <div class="promo-image"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Amazon_Kindle_logo.svg/388px-Amazon_Kindle_logo.svg.png" alt="{{ t('kindle_unlimited_alt') | default('Kindle Unlimited Logo') }}" loading="lazy"/></div>
+                            <div class="book-info"><h3>{{ t('try_kindle_unlimited') | default('Try Kindle Unlimited') }}</h3><p>{{ t('kindle_unlimited_desc') | default('Access millions of eBooks.') }}</p><div class="promo-link"><a href="{{ t('link_kindle_unlimited') | default('#') }}" target="_blank" rel="sponsored noopener">{{ t('promo_button_kindle') | default('Try Now') }}</a></div></div>
+                        </div>
+                    </div>
+{% endif %}
+
+{# Banner 2: Después del 6to item (índice 5) #}
+{% if current_index == 5 or current_index >= total_items - 1 %}
+    <!-- Amazon Prime -->
+                    <div class="book-display promo-container">
+                        <div class="promo-item">
+                            <div class="promo-image"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Amazon_Prime_Logo.svg/2560px-Amazon_Prime_Logo.svg.png" alt="{{ t('amazon_prime_alt') | default('Amazon Prime Logo') }}" loading="lazy"/></div>
+                            <div class="book-info"><h3>{{ t('try_amazon_prime') | default('Try Amazon Prime Free') }}</h3><p>{{ t('amazon_prime_desc') | default('Fast, free shipping & more.') }}</p><div class="promo-link"><a href="{{ t('link_amazon_prime') | default('#') }}" target="_blank" rel="sponsored noopener">{{ t('promo_button_prime') | default('Get Prime Trial') }}</a></div></div>
+                        </div>
+                    </div>
+
+{% endif %}
+
+{# Banner 3: Después del 9no item (índice 8) #}
+{% if current_index == 8 or current_index >= total_items - 1 %}
+     <!-- Amazon Music Unlimited -->
+                    <div class="book-display promo-container">
+                         <div class="promo-item">
+                            <div class="promo-image"><img src="https://upload.wikimedia.org/wikipedia/commons/9/92/Amazon_Music_logo.svg" alt="{{ t('amazon_music_alt') | default('Amazon Music Logo') }}" loading="lazy"/></div>
+                            <div class="book-info"><h3>{{ t('try_amazon_music') | default('Try Amazon Music Unlimited') }}</h3><p>{{ t('amazon_music_desc') | default('Millions of songs.') }}</p><div class="promo-link"><a href="{{ t('link_amazon_music') | default('#') }}" target="_blank" rel="sponsored noopener">{{ t('promo_button_music') | default('Try Music') }}</a></div></div>
+                        </div>
+                    </div>
+{% endif %}
+
+{# Banner 4: Después del 12vo item (índice 11) #}
+{% if current_index == 11 or current_index >= total_items - 1 %}
+    <!-- Amazon Business -->
+    <div class="book-display promo-container">
+        <div class="promo-item">
+            <div class="promo-image"><img src="https://m.media-amazon.com/images/G/01/AmazonBusiness/LandingPage/amazon-business-logo-AB-stacked-RGB-L._CB1198670049_.png" alt="{{ t('amazon_business_alt') | default('Amazon Business Logo') }}" loading="lazy"/></div>
+            <div class="book-info"><h3>{{ t('amazon_business_title') | default('Free Amazon Business Account') }}</h3><p>{{ t('amazon_business_desc') | default('Business-only prices and more.') }}</p><div class="promo-link"><a href="{{ t('link_amazon_business') | default('#') }}" target="_blank" rel="sponsored noopener">{{ t('promo_button_business') | default('Sign Up') }}</a></div></div>
+        </div>
+    </div>
+{% endif %}
+
+{# Banner 5: Al final si es el último y es el item 15 o más, o si no se mostró otro antes y es suficientemente largo #}
+{% if current_index >= total_items - 1 %}
+    <!-- Lista de Nacimiento / Boda -->
+    <div class="book-display promo-container">
+        <div class="promo-item">
+            <div class="promo-image"><img src="https://m.media-amazon.com/images/G/01/AmazonBusiness/LandingPage/amazon-business-logo-AB-stacked-RGB-L._CB1198670049_.png" alt="{{ t('amazon_business_alt') | default('Amazon Business Logo') }}" loading="lazy"/></div>
+            <div class="book-info"><h3>{{ t('amazon_business_title') | default('Free Amazon Business Account') }}</h3><p>{{ t('amazon_business_desc') | default('Business-only prices and more.') }}</p><div class="promo-link"><a href="{{ t('link_amazon_business') | default('#') }}" target="_blank" rel="sponsored noopener">{{ t('promo_button_business') | default('Sign Up') }}</a></div></div>
+        </div>
+    </div>
+    
+{% endif %}
+
+{# Asegúrate de llenar el contenido de "..." con el HTML de cada banner y las traducciones t() #}

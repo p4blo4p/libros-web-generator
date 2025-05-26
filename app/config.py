@@ -5,14 +5,17 @@ class Config:
     """Configuraciones base de la aplicación."""
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'una-clave-secreta-muy-dificil-de-adivinar'
     MINIFY_HTML = True
-    # SERVER_NAME = 'localhost:5000' # Descomentar y ajustar para url_for(_external=True) si es necesario
+    #SERVER_NAME = 'localhost:5000' # Descomentar y ajustar para url_for(_external=True) si es necesario
     # APPLICATION_ROOT = '/'
     # PREFERRED_URL_SCHEME = 'http'
 
     # Rutas a archivos de datos (podrían ser variables de entorno también)
-    BOOKS_CSV_PATH = 'books.csv'
+    # BOOKS_CSV_PATH = 'books.csv' # Old: path to a single file
+    BOOKS_DATA_DIR = 'data/books_collection/'  # New: path to a directory containing CSVs
+                                            # Make sure this directory exists or is created
+                                            # e.g., your_project_root/data/books_collection/
     BESTSELLERS_JSON_PATH = 'social/amazon_bestsellers_es.json'
-    TRANSLATIONS_JSON_PATH = 'translations.json' # O gestionarlo directamente en translations.py
+    TRANSLATIONS_JSON_PATH = 'data/translations.json' # O gestionarlo directamente en translations.py
 
     STATIC_FOLDER = 'static'
     TEMPLATE_FOLDER = 'templates'

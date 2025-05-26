@@ -1,79 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
-
-    {# Asumimos que SUPPORTED_LANGUAGES y DEFAULT_LANGUAGE están disponibles en el contexto #}
-    {# O podrías pasarlos explícitamente desde la ruta sitemap #}
-    {% set languages = ['en', 'es', 'fr', 'it', 'de'] %} {# O {{ config.SUPPORTED_LANGUAGES }} si lo pones en config y lo pasas #}
-
-    {# 1. URLs de Índice #}
-    {% for lang_code in languages %}
-    <url>
-        <loc>{{ url_for('main.index', lang_code=lang_code, _external=True) }}</loc>
-        <lastmod>{{ current_date_for_sitemap }}</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>1.0</priority>
-    </url>
+        xmlns:xhtml="http://www.w3.org/1999/xhtml"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"> {# Namespace de imagen #}
+{% for page_entry in pages %}
+  <url>
+    <loc>{{ page_entry.loc }}</loc>
+    {% if page_entry.lastmod %}<lastmod>{{ page_entry.lastmod }}</lastmod>{% endif %}
+    {% if page_entry.changefreq %}<changefreq>{{ page_entry.changefreq }}</changefreq>{% endif %}
+    {% if page_entry.priority %}<priority>{{ page_entry.priority }}</priority>{% endif %}
+    
+    {% for alternate in page_entry.alternates %}
+    <xhtml:link rel="alternate" hreflang="{{ alternate.lang }}" href="{{ alternate.href }}" />
     {% endfor %}
 
-    {# 2. URLs de Páginas de Libros (book_by_identifier) #}
-    {# Iterar sobre cada libro y luego sobre cada idioma para ese libro #}
-    {% for book_item in all_books_data %}
-        {# Elegir un identificador canónico para la URL del sitemap #}
-        {% set canonical_identifier = book_item.asin or book_item.isbn13 or book_item.isbn10 %}
-        {% if canonical_identifier and book_item.author_slug and book_item.title_slug %}
-            {% for lang_code in languages %}
-            <url>
-                <loc>{{ url_for('main.book_by_identifier', lang_code=lang_code, author_slug=book_item.author_slug, book_slug=book_item.title_slug, identifier=canonical_identifier, _external=True) }}</loc>
-                <lastmod>{{ current_date_for_sitemap }}</lastmod> {# O una fecha de modificación más específica si la tienes #}
-                <changefreq>monthly</changefreq>
-                <priority>0.8</priority>
-                {# Incluir imagen si está disponible #}
-                {% if book_item.image_url %}
-                <image:image>
-                    <image:loc>{{ book_item.image_url | ensure_https }}</image:loc>
-                    <image:title>{{ book_item.title | escape }}</image:title>
-                    {# <image:caption>{{ book_item.description | striptags | truncate(100) | escape }}</image:caption> #}
-                </image:image>
-                {% endif %}
-            </url>
-            {% endfor %}
-        {% endif %}
-    {% endfor %}
-
-    {# 3. URLs de Páginas de Versiones de Libros (book_versions) #}
-    {% set unique_versions_slugs = {} %} {# Para evitar duplicados de (author_slug, base_title_slug) #}
-    {% for book_item in all_books_data %}
-        {% if book_item.author_slug and book_item.base_title_slug %}
-            {% set version_key = (book_item.author_slug, book_item.base_title_slug) %}
-            {% if version_key not in unique_versions_slugs %}
-                {% set _ = unique_versions_slugs.update({version_key: True}) %} {# Marcar como procesado #}
-                {% for lang_code in languages %}
-                <url>
-                    <loc>{{ url_for('main.book_versions', lang_code=lang_code, author_slug=book_item.author_slug, base_book_slug=book_item.base_title_slug, _external=True) }}</loc>
-                    <lastmod>{{ current_date_for_sitemap }}</lastmod>
-                    <changefreq>monthly</changefreq>
-                    <priority>0.7</priority>
-                </url>
-                {% endfor %}
-            {% endif %}
-        {% endif %}
-    {% endfor %}
-
-    {# 4. URLs de Páginas de Autor (author_books) #}
-    {% set unique_author_slugs = [] %} {# Para evitar duplicados de author_slug #}
-    {% for book_item in all_books_data %}
-        {% if book_item.author_slug and book_item.author_slug not in unique_author_slugs %}
-            {% set _ = unique_author_slugs.append(book_item.author_slug) %} {# Marcar como procesado #}
-            {% for lang_code in languages %}
-            <url>
-                <loc>{{ url_for('main.author_books', lang_code=lang_code, author_slug=book_item.author_slug, _external=True) }}</loc>
-                <lastmod>{{ current_date_for_sitemap }}</lastmod>
-                <changefreq>monthly</changefreq>
-                <priority>0.6</priority>
-            </url>
-            {% endfor %}
-        {% endif %}
-    {% endfor %}
-
+    {% if page_entry.image_url %}
+    <image:image>
+        <image:loc>{{ page_entry.image_url | ensure_https }}</image:loc>
+        {% if page_entry.image_title %}<image:title>{{ page_entry.image_title | escape }}</image:title>{% endif %}
+    </image:image>
+    {% endif %}
+  </url>
+{% endfor %}
 </urlset>

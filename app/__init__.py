@@ -1,12 +1,14 @@
 # app/__init__.py
 from flask import Flask
-from flask_htmlmin import HTMLMIN
+# from flask_htmlmin import HTMLMIN # Mantenlo comentado por ahora
 from app.config import Config
-from app.utils.helpers import ensure_https_filter
+from app.utils.helpers import ensure_https_filter, slugify_ascii # <--- IMPORTA slugify_ascii AQUÍ
 from app.utils.translations import TranslationManager
 from app.models.data_loader import load_processed_books, load_processed_bestsellers
+from app.utils.context_processors import inject_global_template_variables
+import logging
 
-htmlmin = HTMLMIN()
+# htmlmin = HTMLMIN() # Mantenlo comentado
 
 def create_app(config_class=Config):
     app = Flask(__name__,
@@ -14,35 +16,50 @@ def create_app(config_class=Config):
                 template_folder=config_class.TEMPLATE_FOLDER)
     app.config.from_object(config_class)
 
-    # Inicializar extensiones
-    if app.config['MINIFY_HTML']:
-        htmlmin.init_app(app)
+    # --- Configuración de Logging Detallado ---
+    # (Tu código de logging aquí, como lo teníamos antes)
+    if not app.debug or app.config.get('FORCE_DETAILED_LOGGING', False): 
+        app.logger.handlers.clear() 
+        app.logger.setLevel(logging.DEBUG)
+        
+        stream_handler = logging.StreamHandler()
+        stream_handler.setLevel(logging.DEBUG)
+        
+        formatter = logging.Formatter(
+            '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
+        )
+        stream_handler.setFormatter(formatter)
+        
+        app.logger.addHandler(stream_handler)
+        app.logger.propagate = False
+        app.logger.info("Detailed logging configured.")
+    else:
+        app.logger.setLevel(logging.DEBUG)
+        app.logger.info("Flask default debug logging active.")
+    # --- FIN Configuración de Logging Detallado ---
 
     # Registrar filtros Jinja2
     app.jinja_env.filters['ensure_https'] = ensure_https_filter
+    app.jinja_env.filters['slugify_ascii'] = slugify_ascii  # <--- REGISTRA EL FILTRO AQUÍ
 
-    # Cargar datos y gestor de traducciones y adjuntarlos a la app
-    # Esto asegura que se cargan una vez al iniciar la app
-    app.books_data = load_processed_books(app.config['BOOKS_CSV_PATH'])
+    # Registrar el context processor para variables globales
+    app.context_processor(inject_global_template_variables)
+
+    # Cargar datos y gestor de traducciones
+    app.books_data = load_processed_books(app.config['BOOKS_DATA_DIR'])
     app.bestsellers_data = load_processed_bestsellers(app.config['BESTSELLERS_JSON_PATH'])
-    app.translations_manager = TranslationManager(app.config['TRANSLATIONS_JSON_PATH'])
+    app.translations_manager = TranslationManager(app.config['TRANSLATIONS_JSON_PATH'], app.config['DEFAULT_LANGUAGE'])
 
     # Registrar Blueprints
     from app.routes.main_routes import main_bp
     from app.routes.sitemap_routes import sitemap_bp
     app.register_blueprint(main_bp)
     app.register_blueprint(sitemap_bp)
-
-    # Configurar logging si es necesario
-    if not app.debug:
-        # ... configuraciones de logging para producción ...
-        pass
     
-    app.logger.info("Aplicación BookList creada y configurada.")
+    app.logger.info("BookList Application created and configured.")
     if not app.books_data:
-        app.logger.error("ERROR CRÍTICO: No se cargaron datos de libros (app.books_data está vacío).")
+        app.logger.error("CRITICAL ERROR: Book data not loaded (app.books_data is empty).")
     if not app.bestsellers_data:
-        app.logger.warning("ADVERTENCIA: No se cargaron datos de bestsellers (app.bestsellers_data está vacío).")
-
+        app.logger.warning("WARNING: Bestsellers data not loaded (app.bestsellers_data is empty).")
 
     return app
