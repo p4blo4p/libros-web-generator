@@ -4,32 +4,59 @@ import shutil
 from pathlib import Path
 import re
 from unidecode import unidecode
-import sys # Para verificar la versión de Python
+import logging # Importar el módulo logging estándar
 
 # Intenta importar la fábrica de la aplicación y otras dependencias
 try:
     from app import create_app
 except ImportError as e:
-    print(f"ERROR: No se pudo importar 'create_app' desde 'app'. Detalles: {e}")
+    # Usar print aquí es aceptable ya que el logger de la app podría no estar disponible aún
+    print(f"ERROR CRÍTICO: No se pudo importar 'create_app' desde 'app'. Detalles: {e}")
     print("Asegúrate de que el script se ejecuta desde el directorio raíz del proyecto y que 'app' es un paquete accesible.")
     exit(1)
 
+# --- Configuración de un Logger Básico para el Script ANTES de crear la app ---
+# Esto es útil para mensajes ANTES de que app_instance.logger esté disponible
+# o si create_app() falla.
+script_logger = logging.getLogger('generate_static_script')
+script_logger.setLevel(logging.INFO)
+script_handler = logging.StreamHandler()
+script_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+script_handler.setFormatter(script_formatter)
+if not script_logger.handlers: # Evitar añadir múltiples handlers si el script se reimporta
+    script_logger.addHandler(script_handler)
+
+
 # --- FUNCIÓN SLUGIFY ---
+def slugify_ascii_local(text):
+    if text is None: return ""
+    text = str(text); text = unidecode(text); text = text.lower()
+    text = re.sub(r'[^\w\s-]', '', text); text = re.sub(r'\s+', '-', text)
+    text = re.sub(r'--+', '-', text); text = text.strip('-')
+    return text if text else "na"
+
 try:
-    from app.utils.helpers import slugify_ascii
-    print("INFO: slugify_ascii importado desde app.utils.helpers.")
+    from app.utils.helpers import slugify_ascii as slugify_ascii_app
+    script_logger.info("Usando slugify_ascii importado desde app.utils.helpers.")
+    slugify_to_use = slugify_ascii_app
 except ImportError:
-    print("ADVERTENCIA: No se pudo importar slugify_ascii desde app.utils.helpers. Usando la versión local.")
-    def slugify_ascii(text):
-        if text is None: return ""
-        text = str(text); text = unidecode(text); text = text.lower()
-        text = re.sub(r'[^\w\s-]', '', text); text = re.sub(r'\s+', '-', text)
-        text = re.sub(r'--+', '-', text); text = text.strip('-')
-        return text if text else "na"
+    script_logger.warning("No se pudo importar slugify_ascii desde app.utils.helpers. Usando la versión local de slugify.")
+    slugify_to_use = slugify_ascii_local
 
 # --- FUNCIÓN PARA OBTENER SEGMENTOS URL TRADUCIDOS (ADAPTADA PARA ESTE SCRIPT) ---
-def get_translated_url_segment_for_generator(segment_key, lang_code, url_segment_translations, default_app_lang, default_segment_value=None):
+def get_translated_url_segment_for_generator(segment_key, lang_code, url_segment_translations, default_app_lang, default_segment_value=None, logger=None):
+    # Usar el logger proporcionado o el logger del script como fallback si no se pasa ninguno
+    log = logger if logger else script_logger 
+
+    if not url_segment_translations or not isinstance(url_segment_translations, dict):
+        # log.warning(f"(get_translated_url_segment): URL_SEGMENT_TRANSLATIONS no es un diccionario válido o está vacío. Usando default_segment_value o segment_key para '{segment_key}'.")
+        return default_segment_value if default_segment_value is not None else segment_key
+
     segments_for_key = url_segment_translations.get(segment_key, {})
+    if not isinstance(segments_for_key, dict):
+        # log.warning(f"(get_translated_url_segment): La entrada para '{segment_key}' en URL_SEGMENT_TRANSLATIONS no es un diccionario. Usando default_segment_value o segment_key.")
+        return default_segment_value if default_segment_value is not None else segment_key
+    
     translated_segment = segments_for_key.get(lang_code)
     if translated_segment:
         return translated_segment
@@ -37,22 +64,18 @@ def get_translated_url_segment_for_generator(segment_key, lang_code, url_segment
         translated_segment_default_lang = segments_for_key.get(default_app_lang)
         if translated_segment_default_lang:
             return translated_segment_default_lang
-    if default_segment_value:
+    if default_segment_value is not None:
         return default_segment_value
     return segment_key
 
 OUTPUT_DIR = "_site"
 
-def save_page(client, url_path, file_path_obj):
-    # En generate_static.py, línea 47
+def save_page(client, url_path, file_path_obj, logger): # Pasar el logger
     try:
-        print(f"Generando: {url_path} -> {file_path_obj}")
-    except BlockingIOError:
-        # Puedes simplemente pasar, o registrar de una manera menos propensa a bloquear
-        # Por ejemplo, acumulando mensajes y escribiéndolos en lotes, o a un archivo.
-        # Pero para un build, a menudo es mejor solo reducir la salida.
-        # pass # O un log más simple
-        print(f"Intento de E/S bloqueado para: {url_path}")
+        logger.info(f"Generando: {url_path} -> {file_path_obj}")
+    except BlockingIOError: # Esto es específico de print, el logger de Flask maneja la E/S de forma diferente
+        logger.warning(f"Intento de E/S bloqueado (raro con logger) para: {url_path}")
+    
     try:
         response = client.get(url_path)
         if response.status_code == 200:
@@ -60,124 +83,160 @@ def save_page(client, url_path, file_path_obj):
             with open(file_path_obj, 'wb') as f:
                 f.write(response.data)
         elif response.status_code in [301, 302, 307, 308]:
-            print(f"  INFO: {url_path} redirigió (status {response.status_code}). Contenido de la página final guardado.")
+            logger.info(f"{url_path} redirigió (status {response.status_code}). Contenido de la página final (si la siguió el cliente) guardado.")
+            if response.data:
+                 file_path_obj.parent.mkdir(parents=True, exist_ok=True)
+                 with open(file_path_obj, 'wb') as f:
+                     f.write(response.data)
+            else:
+                logger.warning(f"{url_path} redirigió pero no hay datos en la respuesta final.")
         elif response.status_code == 404:
-            print(f"  AVISO 404: {url_path} no encontrado. No se guardó el archivo.")
+            logger.warning(f"404: {url_path} no encontrado. No se guardó el archivo.")
         else:
-            print(f"  Error {response.status_code} para {url_path}")
+            logger.error(f"HTTP {response.status_code} para {url_path}. No se guardó el archivo.")
     except Exception as e:
-        print(f"  EXCEPCIÓN generando {url_path}: {e}")
+        logger.exception(f"EXCEPCIÓN generando y guardando {url_path}: {e}") # logger.exception incluye traceback
 
 def main():
+    script_logger.info("Iniciando script generate_static.py")
+    
     app_instance = create_app()
+    logger = app_instance.logger # Usar el logger de la aplicación Flask
+    logger.info("Instancia de la aplicación Flask creada y su logger está ahora en uso.")
     
     LANGUAGES = app_instance.config.get('SUPPORTED_LANGUAGES', ['en'])
     DEFAULT_LANGUAGE = app_instance.config.get('DEFAULT_LANGUAGE', 'en')
     URL_SEGMENT_TRANSLATIONS = app_instance.config.get('URL_SEGMENT_TRANSLATIONS', {})
-    
+    # logger.debug(f"URL_SEGMENT_TRANSLATIONS cargado: {URL_SEGMENT_TRANSLATIONS}")
+
     books_for_generation = app_instance.books_data 
     if not books_for_generation:
-        print("ERROR CRÍTICO: No hay datos de libros (app_instance.books_data está vacío). Saliendo.")
+        logger.critical("No hay datos de libros (app_instance.books_data está vacío o no es una lista). Saliendo.")
         return
 
-    print("Iniciando generación del sitio estático...")
+    logger.info(f"Idiomas soportados: {LANGUAGES}, Idioma por defecto: {DEFAULT_LANGUAGE}")
+    logger.info(f"{len(books_for_generation)} libros cargados para generación.")
+
+    logger.info("Iniciando generación del sitio estático...")
     if Path(OUTPUT_DIR).exists():
+        logger.info(f"Eliminando directorio de salida existente: {OUTPUT_DIR}")
         shutil.rmtree(OUTPUT_DIR)
     Path(OUTPUT_DIR).mkdir(parents=True, exist_ok=True)
-    print(f"Directorio de salida creado/limpiado: {OUTPUT_DIR}")
+    logger.info(f"Directorio de salida creado/limpiado: {OUTPUT_DIR}")
 
-    # Copiar archivos estáticos
     static_folder_path = Path(app_instance.static_folder)
     if static_folder_path.exists() and static_folder_path.is_dir():
         static_output_dir_name = Path(app_instance.static_url_path.strip('/'))
         static_output_dir = Path(OUTPUT_DIR) / static_output_dir_name
-        
-        if static_output_dir.exists(): # Comprobar si el destino existe
-            shutil.rmtree(static_output_dir) # Eliminarlo si existe
-        shutil.copytree(static_folder_path, static_output_dir) # Copiar sin dirs_exist_ok
-        print(f"Carpeta estática '{static_folder_path.name}' copiada a '{static_output_dir}'")
+        if static_output_dir.exists():
+             logger.warning(f"Destino de estáticos '{static_output_dir}' ya existe. Eliminando.")
+             shutil.rmtree(static_output_dir)
+        shutil.copytree(static_folder_path, static_output_dir)
+        logger.info(f"Carpeta estática '{static_folder_path.name}' copiada a '{static_output_dir}'")
     else:
-        print(f"ADVERTENCIA: Carpeta estática no encontrada en {static_folder_path}")
+        logger.warning(f"Carpeta estática no encontrada en '{static_folder_path}' o no es un directorio.")
 
-    # Copiar archivos de la carpeta 'public' (si existe)
     public_folder_path = Path("public")
     if public_folder_path.exists() and public_folder_path.is_dir():
         public_output_dir = Path(OUTPUT_DIR)
+        copied_public_files = 0
         for item in public_folder_path.iterdir():
             if item.is_file():
                 try:
                     shutil.copy2(item, public_output_dir / item.name)
+                    copied_public_files +=1
                 except Exception as e:
-                    print(f"  ERROR copiando archivo público {item.name}: {e}")
-            elif item.is_dir():
-                print(f"  AVISO: Subdirectorio '{item.name}' en 'public/' no copiado automáticamente. Copiar manualmente si es necesario o implementar copia recursiva.")
-        print(f"Archivos de la carpeta 'public/' copiados a '{public_output_dir}'")
+                    logger.error(f"Error copiando archivo público '{item.name}': {e}")
+        if copied_public_files > 0:
+             logger.info(f"{copied_public_files} archivos de la carpeta 'public/' copiados a '{public_output_dir}'")
+        else:
+            logger.info("No se encontraron archivos en la carpeta 'public/' para copiar o hubo errores.")
+
+    else:
+        logger.info(f"Carpeta 'public/' no encontrada en '{public_folder_path}'. No se copiaron archivos adicionales.")
+
 
     with app_instance.app_context():
         with app_instance.test_client() as client:
-            print("\nGenerando páginas de índice y robots.txt...")
-            save_page(client, "/", Path(OUTPUT_DIR) / "index.html")
-            save_page(client, "/robots.txt", Path(OUTPUT_DIR) / "robots.txt")
+            logger.info("Generando páginas principales (índice raíz, sitemap.xml, test)...")
+            save_page(client, "/", Path(OUTPUT_DIR) / "index.html", logger)
+            save_page(client, "/sitemap.xml", Path(OUTPUT_DIR) / "sitemap.xml", logger)
+            save_page(client, "/test/", Path(OUTPUT_DIR) / "test_sitemap" / "index.html", logger)
 
+            logger.info("Generando páginas de índice por idioma...")
             for lang in LANGUAGES:
                 flask_url_lang_index = f"/{lang}/"
                 output_path_lang_index = Path(OUTPUT_DIR) / lang / "index.html"
-                save_page(client, flask_url_lang_index, output_path_lang_index)
+                save_page(client, flask_url_lang_index, output_path_lang_index, logger)
 
-            print("\nGenerando páginas de detalles de libros...")
+            logger.info("Generando páginas de detalles de libros...")
+            books_processed_count = 0
             for book_data in books_for_generation:
-                author_s = book_data.get('author_slug')
-                title_s = book_data.get('title_slug')
+                author_s_original = book_data.get('author_slug')
+                title_s_original = book_data.get('title_slug')
                 identifier = book_data.get('isbn10') or book_data.get('isbn13') or book_data.get('asin')
-                if not (identifier and author_s and title_s): continue
                 
+                if not (identifier and author_s_original and title_s_original): 
+                    # logger.debug(f"SALTANDO libro (datos incompletos): author='{author_s_original}', title='{title_s_original}', id='{identifier}'")
+                    continue
+                
+                author_s = slugify_to_use(author_s_original) 
+                title_s = slugify_to_use(title_s_original)
+
                 for lang in LANGUAGES:
-                    book_segment_translated = get_translated_url_segment_for_generator('book', lang, URL_SEGMENT_TRANSLATIONS, DEFAULT_LANGUAGE, 'book')
+                    book_segment_translated = get_translated_url_segment_for_generator(
+                        'book', lang, URL_SEGMENT_TRANSLATIONS, DEFAULT_LANGUAGE, 'book', logger=logger
+                    )
                     flask_url = f"/{lang}/{book_segment_translated}/{author_s}/{title_s}/{identifier}/"
-                    dir_author_s = author_s if author_s else "unknown-author"
-                    dir_title_s = title_s if title_s else "unknown-title"
+                    dir_author_s = author_s if author_s else "na-author"
+                    dir_title_s = title_s if title_s else "na-title"
                     output_path = Path(OUTPUT_DIR) / lang / book_segment_translated / dir_author_s / dir_title_s / identifier / "index.html"
-                    save_page(client, flask_url, output_path)
+                    save_page(client, flask_url, output_path, logger)
+                books_processed_count +=1
+            logger.info(f"{books_processed_count} registros de libros procesados para generar páginas de detalle.")
             
-            print("\nGenerando páginas de versiones de libros...")
-            unique_book_bases_slugs = {}
+            logger.info("Generando páginas de versiones de libros...")
+            unique_book_bases_slugs = {} # {(author_slug, base_title_slug): True}
             for book_data in books_for_generation:
-                author_s = book_data.get('author_slug')
-                base_title_s = book_data.get('base_title_slug')
-                if not (author_s and base_title_s): continue
-                unique_book_bases_slugs[(author_s, base_title_s)] = True
+                author_s_original = book_data.get('author_slug')
+                base_title_s_original = book_data.get('base_title_slug')
+                if not (author_s_original and base_title_s_original): continue
+                unique_book_bases_slugs[(author_s_original, base_title_s_original)] = True
             
-            for author_s, base_title_s in unique_book_bases_slugs.keys():
+            versions_pages_count = 0
+            for author_s_orig, base_title_s_orig in unique_book_bases_slugs.keys():
+                author_s = slugify_to_use(author_s_orig)
+                base_title_s = slugify_to_use(base_title_s_orig)
                 for lang in LANGUAGES:
-                    versions_segment_translated = get_translated_url_segment_for_generator('versions', lang, URL_SEGMENT_TRANSLATIONS, DEFAULT_LANGUAGE, 'versions')
+                    versions_segment_translated = get_translated_url_segment_for_generator(
+                        'versions', lang, URL_SEGMENT_TRANSLATIONS, DEFAULT_LANGUAGE, 'versions', logger=logger
+                    )
                     flask_url = f"/{lang}/{versions_segment_translated}/{author_s}/{base_title_s}/"
-                    dir_author_s = author_s if author_s else "unknown-author"
-                    dir_base_title_s = base_title_s if base_title_s else "unknown-basetitle"
+                    dir_author_s = author_s if author_s else "na-author"
+                    dir_base_title_s = base_title_s if base_title_s else "na-basetitle"
                     output_path = Path(OUTPUT_DIR) / lang / versions_segment_translated / dir_author_s / dir_base_title_s / "index.html"
-                    save_page(client, flask_url, output_path)
+                    save_page(client, flask_url, output_path, logger)
+                versions_pages_count +=1
+            logger.info(f"{versions_pages_count} páginas de versiones de libros generadas.")
 
-            print("\nGenerando páginas de libros por autor...")
-            unique_author_slugs = set(b.get('author_slug') for b in books_for_generation if b.get('author_slug'))
-            for author_s in unique_author_slugs:
+            logger.info("Generando páginas de libros por autor...")
+            unique_author_slugs_orig = set(b.get('author_slug') for b in books_for_generation if b.get('author_slug'))
+            author_pages_count = 0
+            for author_s_orig in unique_author_slugs_orig:
+                author_s = slugify_to_use(author_s_orig)
                 for lang in LANGUAGES:
-                    author_segment_translated = get_translated_url_segment_for_generator('author', lang, URL_SEGMENT_TRANSLATIONS, DEFAULT_LANGUAGE, 'author')
+                    author_segment_translated = get_translated_url_segment_for_generator(
+                        'author', lang, URL_SEGMENT_TRANSLATIONS, DEFAULT_LANGUAGE, 'author', logger=logger
+                    )
                     flask_url = f"/{lang}/{author_segment_translated}/{author_s}/"
-                    dir_author_s = author_s if author_s else "unknown-author"
+                    dir_author_s = author_s if author_s else "na-author"
                     output_path = Path(OUTPUT_DIR) / lang / author_segment_translated / dir_author_s / "index.html"
-                    save_page(client, flask_url, output_path)
+                    save_page(client, flask_url, output_path, logger)
+                author_pages_count +=1
+            logger.info(f"{author_pages_count} páginas de autor generadas.")
 
-            print("\nGenerando sitemap.xml y test_sitemap.html...")
-            save_page(client, "/sitemap.xml", Path(OUTPUT_DIR) / "sitemap.xml")
-            save_page(client, "/test/", Path(OUTPUT_DIR) / "test_sitemap" / "index.html")
-
-    print(f"\nSitio estático generado con éxito en la carpeta: {OUTPUT_DIR}")
-    print("IMPORTANTE: Revisa las URLs generadas y las rutas de guardado, especialmente para los segmentos traducidos.")
+    logger.info(f"Sitio estático generado con éxito en la carpeta: {OUTPUT_DIR}")
+    logger.info("IMPORTANTE: Revisa las URLs generadas y las rutas de guardado, especialmente para los segmentos traducidos.")
 
 if __name__ == '__main__':
-    # Opcional: Comprobar la versión de Python para dar una advertencia más amigable sobre dirs_exist_ok
-    # python_version = sys.version_info
-    # if python_version < (3, 8):
-    #     print(f"ADVERTENCIA: Estás usando Python {python_version.major}.{python_version.minor}. "
-    #           "El argumento 'dirs_exist_ok' para shutil.copytree no está disponible. "
-    #           "El script usa una alternativa (rmtree + copytree).")
     main()
