@@ -44,6 +44,7 @@
     "list_of_books_written_by": "Lista de libros escritos por {author}",
     "all_books_by": "Todos los libros de {author}",
     "books_by_author": "libros por autor",
+    "untitled_book": "Libro sin Título",
     "try_kindle_unlimited": "Prueba Kindle Unlimited",
     "kindle_unlimited_desc": "Acceso ilimitado a millones de eBooks y revistas seleccionadas en cualquier dispositivo con la app Kindle. Ideal para lectores ávidos.",
     "promo_button_kindle": "Probar Kindle Unlimited",
@@ -58,7 +59,13 @@
     "amazon_music_desc": "Millones de canciones y podcasts sin anuncios, con reproducción sin conexión. Ofréceles una prueba gratuita.",
     "promo_button_music": "Probar Music Unlimited",
     "link_amazon_music": "#ENLACE_MUSIC_ES#",
-    "amazon_music_alt": "Logo de Amazon Music"
+    "amazon_music_alt": "Logo de Amazon Music",
+    "try_amazon_business": "Prueba Amazon Business",
+    "amazon_business_title": "Prueba Amazon Business",
+    "amazon_business_desc": "Obtén precios exclusivos para empresas, descuentos por cantidad y gestión de cuentas sencilla. Ideal para todo tipo de negocios.",
+    "promo_button_business": "Probar Amazon Business",
+    "link_amazon_business": "#ENLACE_AMAZON_BUSINESS_ES#",
+    "amazon_business_alt": "Logo de Amazon Business"
   },
   "en": {
     "title": "Title",
@@ -105,6 +112,7 @@
     "list_of_books_written_by": "List of books written by {author}",
     "all_books_by": "All books by {author}",
     "books_by_author": "books by author",
+    "untitled_book": "Untitled Book",
     "try_kindle_unlimited": "Try Kindle Unlimited",
     "kindle_unlimited_desc": "Unlimited access to millions of eBooks and selected magazines on any device with the Kindle app. Ideal for avid readers.",
     "promo_button_kindle": "Try Kindle Unlimited",
@@ -119,7 +127,13 @@
     "amazon_music_desc": "Millions of ad-free songs and podcasts, with offline playback. Offer them a free trial.",
     "promo_button_music": "Try Music Unlimited",
     "link_amazon_music": "#ENLACE_MUSIC_EN#",
-    "amazon_music_alt": "Amazon Music Logo"
+    "amazon_music_alt": "Amazon Music Logo",
+    "try_amazon_business": "Try Amazon Business",
+    "amazon_business_title": "Try Amazon Business",
+    "amazon_business_desc": "Get business-only pricing, quantity discounts, and easy account management. Ideal for all types of businesses.",
+    "promo_button_business": "Try Amazon Business",
+    "link_amazon_business": "#ENLACE_AMAZON_BUSINESS_EN#",
+    "amazon_business_alt": "Amazon Business Logo"
   },
   "de": {
     "title": "Titel",
@@ -166,6 +180,7 @@
     "list_of_books_written_by": "Liste der Bücher von {author}",
     "all_books_by": "Alle Bücher von {author}",
     "books_by_author": "Bücher nach Autor",
+    "untitled_book": "Unbenanntes Buch",
     "try_kindle_unlimited": "Kindle Unlimited testen",
     "kindle_unlimited_desc": "Unbegrenzter Zugriff auf Millionen von eBooks und ausgewählte Zeitschriften auf jedem Gerät mit der Kindle-App. Ideal für Vielleser.",
     "promo_button_kindle": "Kindle Unlimited testen",
@@ -180,7 +195,13 @@
     "amazon_music_desc": "Millionen von Songs und Podcasts ohne Werbung, mit Offline-Wiedergabe. Bieten Sie ihnen eine kostenlose Testversion an.",
     "promo_button_music": "Music Unlimited testen",
     "link_amazon_music": "#ENLACE_MUSIC_DE#",
-    "amazon_music_alt": "Amazon Music Logo"
+    "amazon_music_alt": "Amazon Music Logo",
+    "try_amazon_business": "Amazon Business testen",
+    "amazon_business_title": "Amazon Business testen",
+    "amazon_business_desc": "Erhalten Sie Preise nur für Unternehmen, Mengenrabatte und eine einfache Kontoverwaltung. Ideal für alle Arten von Unternehmen.",
+    "promo_button_business": "Amazon Business testen",
+    "link_amazon_business": "#ENLACE_AMAZON_BUSINESS_DE#",
+    "amazon_business_alt": "Amazon Business Logo"
   },
   "fr": {
     "title": "Titre",
@@ -227,6 +248,7 @@
     "list_of_books_written_by": "Liste des livres écrits par {author}",
     "all_books_by": "Tous les livres de {author}",
     "books_by_author": "livres par auteur",
+    "untitled_book": "Livre sans Titre",
     "try_kindle_unlimited": "Essayez Kindle Unlimited",
     "kindle_unlimited_desc": "Accès illimité à des millions d'eBooks et de magazines sélectionnés sur n'importe quel appareil avec l'application Kindle. Idéal pour les lecteurs assidus.",
     "promo_button_kindle": "Essayez Kindle Unlimited",
@@ -241,7 +263,13 @@
     "amazon_music_desc": "Des millions de chansons et de podcasts sans publicité, avec lecture hors ligne. Offrez-leur un essai gratuit.",
     "promo_button_music": "Essayez Music Unlimited",
     "link_amazon_music": "#ENLACE_MUSIC_FR#",
-    "amazon_music_alt": "Logo Amazon Music"
+    "amazon_music_alt": "Logo Amazon Music",
+    "try_amazon_business": "Essayez Amazon Business",
+    "amazon_business_title": "Essayez Amazon Business",
+    "amazon_business_desc": "Bénéficiez de prix réservés aux professionnels, de réductions sur quantité et d'une gestion de compte simplifiée. Idéal pour tous types d'entreprises.",
+    "promo_button_business": "Essayer Amazon Business",
+    "link_amazon_business": "#ENLACE_AMAZON_BUSINESS_FR#",
+    "amazon_business_alt": "Logo Amazon Business"
   },
   "it": {
     "title": "Titolo",
@@ -288,6 +316,7 @@
     "list_of_books_written_by": "Elenco dei libri scritti da {author}",
     "all_books_by": "Tutti i libri di {author}",
     "books_by_author": "libri per autore",
+    "untitled_book": "Libro senza Titolo",
     "try_kindle_unlimited": "Prova Kindle Unlimited",
     "kindle_unlimited_desc": "Accesso illimitato a milioni di eBook e riviste selezionate su qualsiasi dispositivo con l'app Kindle. Ideale per lettori accaniti.",
     "promo_button_kindle": "Prova Kindle Unlimited",
@@ -302,6 +331,12 @@
     "amazon_music_desc": "Milioni di brani e podcast senza pubblicità, con riproduzione offline. Offri loro una prova gratuita.",
     "promo_button_music": "Prova Music Unlimited",
     "link_amazon_music": "#ENLACE_MUSIC_IT#",
-    "amazon_music_alt": "Logo Amazon Music"
+    "amazon_music_alt": "Logo Amazon Music",
+    "try_amazon_business": "Prova Amazon Business",
+    "amazon_business_title": "Prova Amazon Business",
+    "amazon_business_desc": "Ottieni prezzi esclusivi per aziende, sconti per quantità e una facile gestione dell'account. Ideale per tutti i tipi di aziende.",
+    "promo_button_business": "Provare Amazon Business",
+    "link_amazon_business": "#ENLACE_AMAZON_BUSINESS_IT#",
+    "amazon_business_alt": "Logo Amazon Business"
   }
 }
