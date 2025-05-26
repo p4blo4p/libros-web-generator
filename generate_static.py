@@ -44,7 +44,15 @@ def get_translated_url_segment_for_generator(segment_key, lang_code, url_segment
 OUTPUT_DIR = "_site"
 
 def save_page(client, url_path, file_path_obj):
-    print(f"Generando: {url_path} -> {file_path_obj}")
+    # En generate_static.py, línea 47
+    try:
+        print(f"Generando: {url_path} -> {file_path_obj}")
+    except BlockingIOError:
+        # Puedes simplemente pasar, o registrar de una manera menos propensa a bloquear
+        # Por ejemplo, acumulando mensajes y escribiéndolos en lotes, o a un archivo.
+        # Pero para un build, a menudo es mejor solo reducir la salida.
+        # pass # O un log más simple
+        current_app.logger.debug(f"Intento de E/S bloqueado para: {url_path}")
     try:
         response = client.get(url_path)
         if response.status_code == 200:
