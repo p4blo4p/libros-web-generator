@@ -28,7 +28,7 @@
    
         <h2>{{t('top_seller')}}</h2>
         
-          {% for libro in books %}
+          {%- for libro in books -%}
         <div class="book-display">
         <div class="book-cover">
             <a href="{{libro['link']}}" ><img src="{{ libro['image_url']}}" alt="Portada de {{ libro['title'] }}"></a>
@@ -36,16 +36,16 @@
         </div>
         <div class="book-info">
             
-          {% if libro['title'] | default(None) %}
+          {%- if libro['title'] | default(None) -%}
     <p><strong>{{ libro['title'] }}</strong></p>
-{% endif %}
-          {% if libro['author'] | default(None) %}
+{%- endif -%}
+          {%- if libro['author'] | default(None) -%}
     <p>{{ libro['author'] }}</p>
-{% endif %}
+{%- endif -%}
 
         </div>
     </div>
-  {% if loop.index % (books | length)  == 3 %}
+  {%- if loop.index % (books | length)  == 3 -%}
                 <!-- Kindle Unlimited -->
                 <div class="book-display">
                   <div class="promo-item">
@@ -63,8 +63,8 @@
                       </div>
                   </div>
                 </div>
-  {% endif %}
-            {% if loop.index % (books | length) == 6 or loop.index == (books | length) %}
+  {%- endif -%}
+            {%- if loop.index % (books | length) == 6 or loop.index == (books | length) -%}
               <div class="book-display">
 
                 <!-- Amazon Prime -->
@@ -82,8 +82,8 @@
                     </div>
                 </div>
               </div>
-  {% endif %}
-            {% if loop.index % (books | length) == 9 or loop.index == (books | length) %}
+  {%- endif -%}
+            {%- if loop.index % (books | length) == 9 or loop.index == (books | length) -%}
             <div class="book-display">
               <!-- Amazon Music Unlimited -->
             <div class="promo-item">
@@ -100,8 +100,8 @@
                   </div>
               </div>
             </div>
-  {% endif %}
-          {% if loop.index % (books | length) == 12 or loop.index == (books | length) %}
+  {%- endif -%}
+          {%- if loop.index % (books | length) == 12 or loop.index == (books | length) -%}
             <div class="book-display">
                 <!-- Amazon Business -->
         <div class="promo-item">
@@ -118,8 +118,8 @@
             </div>
         </div>
             </div>
-  {% endif %}
-        {% if loop.index == (books | length) or loop.index % (books | length) == 15 %}
+  {%- endif -%}
+        {%- if loop.index == (books | length) or loop.index % (books | length) == 15 -%}
   
   <div class="book-display">
      <!-- Lista de Nacimiento / Boda -->
@@ -139,8 +139,8 @@
             </div>
         </div>
   </div>
-            {% endif %}
-    {% endfor %}
+            {%- endif -%}
+    {%- endfor -%}
        
 </body>
 </html>

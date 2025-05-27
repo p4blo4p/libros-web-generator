@@ -1,40 +1,40 @@
-{% extends "base.html" %}
+{%- extends "base.html" -%}
 
 {# ====================================================================== #}
 {# METADATOS Y TÍTULO DE LA PÁGINA                                        #}
 {# ====================================================================== #}
 
-{% block title %}
+{%- block title -%}
     {{ t('all_books') | default('All Books') }} {{ t('by_author_simple') | default('by') }} {{ page_author_display | default(t('unknown_author') | default('Unknown Author')) }}
-{% endblock %}
+{%- endblock -%}
 
-{% block meta_tags %}
+{%- block meta_tags -%}
     <meta name="description" content="{{ t('meta_desc_author_page', author=page_author_display) | default('Discover all books written by ' + page_author_display + '. Find your next read.') }}" />
     <meta name="keywords" content="{{ t('meta_keywords_author_page', author=page_author_display) | default(page_author_display + ', books by ' + page_author_display + ', all books, bibliography') }}" />
     <meta name="author" content="{{ page_author_display | default('') }}" />
-{% endblock %}
+{%- endblock -%}
 
-{% block canonical_url %}
+{%- block canonical_url -%}
     <link rel="canonical" href="{{ url_for('main.author_books', lang_code=lang, author_slug=(request.view_args.get('author_slug') or (books[0].author_slug if books and books[0].author_slug else page_author_display | slugify_ascii)), _external=True) }}" />
-{% endblock %}
+{%- endblock -%}
 
-{% block opengraph_tags %}
+{%- block opengraph_tags -%}
     <meta property="og:title" content="{{ t('all_books') | default('All Books') }} {{ t('by_author_simple') | default('by') }} {{ page_author_display | default(t('unknown_author') | default('Unknown Author')) }}" />
     <meta property="og:description" content="{{ t('meta_desc_author_page', author=page_author_display) | default('Discover all books written by ' + page_author_display + '. Find your next read.') }}" />
     <meta property="og:image" content="{{ (books[0].image_url if books else url_for('static', filename='images/placeholder_author.png')) | ensure_https | default('') }}" /> {# Placeholder para autor #}
     <meta property="og:url" content="{{ url_for('main.author_books', lang_code=lang, author_slug=(request.view_args.get('author_slug') or (books[0].author_slug if books and books[0].author_slug else page_author_display | slugify_ascii)), _external=True) }}" />
     <meta property="og:type" content="profile" /> {# 'profile' es adecuado para una página de autor/persona #}
     <meta property="profile:username" content="{{ page_author_display | slugify_ascii | default('') }}" /> {# Opcional, si el slug es un "username" #}
-{% endblock %}
+{%- endblock -%}
 
-{% block twitter_card_tags %}
+{%- block twitter_card_tags -%}
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content="{{ t('all_books') | default('All Books') }} {{ t('by_author_simple') | default('by') }} {{ page_author_display | default(t('unknown_author') | default('Unknown Author')) }}" />
     <meta name="twitter:description" content="{{ t('meta_desc_author_page', author=page_author_display) | default('Discover all books written by ' + page_author_display + '. Find your next read.') }}" />
     <meta name="twitter:image" content="{{ (books[0].image_url if books else url_for('static', filename='images/placeholder_author.png')) | ensure_https | default('') }}" /> {# Placeholder para autor #}
-{% endblock %}
+{%- endblock -%}
 
-{% block structured_data %}
+{%- block structured_data -%}
     <script type="application/ld+json" defer>
     {
       "@context": "https://schema.org",
@@ -42,7 +42,7 @@
       "mainEntity": {
           "@type": "Person",
           "name": "{{ page_author_display | escape | default('') }}",
-          {% if books %}
+          {%- if books -%}
           "mainEntityOfPage": { // Indica que esta persona es la entidad principal de esta ProfilePage
             "@type": "WebPage",
             "@id": "{{ url_for('main.author_books', lang_code=lang, author_slug=(request.view_args.get('author_slug') or books[0].author_slug), _external=True) }}"
@@ -51,36 +51,36 @@
           "hasOccupation": [{"@type": "Occupation", "name": "{{ t('writer_occupation') | default('Writer') }}"}],
           // Lista algunos libros como "significantWork" o usa CollectionPage para listar todos
           "significantWork": [
-            {% for libro_item in books[:3] %} {# Mostrar hasta 3 obras significativas #}
+            {%- for libro_item in books[:3] -%} {# Mostrar hasta 3 obras significativas #}
             {
               "@type": "Book",
               "name": "{{ libro_item.title | escape | default('') }}",
               "url": "{{ url_for('main.book_by_identifier', lang_code=lang, author_slug=libro_item.author_slug, book_slug=libro_item.title_slug, identifier=(libro_item.isbn10 or libro_item.isbn13 or libro_item.asin), _external=True) }}"
             }{{ "," if not loop.last else "" }}
-            {% endfor %}
+            {%- endfor -%}
           ]
-          {% endif %}
+          {%- endif -%}
       },
       "name": "{{ t('h1_all_books_by_author', author=(page_author_display | escape)) | default('All books by: ' + (page_author_display | escape)) }}",
       "description": "{{ t('meta_desc_author_page', author=(page_author_display | escape)) | default('Discover all books written by ' + (page_author_display | escape) + '. Find your next read.') }}",
       "url": "{{ url_for('main.author_books', lang_code=lang, author_slug=(request.view_args.get('author_slug') or (books[0].author_slug if books and books[0].author_slug else page_author_display | slugify_ascii)), _external=True) }}"
     }
     </script>
-{% endblock %}
+{%- endblock -%}
 
 {# ====================================================================== #}
 {# CONTENIDO DEL HEADER ESPECÍFICO DE ESTA PÁGINA                         #}
 {# ====================================================================== #}
-{% block header_content %}
+{%- block header_content -%}
     <nav class="header page-specific-header">
         <a class="button" href="{{ url_for('main.index', lang_code=lang) }}">{{ t('back_to_list') | default('Back to List') }}</a>
     </nav>
-{% endblock %}
+{%- endblock -%}
 
 {# ====================================================================== #}
 {# CONTENIDO PRINCIPAL DE LA PÁGINA                                       #}
 {# ====================================================================== #}
-{% block content %}
+{%- block content -%}
     <div class="page-container author-books-page">
 
         <section class="google-search-container">
@@ -99,11 +99,11 @@
         
         <div class="book-list">
           
-            {% if books %}
-                {% for libro_item in books %}
+            {%- if books -%}
+                {%- for libro_item in books -%}
                 <div class="book-display">
                     <div class="book-cover">
-                        {% set identifier = libro_item.get('isbn13') or libro_item.get('isbn10') or libro_item.get('asin') %}
+                        {%- set identifier = libro_item.get('isbn13') or libro_item.get('isbn10') or libro_item.get('asin') -%}
                         <a href="{{ url_for('main.book_by_identifier', lang_code=lang, author_slug=libro_item.author_slug, book_slug=libro_item.title_slug, identifier=identifier) }}">
                             <img src="{{ libro_item.image_url | ensure_https | default(url_for('static', filename='images/placeholder_cover.png')) }}" alt="{{ t('cover_of', title=libro_item.title) | default('Cover of ' + (libro_item.title if libro_item.title else 'book')) }}" loading="lazy"/>
                         </a>
@@ -111,39 +111,39 @@
                     <div class="book-info">
                         <p class="book-title"><strong><a href="{{ url_for('main.book_by_identifier', lang_code=lang, author_slug=libro_item.author_slug, book_slug=libro_item.title_slug, identifier=identifier) }}">{{ libro_item.title | default(t('untitled_book') | default('Untitled Book')) }}</a></strong></p>
                         {# Mostrar enlace a versiones si es diferente del título principal #}
-                        {% if libro_item.base_title_slug and libro_item.base_title_slug != libro_item.title_slug %}
+                        {%- if libro_item.base_title_slug and libro_item.base_title_slug != libro_item.title_slug -%}
                         <p class="versions-link"><a href="{{ url_for('main.book_versions', lang_code=lang, author_slug=libro_item.author_slug, base_book_slug=libro_item.base_title_slug) }}">{{ t('see_all_versions') | default('See all versions') }}</a></p>
-                        {% endif %}
+                        {%- endif -%}
 
-                        {% if libro_item.isbn10 %}<p><span class="detail-label">{{ t('isbn10') }}:</span> {{ libro_item.isbn10 }}</p>{% endif %}
-                        {% if libro_item.isbn13 %}<p><span class="detail-label">{{ t('isbn13') }}:</span> {{ libro_item.isbn13 }}</p>{% endif %}
-                        {% if libro_item.language %}<p><span class="detail-label">{{ t('language') }}:</span> {{ libro_item.language }}</p>{% endif %}
-                        {% if libro_item.published_year %}<p><span class="detail-label">{{ t('published_year') }}:</span> {{ libro_item.published_year }}</p>{% endif %}
+                        {%- if libro_item.isbn10 -%}<p><span class="detail-label">{{ t('isbn10') }}:</span> {{ libro_item.isbn10 }}</p>{%- endif -%}
+                        {%- if libro_item.isbn13 -%}<p><span class="detail-label">{{ t('isbn13') }}:</span> {{ libro_item.isbn13 }}</p>{%- endif -%}
+                        {%- if libro_item.language -%}<p><span class="detail-label">{{ t('language') }}:</span> {{ libro_item.language }}</p>{%- endif -%}
+                        {%- if libro_item.published_year -%}<p><span class="detail-label">{{ t('published_year') }}:</span> {{ libro_item.published_year }}</p>{%- endif -%}
                     </div>
                 </div>
                 {# Banners promocionales #}
-                {% with current_index=loop.index0, total_items=(books|length) %}
-                    {% include 'partials/_banner_promotional.html' %}
-                {% endwith %}
+                {%- with current_index=loop.index0, total_items=(books|length) -%}
+                    {%- include 'partials/_banner_promotional.html' -%}
+                {%- endwith -%}
 
-                {% endfor %}
+                {%- endfor -%}
                 </div>
 
                 
                 
-            {% else %}
+            {%- else -%}
                 <p>{{ t('no_books_found_for_author', author=page_author_display) | default('No books found for this author.') }}</p>
-            {% endif %}
+            {%- endif -%}
         </div> {# Cierre de book-list-container #}
     </div> {# Cierre de page-container #}
-{% endblock %}
+{%- endblock -%}
 
 {# ====================================================================== #}
 {# CONTENIDO DEL FOOTER ESPECÍFICO DE ESTA PÁGINA                         #}
 {# ====================================================================== #}
-{% block footer_content %}
+{%- block footer_content -%}
     {{ super() }} {# Incluye el disclaimer del base.html #}
     <nav class="footer page-specific-footer">
         <a class="button" href="{{ url_for('main.index', lang_code=lang) }}">{{ t('back_to_list') | default('Back to List') }}</a>
     </nav>
-{% endblock %}
+{%- endblock -%}

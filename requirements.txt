@@ -3,7 +3,7 @@ jinja2
 Pillow
 beautifulsoup4
 youtube_dl
-Flask-HTMLmin
+Flask-Minify
 urllib3
 Unidecode
 python-dotenv

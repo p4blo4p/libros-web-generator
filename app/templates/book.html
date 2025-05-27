@@ -1,35 +1,35 @@
-{% extends "base.html" %}
+{%- extends "base.html" -%}
 
-{% block title %}{{ libro.title | default('') }} - {{ libro.author | default('') }}{% endblock %}
+{%- block title -%}{{ libro.title | default('') }} - {{ libro.author | default('') }}{%- endblock -%}
 
-{% block meta_tags %}
+{%- block meta_tags -%}
     <meta name="description" content="{{ libro.description | striptags | truncate(160) | default('') }}" />
-    <meta name="keywords" content="{{ libro.categories | default('') }}{% if libro.genres %}, {{ libro.genres }}{% endif %}, {{ libro.author | default('') }}, {{ libro.title | default('') }}" />
+    <meta name="keywords" content="{{ libro.categories | default('') }}{%- if libro.genres -%}, {{ libro.genres }}{%- endif -%}, {{ libro.author | default('') }}, {{ libro.title | default('') }}" />
     <meta name="author" content="{{ libro.author | default('') }}" />
-{% endblock %}
+{%- endblock -%}
 
-{% block canonical_url %}
+{%- block canonical_url -%}
     <link rel="canonical" href="{{ url_for('main.book_by_identifier', lang_code=lang, author_slug=libro.author_slug, book_slug=libro.title_slug, identifier=(libro.isbn10 or libro.isbn13 or libro.asin), _external=True) }}" />
-{% endblock %}
+{%- endblock -%}
 
-{% block opengraph_tags %}
+{%- block opengraph_tags -%}
     <meta property="og:title" content="{{ libro.title | default('') }} - {{ libro.author | default('') }}" />
     <meta property="og:description" content="{{ libro.description | striptags | truncate(200) | default('') }}" />
     <meta property="og:image" content="{{ libro.image_url | ensure_https | default('') }}" />
     <meta property="og:url" content="{{ url_for('main.book_by_identifier', lang_code=lang, author_slug=libro.author_slug, book_slug=libro.title_slug, identifier=(libro.isbn10 or libro.isbn13 or libro.asin), _external=True) }}" />
     <meta property="og:type" content="book" />
-    {% if libro.isbn13 %}<meta property="book:isbn" content="{{ libro.isbn13 }}" />{% endif %}
-    {% if libro.author %}<meta property="book:author" content="{{ url_for('main.author_books', lang_code=lang, author_slug=libro.author_slug, _external=True) }}" />{% endif %}
-{% endblock %}
+    {%- if libro.isbn13 -%}<meta property="book:isbn" content="{{ libro.isbn13 }}" />{%- endif -%}
+    {%- if libro.author -%}<meta property="book:author" content="{{ url_for('main.author_books', lang_code=lang, author_slug=libro.author_slug, _external=True) }}" />{%- endif -%}
+{%- endblock -%}
 
-{% block twitter_card_tags %}
+{%- block twitter_card_tags -%}
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="{{ libro.title | default('') }} - {{ libro.author | default('') }}" />
     <meta name="twitter:description" content="{{ libro.description | striptags | truncate(200) | default('') }}" />
     <meta name="twitter:image" content="{{ libro.image_url | ensure_https | default('') }}" />
-{% endblock %}
+{%- endblock -%}
 
-{% block structured_data %}
+{%- block structured_data -%}
     <script type="application/ld+json" defer>
     {
       "@context": "https://schema.org",
@@ -39,24 +39,24 @@
         "@type": "Person",
         "name": "{{ libro.author | escape | default('') }}"
       },
-      {% if libro.isbn13 %}"isbn": "{{ libro.isbn13 | escape | default('') }}",{% endif %}
-      {% if libro.asin %}"productID": "urn:asin:{{ libro.asin | escape | default('') }}",{% endif %}
+      {%- if libro.isbn13 -%}"isbn": "{{ libro.isbn13 | escape | default('') }}",{%- endif -%}
+      {%- if libro.asin -%}"productID": "urn:asin:{{ libro.asin | escape | default('') }}",{%- endif -%}
       "description": "{{ libro.description | striptags | escape | default('') }}",
       "image": "{{ libro.image_url | ensure_https | default('') }}",
       "url": "{{ url_for('main.book_by_identifier', lang_code=lang, author_slug=libro.author_slug, book_slug=libro.title_slug, identifier=(libro.isbn10 or libro.isbn13 or libro.asin), _external=True) }}",
-      {% if libro.publisher %}"publisher": {
+      {%- if libro.publisher -%}"publisher": {
           "@type": "Organization",
           "name": "{{ libro.publisher | escape | default('') }}"
-      },{% endif %}
-      {% if libro.published_year %}"datePublished": "{{ libro.published_year | escape | default('') }}",{% endif %}
-      {% if libro.language %}"inLanguage": "{{ libro.language | escape | default('') }}",{% endif %}
-      {% if libro.numRatings and libro.average_rating %}
+      },{%- endif -%}
+      {%- if libro.published_year -%}"datePublished": "{{ libro.published_year | escape | default('') }}",{%- endif -%}
+      {%- if libro.language -%}"inLanguage": "{{ libro.language | escape | default('') }}",{%- endif -%}
+      {%- if libro.numRatings and libro.average_rating -%}
       "aggregateRating": {
         "@type": "AggregateRating",
         "ratingValue": "{{ libro.average_rating | escape | default('') }}",
         "ratingCount": "{{ libro.numRatings | escape | default('') }}"
       },
-      {% endif %}
+      {%- endif -%}
       "offers": {
           "@type": "Offer",
           "availability": "https://schema.org/InStock",
@@ -65,17 +65,17 @@
       }
     }
     </script>
-{% endblock %}
+{%- endblock -%}
 
-{% block header_content %}
+{%- block header_content -%}
     <div class="header">
         <a class="button" href="{{ url_for('main.index', lang_code=lang) }}">{{ t('back_to_list') }}</a>
         <a class="button" href="{{ url_for('main.author_books', lang_code=lang, author_slug=libro.author_slug) }}">{{ libro.author | default('') }}</a>
         <a class="button" href="{{ url_for('main.book_versions', lang_code=lang, author_slug=libro.author_slug, base_book_slug=libro.base_title_slug) }}">{{ t('all_versions') }} {{ libro.title.split('(')[0].strip() | default('') }}</a>
     </div>
-{% endblock %}
+{%- endblock -%}
 
-{% block content %}
+{%- block content -%}
     <div class="google-search-container">
         <span class="search-icon">
             <svg focusable="false" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" fill="#9aa0a6">
@@ -92,35 +92,35 @@
         </div>
         <div class="book-info">
             <h2>{{ t('title') }}: <a href="{{ url_for('main.book_versions', lang_code=lang, author_slug=libro.author_slug, base_book_slug=libro.base_title_slug) }}">{{ libro.title | default('') }}</a></h2>
-            {% if libro.subtitle %}<h3>{{ libro.subtitle }}</h3>{% endif %}
+            {%- if libro.subtitle -%}<h3>{{ libro.subtitle }}</h3>{%- endif -%}
             <h3>{{ t('author') }}: <a href="{{ url_for('main.author_books', lang_code=lang, author_slug=libro.author_slug) }}">{{ libro.author | default('') }}</a></h3>
         </div>
         <div class="book-details">
-            {% if libro.isbn10 %}<p><strong>{{ t('isbn10') }}:</strong> {{ libro.isbn10 }}</p>{% endif %}
-            {% if libro.isbn13 %}<p><strong>{{ t('isbn13') }}:</strong> {{ libro.isbn13 }}</p>{% endif %}
-            {% if libro.subtitle %}<p><strong>{{ t('subtitle') }}:</strong> {{ libro.subtitle }}</p>{% endif %}
-            {% if libro.language %}<p><strong>{{ t('language') }}:</strong> {{ libro.language }}</p>{% endif %}
-            {% if libro.categories %}<p><strong>{{ t('categories') }}:</strong> {{ libro.categories }}</p>{% endif %}
-            {% if libro.description %}<p><strong>{{ t('description') }}:</strong> {{ libro.description | safe }}</p>{% endif %}
-            {% if libro.series %}<p><strong>{{ t('series') }}:</strong> {{ libro.series }}</p>{% endif %}
-            {% if libro.edition %}<p><strong>{{ t('edition') }}:</strong> {{ libro.edition }}</p>{% endif %}
-            {% if libro.firstPublishDate %}<p><strong>{{ t('firstPublishDate') }}:</strong> {{ libro.firstPublishDate }}</p>{% endif %}
-            {% if libro.published_year %}<p><strong>{{ t('published_year') }}:</strong> {{ libro.published_year }}</p>{% endif %}
-            {% if libro.characters %}<p><strong>{{ t('characters') }}:</strong> {{ libro.characters }}</p>{% endif %}
-            {% if libro.genres %}<p><strong>{{ t('genres') }}:</strong> {{ libro.genres }}</p>{% endif %}
-            {% if libro.asin %}<p><strong>{{ t('asin') }}:</strong> {{ libro.asin }}</p>{% endif %}
-            {% if libro.average_rating %}<p><strong>{{ t('average_rating') }}:</strong> {{ libro.average_rating }}</p>{% endif %}
-            {% if libro.awards %}<p><strong>{{ t('awards') }}:</strong> {{ libro.awards }}</p>{% endif %}
-            {% if libro.ratingsByStars %}<p><strong>{{ t('ratingsByStars') }}:</strong> {{ libro.ratingsByStars }}</p>{% endif %}
-            {% if libro.bbeVotes %}<p><strong>{{ t('bbeVotes') }}:</strong> {{ libro.bbeVotes }}</p>{% endif %}
-            {% if libro.numRatings %}<p><strong>{{ t('numRatings') }}:</strong> {{ libro.numRatings }}</p>{% endif %}
-            {% if libro.product_dimensions %}<p><strong>{{ t('product_dimensions') }}:</strong> {{ libro.product_dimensions }}</p>{% endif %}
-            {% if libro.publisher %}<p><strong>{{ t('publisher') }}:</strong> {{ libro.publisher }}</p>{% endif %}
-            {% if libro.soldBy %}<p><strong>{{ t('soldBy') }}:</strong> {{ libro.soldBy }}</p>{% endif %}
-            {% if libro.weight %}<p><strong>{{ t('weight') }}:</strong> {{ libro.weight }}</p>{% endif %}
+            {%- if libro.isbn10 -%}<p><strong>{{ t('isbn10') }}:</strong> {{ libro.isbn10 }}</p>{%- endif -%}
+            {%- if libro.isbn13 -%}<p><strong>{{ t('isbn13') }}:</strong> {{ libro.isbn13 }}</p>{%- endif -%}
+            {%- if libro.subtitle -%}<p><strong>{{ t('subtitle') }}:</strong> {{ libro.subtitle }}</p>{%- endif -%}
+            {%- if libro.language -%}<p><strong>{{ t('language') }}:</strong> {{ libro.language }}</p>{%- endif -%}
+            {%- if libro.categories -%}<p><strong>{{ t('categories') }}:</strong> {{ libro.categories }}</p>{%- endif -%}
+            {%- if libro.description -%}<p><strong>{{ t('description') }}:</strong> {{ libro.description | safe }}</p>{%- endif -%}
+            {%- if libro.series -%}<p><strong>{{ t('series') }}:</strong> {{ libro.series }}</p>{%- endif -%}
+            {%- if libro.edition -%}<p><strong>{{ t('edition') }}:</strong> {{ libro.edition }}</p>{%- endif -%}
+            {%- if libro.firstPublishDate -%}<p><strong>{{ t('firstPublishDate') }}:</strong> {{ libro.firstPublishDate }}</p>{%- endif -%}
+            {%- if libro.published_year -%}<p><strong>{{ t('published_year') }}:</strong> {{ libro.published_year }}</p>{%- endif -%}
+            {%- if libro.characters -%}<p><strong>{{ t('characters') }}:</strong> {{ libro.characters }}</p>{%- endif -%}
+            {%- if libro.genres -%}<p><strong>{{ t('genres') }}:</strong> {{ libro.genres }}</p>{%- endif -%}
+            {%- if libro.asin -%}<p><strong>{{ t('asin') }}:</strong> {{ libro.asin }}</p>{%- endif -%}
+            {%- if libro.average_rating -%}<p><strong>{{ t('average_rating') }}:</strong> {{ libro.average_rating }}</p>{%- endif -%}
+            {%- if libro.awards -%}<p><strong>{{ t('awards') }}:</strong> {{ libro.awards }}</p>{%- endif -%}
+            {%- if libro.ratingsByStars -%}<p><strong>{{ t('ratingsByStars') }}:</strong> {{ libro.ratingsByStars }}</p>{%- endif -%}
+            {%- if libro.bbeVotes -%}<p><strong>{{ t('bbeVotes') }}:</strong> {{ libro.bbeVotes }}</p>{%- endif -%}
+            {%- if libro.numRatings -%}<p><strong>{{ t('numRatings') }}:</strong> {{ libro.numRatings }}</p>{%- endif -%}
+            {%- if libro.product_dimensions -%}<p><strong>{{ t('product_dimensions') }}:</strong> {{ libro.product_dimensions }}</p>{%- endif -%}
+            {%- if libro.publisher -%}<p><strong>{{ t('publisher') }}:</strong> {{ libro.publisher }}</p>{%- endif -%}
+            {%- if libro.soldBy -%}<p><strong>{{ t('soldBy') }}:</strong> {{ libro.soldBy }}</p>{%- endif -%}
+            {%- if libro.weight -%}<p><strong>{{ t('weight') }}:</strong> {{ libro.weight }}</p>{%- endif -%}
 
-            {% set amazon_identifier = libro.asin or libro.isbn10 or libro.isbn13 %}
-            {% if amazon_identifier %}
+            {%- set amazon_identifier = libro.asin or libro.isbn10 or libro.isbn13 -%}
+            {%- if amazon_identifier -%}
             <div class="amazon-buttons">
                 Buy on: 
                 <a href="https://www.amazon.com/dp/{{ amazon_identifier }}?tag=YOUR_AMAZON_TAG" class="amazon-button" target="_blank" rel="sponsored noopener"><img src="https://flagcdn.com/us.svg" alt="USA Flag" class="flag" loading="lazy" /><span class="domain">Amazon.com</span></a>
@@ -131,16 +131,16 @@
                 <a href="https://www.amazon.it/dp/{{ amazon_identifier }}?tag=YOUR_AMAZON_TAG_IT" class="amazon-button" target="_blank" rel="sponsored noopener"><img src="https://flagcdn.com/it.svg" alt="Italy Flag" class="flag" loading="lazy" /><span class="domain">Amazon.it</span></a>
                 <a href="https://www.amazon.es/dp/{{ amazon_identifier }}?tag=YOUR_AMAZON_TAG_ES" class="amazon-button" target="_blank" rel="sponsored noopener"><img src="https://flagcdn.com/es.svg" alt="Spain Flag" class="flag" loading="lazy" /><span class="domain">Amazon.es</span></a>
             </div>
-            {% endif %}
+            {%- endif -%}
         </div>
     </div>
-{% endblock %}
+{%- endblock -%}
 
-{% block footer_content %}
+{%- block footer_content -%}
     {{ super() }}
     <div class="footer">
         <a class="button" href="{{ url_for('main.index', lang_code=lang) }}">{{ t('back_to_list') }}</a>
         <a class="button" href="{{ url_for('main.author_books', lang_code=lang, author_slug=libro.author_slug) }}">{{ libro.author | default('') }}</a>
         <a class="button" href="{{ url_for('main.book_versions', lang_code=lang, author_slug=libro.author_slug, base_book_slug=libro.base_title_slug) }}">{{ t('all_versions') }} {{ libro.title.split('(')[0].strip() | default('') }}</a>
     </div>
-{% endblock %}
+{%- endblock -%}

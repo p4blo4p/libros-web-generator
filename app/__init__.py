@@ -2,6 +2,7 @@
 from flask import Flask
 # from flask_htmlmin import HTMLMIN # Mantenlo comentado por ahora
 from app.config import Config
+from flask_minify import Minify # Importar
 from app.utils.helpers import ensure_https_filter, slugify_ascii # <--- IMPORTA slugify_ascii AQUÍ
 from app.utils.translations import TranslationManager
 from app.models.data_loader import load_processed_books, load_processed_bestsellers
@@ -15,6 +16,14 @@ def create_app(config_class=Config):
                 static_folder=config_class.STATIC_FOLDER,
                 template_folder=config_class.TEMPLATE_FOLDER)
     app.config.from_object(config_class)
+    # Configuración del entorno Jinja2
+    app.jinja_env.trim_blocks = True  # Elimina el primer salto de línea después de un bloque
+    app.jinja_env.lstrip_blocks = True # Elimina los espacios en blanco iniciales de una línea hasta el inicio de un bloque
+    
+    # Inicializar Flask-Minify
+    # Usará el valor de app.config['MINIFY_HTML']
+    # También puedes pasar html=True, js=True, cssless=True directamente aquí
+    Minify(app=app, html=True, js=True, cssless=True)
 
     # --- Configuración de Logging Detallado ---
     # (Tu código de logging aquí, como lo teníamos antes)
@@ -53,8 +62,10 @@ def create_app(config_class=Config):
     # Registrar Blueprints
     from app.routes.main_routes import main_bp
     from app.routes.sitemap_routes import sitemap_bp
+    
     app.register_blueprint(main_bp)
     app.register_blueprint(sitemap_bp)
+    
     
     app.logger.info("BookList Application created and configured.")
     if not app.books_data:
