@@ -95,7 +95,7 @@
     </section>
 
     {# Título principal de la página #}
-    <h1 class="page-title-section">{{books | length}} {{ t('all_versions') | default('All Versions')  | lower}}: <a href="{{ url_for('main.author_books', lang_code=lang, author_slug=(books[0].author_slug if books and books[0].author_slug else page_author_display | slugify_ascii)) }}">{{ books[0].title }}</a></h1>
+    <h1 class="page-title-section">{{books | length}} {{ t('all_versions') | default('All Versions')  | lower}}: <a href="{{ url_for('main.author_books', lang_code=lang, author_slug=(books[0].author_slug if books and books[0].author_slug else page_author_display | slugify_ascii)) }}">{{ page_base_title_display | default (books[0].title if books else "") }}</a></h1>
     
     {# Lista de libros/versiones #}
     <div class="book-list">
