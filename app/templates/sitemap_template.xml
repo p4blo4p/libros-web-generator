@@ -2,23 +2,23 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:xhtml="http://www.w3.org/1999/xhtml"
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"> {# Namespace de imagen #}
-{% for page_entry in pages %}
+{%- for page_entry in pages -%}
   <url>
     <loc>{{ page_entry.loc }}</loc>
-    {% if page_entry.lastmod %}<lastmod>{{ page_entry.lastmod }}</lastmod>{% endif %}
-    {% if page_entry.changefreq %}<changefreq>{{ page_entry.changefreq }}</changefreq>{% endif %}
-    {% if page_entry.priority %}<priority>{{ page_entry.priority }}</priority>{% endif %}
+    {%- if page_entry.lastmod -%}<lastmod>{{ page_entry.lastmod }}</lastmod>{%- endif -%}
+    {%- if page_entry.changefreq -%}<changefreq>{{ page_entry.changefreq }}</changefreq>{%- endif -%}
+    {%- if page_entry.priority -%}<priority>{{ page_entry.priority }}</priority>{%- endif -%}
     
-    {% for alternate in page_entry.alternates %}
+    {%- for alternate in page_entry.alternates -%}
     <xhtml:link rel="alternate" hreflang="{{ alternate.lang }}" href="{{ alternate.href }}" />
-    {% endfor %}
+    {%- endfor -%}
 
-    {% if page_entry.image_url %}
+    {%- if page_entry.image_url -%}
     <image:image>
         <image:loc>{{ page_entry.image_url | ensure_https }}</image:loc>
-        {% if page_entry.image_title %}<image:title>{{ page_entry.image_title | escape }}</image:title>{% endif %}
+        {%- if page_entry.image_title -%}<image:title>{{ page_entry.image_title | escape }}</image:title>{%- endif -%}
     </image:image>
-    {% endif %}
+    {%- endif -%}
   </url>
-{% endfor %}
+{%- endfor -%}
 </urlset>

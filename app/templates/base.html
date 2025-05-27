@@ -4,33 +4,33 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
-    {% block meta_tags %}{% endblock %}
-    <title>{% block title %}{{ t('site_title') | default('BookList') }}{% endblock %}</title>
-    {% block canonical_url %}{% endblock %}
-    {% block opengraph_tags %}{% endblock %}
-    {% block twitter_card_tags %}{% endblock %}
+    {%- block meta_tags -%}{%- endblock -%}
+    <title>{%- block title -%}{{ t('site_title') | default('BookList') }}{%- endblock -%}</title>
+    {%- block canonical_url -%}{%- endblock -%}
+    {%- block opengraph_tags -%}{%- endblock -%}
+    {%- block twitter_card_tags -%}{%- endblock -%}
 
     <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon" />
     <link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}" />
     <link rel="stylesheet" href="{{ url_for('static', filename='css/searchbar.css') }}" />
-    {% block extra_css %}{% endblock %}
-    {% block structured_data %}{% endblock %}
+    {%- block extra_css -%}{%- endblock -%}
+    {%- block structured_data -%}{%- endblock -%}
 </head>
 <body>
-    {% include 'partials/_language_selector.html' %} {# Asumiendo que está fuera del wrapper para que sea 'fixed' globalmente #}
+    {%- include 'partials/_language_selector.html' -%} {# Asumiendo que está fuera del wrapper para que sea 'fixed' globalmente #}
 
     <div class="page-wrapper"> {# <--- NUEVO CONTENEDOR PRINCIPAL #}
         <header class="main-header-placeholder">
-            {% block header_content %}{% endblock %}
+            {%- block header_content -%}{%- endblock -%}
         </header>
         
         <main class="content-wrapper"> {# Este podría ser redundante o fusionarse con page-wrapper #}
                                       {# Depende de tu estructura deseada #}
-            {% block content %}{% endblock %}
+            {%- block content -%}{%- endblock -%}
         </main>
 
         <footer class="main-footer-placeholder">
-            {% block footer_content %}{% endblock %}
+            {%- block footer_content -%}{%- endblock -%}
             <div class="disclaimer">
               <strong>{{ t('important_notice_strong') | default('Aviso Importante:') }}</strong> {{ t('amazon_affiliate_notice') | default('Como Afiliado de Amazon, gano por las compras y registros cualificados que se realicen a través de mis enlaces. Las imágenes de logos se utilizan con fines ilustrativos.') }}
             </div>
