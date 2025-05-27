@@ -62,8 +62,10 @@ def create_app(config_class=Config):
     # Registrar Blueprints
     from app.routes.main_routes import main_bp
     from app.routes.sitemap_routes import sitemap_bp
+    
     app.register_blueprint(main_bp)
     app.register_blueprint(sitemap_bp)
+    
     
     app.logger.info("BookList Application created and configured.")
     if not app.books_data:
