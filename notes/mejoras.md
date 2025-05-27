@@ -19,7 +19,9 @@ OSError: [Errno 36] File name too long
 
 
 
-# Superar el límite de tiempo en Cloudflare Pages durante la ejecución de `generate_static.py` es un problema común cuando se generan sitios grandes. Cloudflare Pages (y plataformas similares como Vercel o Netlify) tienen límites en el tiempo de build (generalmente entre 15-30 minutos, aunque puede variar según el plan).
+# Otras
+
+Superar el límite de tiempo en Cloudflare Pages durante la ejecución de `generate_static.py` es un problema común cuando se generan sitios grandes. Cloudflare Pages (y plataformas similares como Vercel o Netlify) tienen límites en el tiempo de build (generalmente entre 15-30 minutos, aunque puede variar según el plan).
 
 Con más de 35,000 libros y la generación de múltiples páginas por libro (detalle, versiones, autor) en varios idiomas, más los sitemaps segmentados, el proceso es intensivo.
 
