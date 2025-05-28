@@ -3,9 +3,9 @@ name: Build, Lint, Generate, and Deploy Static Site
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "large-data-optimization" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "large-data-optimization" ]
   workflow_dispatch:
     inputs:
       force_regenerate:
