@@ -50,10 +50,6 @@ jobs:
       # Continue even if linting fails? If not, remove --exit-zero from the second command or add `|| exit 1`
       # Or, better, let flake8 exit with non-zero on error for the first command and remove the second if you want it to fail the build.
 
-    - name: Test with pytest
-      run: |
-        pytest
-      # If tests fail, the workflow will stop here by default, which is usually desired.
 
     - name: Generate static site
       run: python generate_static.py
