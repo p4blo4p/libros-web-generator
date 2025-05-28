@@ -7,17 +7,22 @@ on:
   pull_request:
     branches: [ "main" ]
   workflow_dispatch:
+    inputs:
+      force_regenerate:
+        description: 'Forzar regeneración completa (ignora manifest)'
+        required: false
+        default: 'false'
+        type: boolean
 
 permissions:
   contents: read
 
 jobs:
-  # Job 1: Instalar dependencias base (puede ser usado por otros)
-  build_base_dependencies:
-    name: Setup - Install Base Dependencies
+  setup_and_lint:
+    name: Setup, Cache & Lint
     runs-on: ubuntu-latest
     outputs:
-      status: success # Solo para indicar éxito
+      manifest_path: .cache/generation_manifest.json # Para que otros jobs sepan dónde está
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -35,33 +40,23 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
 
-      - name: Install application dependencies
-        run: |
-          python -m pip install --upgrade pip
-          if [ -f requirements.txt ]; then
-            pip install -r requirements.txt
-          else
-            echo "ERROR: requirements.txt not found!"
-            exit 1
-          fi
-      # No subimos un artefacto de dependencias aquí para mantenerlo simple,
-      # cada job de generación instalará lo que necesite (aprovechando el caché de descarga de pip).
-
-  # Job 2: Linting (se ejecuta una vez)
-  lint_code:
-    name: Quality - Lint Code with Flake8
-    runs-on: ubuntu-latest
-    needs: build_base_dependencies
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up Python 3.10
-        uses: actions/setup-python@v5
+      - name: Cache Generation Manifest # NEW: Cachear el manifest
+        id: manifest_cache # Darle un id para referenciar su salida
+        uses: actions/cache@v4
         with:
-          python-version: "3.10"
+          path: .cache/generation_manifest.json
+          key: ${{ runner.os }}-gen-manifest-v1-${{ github.ref }} # Cache por rama
+          restore-keys: |
+            ${{ runner.os }}-gen-manifest-v1-
 
-      - name: Install application and linting dependencies
+      - name: Initialize manifest if not restored from cache
+        if: steps.manifest_cache.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p .cache
+          echo "{}" > .cache/generation_manifest.json
+          echo "Initialized new generation_manifest.json"
+
+      - name: Install dependencies (app, flake8)
         run: |
           python -m pip install --upgrade pip
           pip install flake8
@@ -71,23 +66,20 @@ jobs:
             echo "ERROR: requirements.txt not found!"
             exit 1
           fi
-
+      
       - name: Lint with flake8
         run: |
-          echo "Linting: Critical checks..."
           flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics || exit 1
-          echo "Linting: Full style checks (informational)..."
           flake8 . --count --max-complexity=10 --max-line-length=127 --statistics
 
-  # Job 3: Generar páginas estáticas por idioma (en paralelo usando matrix)
   generate_language_slice:
-    name: Generate - Static Pages for ${{ matrix.language }}
+    name: Generate - Pages for ${{ matrix.language }}
     runs-on: ubuntu-latest
-    needs: [build_base_dependencies, lint_code] # Depende de los anteriores
+    needs: setup_and_lint
     strategy:
-      fail-fast: false # Importante: si un idioma falla, los otros continúan
+      fail-fast: false
       matrix:
-        language: [en, es, fr, it, de] # Tus idiomas soportados
+        language: [en, es, fr, it, de] # Tus idiomas
 
     steps:
       - name: Checkout repository
@@ -98,42 +90,61 @@ jobs:
         with:
           python-version: "3.10"
 
-      - name: Install application dependencies (cached)
+      - name: Restore Generation Manifest from Cache # NEW
+        uses: actions/cache@v4
+        with:
+          path: .cache/generation_manifest.json # Debe ser la misma ruta
+          key: ${{ runner.os }}-gen-manifest-v1-${{ github.ref }} # Misma clave que en setup_and_lint
+          # No necesitamos restore-keys aquí si el job de setup siempre lo crea/restaura
+
+      - name: Initialize manifest if not restored (fallback)
+        # Este if es por si el cache no se propaga instantáneamente o hay algún problema
+        run: |
+          if [ ! -f ".cache/generation_manifest.json" ]; then
+            echo "Manifest not found after cache restore attempt, creating empty for this job."
+            mkdir -p .cache
+            echo "{}" > .cache/generation_manifest.json
+          fi
+
+      - name: Install application dependencies (pip cache helps)
         run: |
           python -m pip install --upgrade pip
-          if [ -f requirements.txt ]; then
-            pip install -r requirements.txt # Pip usará el caché de descarga si es posible
-          else
-            echo "ERROR: requirements.txt not found!"
-            exit 1
-          fi
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
       
       - name: Generate static site for language ${{ matrix.language }}
+        env:
+          FORCE_REGENERATE_FLAG: ${{ github.event.inputs.force_regenerate == 'true' && '--force-regenerate' || '' }}
         run: |
           set -e
           echo "Running static site generator for language: ${{ matrix.language }}"
-          python generate_static.py --language ${{ matrix.language }}
+          # Pasar --force-regenerate si el input del workflow es true
+          python generate_static.py --language ${{ matrix.language }} $FORCE_REGENERATE_FLAG
           echo "Static site generation for ${{ matrix.language }} finished."
 
       - name: Upload language slice artifact
         uses: actions/upload-artifact@v4
         with:
-          name: site-slice-${{ matrix.language }} # Artefacto por idioma
-          path: _site/ # Sube el contenido de _site (que ahora solo tendrá un idioma y sitemaps de ese idioma)
-          if-no-files-found: error # Debería haber al menos el directorio del idioma
-          retention-days: 3 # Mantener artefactos parciales por menos tiempo
+          name: site-slice-${{ matrix.language }}
+          path: _site/
+          if-no-files-found: error
+          retention-days: 3
 
-  # Job 4: Combinar los slices generados y preparar el sitio final
-  combine_and_finalize_site:
-    name: Finalize - Combine Slices and Prepare Full Site
+  combine_and_deploy: # Combinado los jobs de "combine" y "deploy"
+    name: Finalize - Combine Slices & Deploy to GitHub Pages
     runs-on: ubuntu-latest
-    needs: generate_language_slice # Se ejecuta después de que todos los jobs de la matriz terminen
+    needs: generate_language_slice
+
+    # Permisos específicos para este job (si se va a desplegar)
+    permissions:
+      contents: write
+      pages: write
+      id-token: write 
 
     steps:
-      - name: Checkout repository # Necesario para copiar 'public' y 'static'
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Python 3.10 # Necesario si el script finalizador es Python
+      - name: Set up Python 3.10
         uses: actions/setup-python@v5
         with:
           python-version: "3.10"
@@ -144,125 +155,64 @@ jobs:
       - name: Download all language slice artifacts
         uses: actions/download-artifact@v4
         with:
-          # No se especifica 'name', descarga todos los artefactos de este workflow run
-          path: ./_temp_slices # Descarga a un directorio temporal
+          path: ./_temp_slices
 
       - name: Combine language slices
         run: |
           echo "Combining language slices..."
-          # Cada slice (ej. site-slice-es) contendrá un directorio _site con /es/...
-          # Necesitamos copiar el contenido de cada _temp_slices/site-slice-LANG/_site/* a ./_site/
-          # O más bien, _temp_slices/site-slice-LANG/es/* a ./_site/es/*
-          for slice_dir in ./_temp_slices/site-slice-*; do
-            if [ -d "$slice_dir" ]; then
-              echo "Processing slice: $slice_dir"
-              # Copiar el contenido del _site del slice al _site final
-              # Asegurándose de que la estructura de idioma se mantenga
-              # Ejemplo: si $slice_dir/_site/es existe, copiarlo a ./_site/es
-              # Si el artefacto se subió con `path: _site/`, entonces el contenido de _site está en la raíz del artefacto.
-              # Entonces, $slice_dir/es, $slice_dir/sitemap_es_core.xml, etc.
-              rsync -av "$slice_dir/" ./_site/
+          for slice_dir_container in ./_temp_slices/site-slice-*; do
+            if [ -d "$slice_dir_container" ]; then
+              echo "Processing slice container: $slice_dir_container"
+              # El contenido de _site está directamente dentro de $slice_dir_container
+              rsync -av "$slice_dir_container/" ./_site/
             fi
           done
           echo "Listing combined _site directory:"
           ls -alph ./_site
-          # También listar subdirectorios de idioma para verificar
-          for lang_dir in ./_site/*/; do
-            if [ -d "$lang_dir" ]; then
-              echo "Contents of $lang_dir:"
-              ls -alph "$lang_dir"
-            fi
-          done
-
 
       - name: Copy static and public assets to final _site
         run: |
           echo "Copying global static and public assets..."
-          if [ -d "static" ]; then
-            # Obtener static_url_path (necesitaríamos la app o configurarlo)
-            # Por simplicidad, asumimos que es 'static'
-            cp -r static ./_site/static
-            echo "Copied static folder."
-          fi
-          if [ -d "public" ]; then
-            # Copiar archivos de public a la raíz de _site
-            find public -maxdepth 1 -type f -exec cp {} ./_site/ \;
-            echo "Copied public files."
-          fi
+          if [ -d "static" ]; then cp -r static ./_site/static; echo "Copied static folder."; fi
+          if [ -d "public" ]; then find public -maxdepth 1 -type f -exec cp {} ./_site/ \; echo "Copied public files."; fi
 
-      - name: Generate main sitemap_index.xml and root index.html
-        # Esto requiere ejecutar generate_static.py sin --language para generar
-        # el index.html raíz y el sitemap.xml principal.
-        # Necesita las dependencias de la app.
+      - name: Install dependencies for final manifest/sitemap/index generation
         run: |
-          echo "Installing dependencies for final sitemap/index generation..."
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
           
-          echo "Generating root index.html and sitemap.xml..."
-          # Ejecutar SIN --language para que genere el sitemap.xml y /index.html
-          # El script ya está diseñado para no borrar _site si se ejecuta sin --language
-          # y _site ya existe y no está vacío (lo cual es el caso aquí).
-          # PERO, necesitamos asegurarnos de que NO borre el contenido de los idiomas.
-          # La lógica actual de generate_static.py es: si no args.language, BORRA _site.
-          # Esto necesita un ajuste en generate_static.py o un script separado.
+      - name: Generate root index, sitemap.xml and final manifest
+        env:
+          FORCE_REGENERATE_FLAG: ${{ github.event.inputs.force_regenerate == 'true' && '--force-regenerate' || '' }}
+        run: |
+          echo "Generating root index.html, sitemap.xml, and updating global manifest..."
+          # Ejecutar SIN --language para que genere el sitemap.xml, /index.html
+          # y ACTUALICE el manifest global con todos los cambios.
+          # El script generate_static.py ahora (con la modif.) SOLO guarda el manifest si no tiene --language.
+          python generate_static.py $FORCE_REGENERATE_FLAG
+          echo "Final generation step complete."
 
-          # **AJUSTE NECESARIO en generate_static.py o un script nuevo para esto**
-          # Por ahora, asumimos que tenemos un comando que SOLO genera el sitemap.xml y /index.html
-          # sin tocar el resto. O que generate_static.py se ajusta.
-          # Si no, la siguiente línea BORRARÁ el trabajo de los slices.
-          # python generate_static.py # ESTO BORRARÍA LO COMBINADO
-          
-          # Solución temporal: Crear un sitemap_index.xml manualmente o con un script simple.
-          # O, si tu endpoint /sitemap.xml es suficientemente inteligente para ser generado estáticamente:
-          # python generate_static.py --generate-only sitemap_index root_index
-          # Esto requeriría más argumentos en generate_static.py.
+      - name: Cache Updated Generation Manifest # NEW: Guardar el manifest actualizado
+        # Este paso se ejecutará incluso si el despliegue se salta (por no ser push a main)
+        # Lo cual es bueno para que el manifest esté actualizado para la próxima ejecución.
+        uses: actions/cache@v4
+        with:
+          path: .cache/generation_manifest.json
+          key: ${{ runner.os }}-gen-manifest-v1-${{ github.ref }} # Misma clave para sobrescribir
 
-          # Opción más simple si /sitemap.xml y /index.html son generables por Flask:
-          # Necesitamos ejecutar app.test_client().get('/') y .get('/sitemap.xml')
-          # y guardarlos. Esto es lo que hacía generate_static.py.
-          # Vamos a llamar a una función específica o un mini-script si es necesario.
-          # Por ahora, lo dejaremos pendiente de cómo se genera el sitemap.xml final.
-          echo "Generación del sitemap_index.xml principal y root /index.html se omite temporalmente."
-          echo "Debe hacerse sin borrar el contenido de los idiomas ya generados."
-          # Si tu app puede generar el sitemap.xml correctamente solo con las rutas disponibles:
-          # (esto es lo que hacía antes el final de generate_static.py)
-          python -c "from app import create_app; from pathlib import Path; app=create_app(); client=app.test_client(); \
-          r_idx=client.get('/'); Path('_site/index.html').write_bytes(r_idx.data); \
-          r_smap=client.get('/sitemap.xml'); Path('_site/sitemap.xml').write_bytes(r_smap.data); \
-          print('Generated root index.html and sitemap.xml')"
-
-
-      - name: Upload final full site artifact
+      - name: Upload final full site artifact (for inspection or manual deploy)
         uses: actions/upload-artifact@v4
         with:
-          name: github-pages-site-final # Nombre del artefacto final
+          name: github-pages-site-final
           path: _site/
           if-no-files-found: error
           retention-days: 7
-
-  # Job 5: Desplegar a GitHub Pages
-  deploy_to_gh_pages:
-    name: Deploy - Publish Full Site to GitHub Pages
-    runs-on: ubuntu-latest
-    needs: combine_and_finalize_site # Depende de la combinación
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-
-    permissions:
-      contents: write
-      pages: write
-      id-token: write
-
-    steps:
-      - name: Download final full site artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: github-pages-site-final # Descargar el artefacto combinado
-          # Se descargará a ./github-pages-site-final/ por defecto
-
-      - name: Deploy to GitHub Pages
+      
+      # --- Despliegue a GitHub Pages ---
+      - name: Deploy to GitHub Pages (if on main branch push)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./github-pages-site-final # Directorio que contiene el sitio completo
+          publish_dir: ./_site # Ahora _site contiene todo lo combinado
           # ... (otras opciones de peaceiris/actions-gh-pages) ...
