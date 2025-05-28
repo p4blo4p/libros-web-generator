@@ -38,3 +38,19 @@ Citations:
 
 ---
 Respuesta de Perplexity: https://www.perplexity.ai/search/en-cadiz-que-impuestos-se-paga-rSjgcr7oRamYxvoiVMW5Rw?utm_source=copy_output
+
+
+# JOBS
+
+| Concepto / Límite                  | GitHub-hosted runners            | Self-hosted runners              | Plan Free (Almacenamiento)       | Plan Pro/Team/Enterprise Cloud (Almacenamiento) | Enterprise Server (Almacenamiento)          |
+|----------------------------------|---------------------------------|---------------------------------|---------------------------------|-------------------------------------------------|---------------------------------------------|
+| **Tiempo máximo por job**         | 6 horas                         | 5 días                          | N/A                             | N/A                                             | N/A                                         |
+| **Tiempo máximo por workflow run**| 35 días                        | 35 días                        | N/A                             | N/A                                             | N/A                                         |
+| **Número máximo de jobs por matriz** | 256                          | 256                            | N/A                             | N/A                                             | N/A                                         |
+| **Número máximo de workflows en cola** | 500 por cada 10 segundos     | 500 por cada 10 segundos       | N/A                             | N/A                                             | N/A                                         |
+| **Límite de eventos que disparan workflows** | 1.500 eventos/10s/repositorio| 1.500 eventos/10s/repositorio  | N/A                             | N/A                                             | N/A                                         |
+| **Límite API para Actions**       | 1.000 requests/hora/repositorio | 1.000 requests/hora/repositorio | N/A                             | N/A                                             | N/A                                         |
+| **Almacenamiento total para artifacts y logs** | N/A                         | N/A                            | 2 GB por repositorio             | 50 GB por repositorio (ampliable pagando)        | Depende de la infraestructura propia        |
+| **Tamaño máximo por artifact individual** | N/A                         | N/A                            | 5 GB máximo por artifact         | 5 GB máximo por artifact                         | Depende de la configuración local            |
+| **Retención de artifacts y logs** | N/A                           | N/A                            | 90 días (configurable hasta 90) | 90 días (configurable hasta 90)                   | Configurable por el administrador             |
+| **Retención de historial de runs** | 400 días                     | 400 días                      | N/A                             | N/A                                             | N/A                                         |
