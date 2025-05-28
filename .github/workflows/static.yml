@@ -1,65 +1,155 @@
-# .github/workflows/build_and_test.yml (or a more descriptive name)
-
-name: Build, Test, and Generate Static Site
+# .github/workflows/main.yml
+name: Build, Lint, and Deploy Static Site
 
 on:
   push:
-    branches: [ "main" ] # Or "main" if that's your default branch
+    branches: [ "main" ]
   pull_request:
-    branches: [ "main" ] # Or "main"
-  workflow_dispatch: # Allows manual triggering
+    branches: [ "main" ]
+  workflow_dispatch:
 
 permissions:
-  contents: read # Default, sufficient for checkout
+  contents: read
 
 jobs:
-  build-test-generate: # A more descriptive job name
+  build_dependencies:
+    name: Build - Install Application Dependencies
     runs-on: ubuntu-latest
+    outputs:
+      status: success
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Cache pip dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install application dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then
+            pip install -r requirements.txt
+          else
+            echo "ERROR: requirements.txt not found!"
+            exit 1
+          fi
+
+  test_and_lint: # Renombrado para reflejar que solo hace linting ahora
+    name: Lint Code with Flake8
+    runs-on: ubuntu-latest
+    needs: build_dependencies
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install application and linting dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install flake8 # Solo flake8 ahora
+          if [ -f requirements.txt ]; then
+            pip install -r requirements.txt # Aún necesario si flake8 necesita entender importaciones de tu app
+          else
+            echo "ERROR: requirements.txt not found!"
+            exit 1
+          fi
+
+      - name: Lint with flake8
+        run: |
+          echo "Linting: Checking for critical Python syntax errors and undefined names..."
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics || exit 1
+
+          echo "Linting: Reporting full style and complexity (informational)..."
+          flake8 . --count --max-complexity=10 --max-line-length=127 --statistics
+
+  generate_static_site:
+    name: Generate - Build Static Site
+    runs-on: ubuntu-latest
+    needs: test_and_lint # Actualizado el 'needs'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install application dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then
+            pip install -r requirements.txt
+          else
+            echo "ERROR: requirements.txt not found!"
+            exit 1
+          fi
+
+      - name: Generate static site
+        run: |
+          set -e
+          echo "Running static site generator (generate_static.py)..."
+          python generate_static.py
+          echo "Static site generation script finished."
+
+      - name: Validate static site output
+        run: |
+          echo "Validating presence of _site directory..."
+          if [ ! -d "_site" ]; then
+            echo "ERROR: Static site folder '_site' was not created by generate_static.py!"
+            exit 1
+          fi
+          echo "_site directory found. Listing contents:"
+          ls -alph _site
+
+      - name: Upload static site artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: github-pages-site
+          path: _site/
+          if-no-files-found: error
+          retention-days: 7
+
+  deploy:
+    name: Deploy - Publish to GitHub Pages
+    runs-on: ubuntu-latest
+    needs: generate_static_site
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    permissions:
+      contents: write
+      pages: write
+      id-token: write # Aunque no se use para OIDC en este caso, es buena práctica incluirlo si se usan tokens
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      - name: Download static site artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: github-pages-site
 
-    - name: Set up Python 3.10
-      uses: actions/setup-python@v5 # Use a more recent version
-      with:
-        python-version: "3.10"
-
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        # Install tools for linting/testing if you want them in this workflow
-        pip install flake8 pytest 
-        # Install application dependencies
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; else echo "requirements.txt not found"; exit 1; fi
-      # Consider adding caching for dependencies for faster builds
-      # - name: Cache pip dependencies
-      #   uses: actions/cache@v4 # Use latest cache action
-      #   with:
-      #     path: ~/.cache/pip
-      #     key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-pip-
-
-    - name: Lint with flake8
-      run: |
-        # stop the build if there are Python syntax errors or undefined names
-        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-      # Continue even if linting fails? If not, remove --exit-zero from the second command or add `|| exit 1`
-      # Or, better, let flake8 exit with non-zero on error for the first command and remove the second if you want it to fail the build.
-
-
-    - name: Generate static site
-      run: python generate_static.py
-      # If your script requires any environment variables, set them here or use GitHub Secrets
-      # env:
-      #   FLASK_ENV: production 
-
-    - name: Upload static site artifact
-      uses: actions/upload-artifact@v4 # Use latest artifact action
-      with:
-        name: static-site-files # Name of the artifact
-        path: _site/ # Path to the directory to upload
-        if-no-files-found: error # Fail the workflow if _site is not found or empty
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./github-pages-site
+          # Opciones comunes (descomentar y ajustar según sea necesario):
+          # publish_branch: gh-pages
+          # user_name: 'github-actions[bot]'
+          # user_email: 'github-actions[bot]@users.noreply.github.com'
+          # commit_message: 'Deploy to GitHub Pages'
+          # force_orphan: true
+          # cname: yourdomain.com
