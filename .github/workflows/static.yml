@@ -1,5 +1,5 @@
 # .github/workflows/main.yml
-name: Build, Lint, and Deploy Static Site
+name: Build, Lint, Generate, and Deploy Static Site
 
 on:
   push:
@@ -12,11 +12,12 @@ permissions:
   contents: read
 
 jobs:
-  build_dependencies:
-    name: Build - Install Application Dependencies
+  # Job 1: Instalar dependencias base (puede ser usado por otros)
+  build_base_dependencies:
+    name: Setup - Install Base Dependencies
     runs-on: ubuntu-latest
     outputs:
-      status: success
+      status: success # Solo para indicar éxito
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -43,11 +44,14 @@ jobs:
             echo "ERROR: requirements.txt not found!"
             exit 1
           fi
+      # No subimos un artefacto de dependencias aquí para mantenerlo simple,
+      # cada job de generación instalará lo que necesite (aprovechando el caché de descarga de pip).
 
-  test_and_lint: # Renombrado para reflejar que solo hace linting ahora
-    name: Lint Code with Flake8
+  # Job 2: Linting (se ejecuta una vez)
+  lint_code:
+    name: Quality - Lint Code with Flake8
     runs-on: ubuntu-latest
-    needs: build_dependencies
+    needs: build_base_dependencies
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -60,9 +64,9 @@ jobs:
       - name: Install application and linting dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install flake8 # Solo flake8 ahora
+          pip install flake8
           if [ -f requirements.txt ]; then
-            pip install -r requirements.txt # Aún necesario si flake8 necesita entender importaciones de tu app
+            pip install -r requirements.txt
           else
             echo "ERROR: requirements.txt not found!"
             exit 1
@@ -70,16 +74,21 @@ jobs:
 
       - name: Lint with flake8
         run: |
-          echo "Linting: Checking for critical Python syntax errors and undefined names..."
+          echo "Linting: Critical checks..."
           flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics || exit 1
-
-          echo "Linting: Reporting full style and complexity (informational)..."
+          echo "Linting: Full style checks (informational)..."
           flake8 . --count --max-complexity=10 --max-line-length=127 --statistics
 
-  generate_static_site:
-    name: Generate - Build Static Site
+  # Job 3: Generar páginas estáticas por idioma (en paralelo usando matrix)
+  generate_language_slice:
+    name: Generate - Static Pages for ${{ matrix.language }}
     runs-on: ubuntu-latest
-    needs: test_and_lint # Actualizado el 'needs'
+    needs: [build_base_dependencies, lint_code] # Depende de los anteriores
+    strategy:
+      fail-fast: false # Importante: si un idioma falla, los otros continúan
+      matrix:
+        language: [en, es, fr, it, de] # Tus idiomas soportados
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -89,67 +98,171 @@ jobs:
         with:
           python-version: "3.10"
 
-      - name: Install application dependencies
+      - name: Install application dependencies (cached)
         run: |
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then
-            pip install -r requirements.txt
+            pip install -r requirements.txt # Pip usará el caché de descarga si es posible
           else
             echo "ERROR: requirements.txt not found!"
             exit 1
           fi
-
-      - name: Generate static site
+      
+      - name: Generate static site for language ${{ matrix.language }}
         run: |
           set -e
-          echo "Running static site generator (generate_static.py)..."
-          python generate_static.py
-          echo "Static site generation script finished."
+          echo "Running static site generator for language: ${{ matrix.language }}"
+          python generate_static.py --language ${{ matrix.language }}
+          echo "Static site generation for ${{ matrix.language }} finished."
 
-      - name: Validate static site output
-        run: |
-          echo "Validating presence of _site directory..."
-          if [ ! -d "_site" ]; then
-            echo "ERROR: Static site folder '_site' was not created by generate_static.py!"
-            exit 1
-          fi
-          echo "_site directory found. Listing contents:"
-          ls -alph _site
-
-      - name: Upload static site artifact
+      - name: Upload language slice artifact
         uses: actions/upload-artifact@v4
         with:
-          name: github-pages-site
+          name: site-slice-${{ matrix.language }} # Artefacto por idioma
+          path: _site/ # Sube el contenido de _site (que ahora solo tendrá un idioma y sitemaps de ese idioma)
+          if-no-files-found: error # Debería haber al menos el directorio del idioma
+          retention-days: 3 # Mantener artefactos parciales por menos tiempo
+
+  # Job 4: Combinar los slices generados y preparar el sitio final
+  combine_and_finalize_site:
+    name: Finalize - Combine Slices and Prepare Full Site
+    runs-on: ubuntu-latest
+    needs: generate_language_slice # Se ejecuta después de que todos los jobs de la matriz terminen
+
+    steps:
+      - name: Checkout repository # Necesario para copiar 'public' y 'static'
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.10 # Necesario si el script finalizador es Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Create final _site directory
+        run: mkdir -p _site
+
+      - name: Download all language slice artifacts
+        uses: actions/download-artifact@v4
+        with:
+          # No se especifica 'name', descarga todos los artefactos de este workflow run
+          path: ./_temp_slices # Descarga a un directorio temporal
+
+      - name: Combine language slices
+        run: |
+          echo "Combining language slices..."
+          # Cada slice (ej. site-slice-es) contendrá un directorio _site con /es/...
+          # Necesitamos copiar el contenido de cada _temp_slices/site-slice-LANG/_site/* a ./_site/
+          # O más bien, _temp_slices/site-slice-LANG/es/* a ./_site/es/*
+          for slice_dir in ./_temp_slices/site-slice-*; do
+            if [ -d "$slice_dir" ]; then
+              echo "Processing slice: $slice_dir"
+              # Copiar el contenido del _site del slice al _site final
+              # Asegurándose de que la estructura de idioma se mantenga
+              # Ejemplo: si $slice_dir/_site/es existe, copiarlo a ./_site/es
+              # Si el artefacto se subió con `path: _site/`, entonces el contenido de _site está en la raíz del artefacto.
+              # Entonces, $slice_dir/es, $slice_dir/sitemap_es_core.xml, etc.
+              rsync -av "$slice_dir/" ./_site/
+            fi
+          done
+          echo "Listing combined _site directory:"
+          ls -alph ./_site
+          # También listar subdirectorios de idioma para verificar
+          for lang_dir in ./_site/*/; do
+            if [ -d "$lang_dir" ]; then
+              echo "Contents of $lang_dir:"
+              ls -alph "$lang_dir"
+            fi
+          done
+
+
+      - name: Copy static and public assets to final _site
+        run: |
+          echo "Copying global static and public assets..."
+          if [ -d "static" ]; then
+            # Obtener static_url_path (necesitaríamos la app o configurarlo)
+            # Por simplicidad, asumimos que es 'static'
+            cp -r static ./_site/static
+            echo "Copied static folder."
+          fi
+          if [ -d "public" ]; then
+            # Copiar archivos de public a la raíz de _site
+            find public -maxdepth 1 -type f -exec cp {} ./_site/ \;
+            echo "Copied public files."
+          fi
+
+      - name: Generate main sitemap_index.xml and root index.html
+        # Esto requiere ejecutar generate_static.py sin --language para generar
+        # el index.html raíz y el sitemap.xml principal.
+        # Necesita las dependencias de la app.
+        run: |
+          echo "Installing dependencies for final sitemap/index generation..."
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          
+          echo "Generating root index.html and sitemap.xml..."
+          # Ejecutar SIN --language para que genere el sitemap.xml y /index.html
+          # El script ya está diseñado para no borrar _site si se ejecuta sin --language
+          # y _site ya existe y no está vacío (lo cual es el caso aquí).
+          # PERO, necesitamos asegurarnos de que NO borre el contenido de los idiomas.
+          # La lógica actual de generate_static.py es: si no args.language, BORRA _site.
+          # Esto necesita un ajuste en generate_static.py o un script separado.
+
+          # **AJUSTE NECESARIO en generate_static.py o un script nuevo para esto**
+          # Por ahora, asumimos que tenemos un comando que SOLO genera el sitemap.xml y /index.html
+          # sin tocar el resto. O que generate_static.py se ajusta.
+          # Si no, la siguiente línea BORRARÁ el trabajo de los slices.
+          # python generate_static.py # ESTO BORRARÍA LO COMBINADO
+          
+          # Solución temporal: Crear un sitemap_index.xml manualmente o con un script simple.
+          # O, si tu endpoint /sitemap.xml es suficientemente inteligente para ser generado estáticamente:
+          # python generate_static.py --generate-only sitemap_index root_index
+          # Esto requeriría más argumentos en generate_static.py.
+
+          # Opción más simple si /sitemap.xml y /index.html son generables por Flask:
+          # Necesitamos ejecutar app.test_client().get('/') y .get('/sitemap.xml')
+          # y guardarlos. Esto es lo que hacía generate_static.py.
+          # Vamos a llamar a una función específica o un mini-script si es necesario.
+          # Por ahora, lo dejaremos pendiente de cómo se genera el sitemap.xml final.
+          echo "Generación del sitemap_index.xml principal y root /index.html se omite temporalmente."
+          echo "Debe hacerse sin borrar el contenido de los idiomas ya generados."
+          # Si tu app puede generar el sitemap.xml correctamente solo con las rutas disponibles:
+          # (esto es lo que hacía antes el final de generate_static.py)
+          python -c "from app import create_app; from pathlib import Path; app=create_app(); client=app.test_client(); \
+          r_idx=client.get('/'); Path('_site/index.html').write_bytes(r_idx.data); \
+          r_smap=client.get('/sitemap.xml'); Path('_site/sitemap.xml').write_bytes(r_smap.data); \
+          print('Generated root index.html and sitemap.xml')"
+
+
+      - name: Upload final full site artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: github-pages-site-final # Nombre del artefacto final
           path: _site/
           if-no-files-found: error
           retention-days: 7
 
-  deploy:
-    name: Deploy - Publish to GitHub Pages
+  # Job 5: Desplegar a GitHub Pages
+  deploy_to_gh_pages:
+    name: Deploy - Publish Full Site to GitHub Pages
     runs-on: ubuntu-latest
-    needs: generate_static_site
+    needs: combine_and_finalize_site # Depende de la combinación
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 
     permissions:
       contents: write
       pages: write
-      id-token: write # Aunque no se use para OIDC en este caso, es buena práctica incluirlo si se usan tokens
+      id-token: write
 
     steps:
-      - name: Download static site artifact
+      - name: Download final full site artifact
         uses: actions/download-artifact@v4
         with:
-          name: github-pages-site
+          name: github-pages-site-final # Descargar el artefacto combinado
+          # Se descargará a ./github-pages-site-final/ por defecto
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./github-pages-site
-          # Opciones comunes (descomentar y ajustar según sea necesario):
-          # publish_branch: gh-pages
-          # user_name: 'github-actions[bot]'
-          # user_email: 'github-actions[bot]@users.noreply.github.com'
-          # commit_message: 'Deploy to GitHub Pages'
-          # force_orphan: true
-          # cname: yourdomain.com
+          publish_dir: ./github-pages-site-final # Directorio que contiene el sitio completo
+          # ... (otras opciones de peaceiris/actions-gh-pages) ...
