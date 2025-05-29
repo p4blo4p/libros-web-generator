@@ -1,4 +1,3 @@
-
 # .github/workflows/test-specific-parts.yml
 name: Test Specific Parts of Generation
 
@@ -10,12 +9,23 @@ on:
         required: false
         default: 'false'
         type: boolean
+      test_language:
+        description: 'Idioma para testear (ej. es, en). Requerido si se usa test_char_key.'
+        required: false
+        default: 'es' # Default a 'es' para tu caso de uso
+        type: string
+      test_char_key:
+        description: 'Clave de carácter para testear (ej. z, a, 0). Opcional.'
+        required: false
+        default: 'z' # Default a 'z' para tu caso de uso
+        type: string
+
 
 permissions:
-  contents: read # Suficiente para generar, pero si necesitas escribir caché de manifest, cámbialo
+  contents: read
 
 jobs:
-  test_setup_and_lint:
+  test_lint_setup_only: # Renombrado para claridad, ya que solo hace lint y setup
     name: Setup, Cache & Lint (Test)
     runs-on: ubuntu-latest
     steps:
@@ -29,7 +39,6 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.cache/pip
-          # Usar una clave de caché diferente para el workflow de testeo
           key: ${{ runner.os }}-pip-test-specific-${{ hashFiles('**/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-test-specific-
@@ -43,13 +52,12 @@ jobs:
           echo "Running Flake8 (strict pass for E9,F63,F7,F82)..."
           flake8 . --count --select=E9,F63,F7,F82 --format=pylint --statistics || exit 1
           echo "Running Flake8 (style and complexity pass)..."
-          # Descomenta la siguiente línea si quieres ejecutar la segunda pasada de Flake8
-          # flake8 . --count --format=pylint --statistics
+          flake8 . --count --format=pylint --statistics # Descomentado para un lint completo
 
-  test_generate_es_authors_z:
-    name: Test Generate - Spanish Authors starting with Z
+  test_generate_specific_slice:
+    name: Test Generate - Lang ${{ github.event.inputs.test_language }} / Char Key ${{ github.event.inputs.test_char_key || 'ALL' }}
     runs-on: ubuntu-latest
-    needs: test_setup_and_lint # Asegura que el linting pase primero (opcional para testeo rápido)
+    # needs: test_lint_setup_only # Puedes descomentar si quieres que el lint pase primero
     
     steps:
       - name: Checkout repository
@@ -73,36 +81,38 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # Para este test específico, la caché del manifest podría no ser crucial
-      # o podrías querer una clave de caché de manifest diferente para no interferir
-      # con la caché del manifest de tu workflow principal.
-      # Por simplicidad, aquí inicializamos uno vacío si no existe.
-      - name: Initialize manifest if not found (for testing)
+      - name: Initialize manifest (for testing, could be more robust with specific cache key)
         run: |
           if [ ! -d ".cache" ]; then mkdir -p .cache; fi
           if [ ! -f ".cache/generation_manifest.json" ]; then
             echo "Test manifest not found, creating empty for this job."
             echo "{}" > .cache/generation_manifest.json
+          else
+            echo "Existing manifest found, will be used/updated by generate_static.py"
           fi
 
-      - name: Generate static site for Spanish language (focus on Z authors)
+      - name: Generate static site for specific slice
         env:
-          # El input ahora se llama force_regenerate_test para evitar confusión con el input del workflow principal
           FORCE_REGENERATE_FLAG: ${{ github.event.inputs.force_regenerate_test == 'true' && '--force-regenerate' || '' }}
+          TARGET_LANG: ${{ github.event.inputs.test_language }}
+          TARGET_CHAR_KEY: ${{ github.event.inputs.test_char_key }}
         run: |
           set -e
-          echo "Running static site generator for language: es"
-          # Si tu script SOPORTA generar solo para una letra/char_key:
-          # python generate_static.py --language es --char-key z $FORCE_REGENERATE_FLAG
-          # Si tu script NO soporta generar solo para una letra/char_key,
-          # entonces generará todo para 'es'. Inspeccionarás el artefacto.
-          python generate_static.py --language es $FORCE_REGENERATE_FLAG
-          echo "Static site generation for 'es' (testing Z authors) finished."
+          echo "Running static site generator for language: $TARGET_LANG, char_key: $TARGET_CHAR_KEY"
+          
+          COMMAND_ARGS="--language $TARGET_LANG"
+          if [[ -n "$TARGET_CHAR_KEY" ]]; then
+            COMMAND_ARGS="$COMMAND_ARGS --char-key $TARGET_CHAR_KEY"
+          fi
+          
+          python generate_static.py $COMMAND_ARGS $FORCE_REGENERATE_FLAG
+          
+          echo "Static site generation for specific slice finished."
 
-      - name: Upload Spanish language slice artifact (for Z authors test)
+      - name: Upload specific slice artifact
         uses: actions/upload-artifact@v4
         with:
-          name: test-site-slice-es-authors-z
-          path: _site/  # Sube todo el _site generado para 'es'
-          if-no-files-found: error
-          retention-days: 1 # Retención corta para artefactos de testeo
+          name: test-site-slice-${{ github.event.inputs.test_language }}-${{ github.event.inputs.test_char_key || 'allchars' }}
+          path: _site/
+          if-no-files-found: error # Cambiado a error si no se encuentran archivos
+          retention-days: 1
