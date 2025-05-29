@@ -2,10 +2,10 @@
 name: Build, Lint, Generate, and Deploy Static Site
 
 on:
-  push:
-    branches: [ "large-data-optimization" ] # Consider changing to "main" or your primary branch
-  pull_request:
-    branches: [ "large-data-optimization" ] # Consider changing to "main" or your primary branch
+  # push:
+    # branches: [ "large-data-optimization" ] # Consider changing to "main" or your primary branch
+  # pull_request:
+    # branches: [ "large-data-optimization" ] # Consider changing to "main" or your primary branch
   workflow_dispatch:
     inputs:
       force_regenerate:
