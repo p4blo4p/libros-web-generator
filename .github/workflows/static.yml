@@ -50,10 +50,10 @@ jobs:
           # Flake8 usará la configuración de .flake8
           # Si quieres una pasada más estricta solo para ciertos errores, puedes mantener el --select aquí:
           echo "Running Flake8 (strict pass for E9,F63,F7,F82)..."
-          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics || exit 1
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --format=pylint --statistics || exit 1
           # Segunda pasada para el resto (respetará max-line-length, max-complexity y excludes de .flake8)
           echo "Running Flake8 (style and complexity pass)..."
-          flake8 . --count --show-source --statistics
+          flake8 . --count --show-source --format=pylint --statistics
 
   generate_language_slice:
     name: Generate - Pages for ${{ matrix.language }}
