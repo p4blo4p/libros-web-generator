@@ -1,4 +1,4 @@
-# .github/workflows/main.yml
+# libros-web-generator/.github/workflows/static.yml
 name: Build, Lint, Generate, and Deploy Static Site
 
 on:
@@ -47,8 +47,13 @@ jobs:
 
       - name: Lint with flake8
         run: |
+          # Flake8 usará la configuración de .flake8
+          # Si quieres una pasada más estricta solo para ciertos errores, puedes mantener el --select aquí:
+          echo "Running Flake8 (strict pass for E9,F63,F7,F82)..."
           flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics || exit 1
-          flake8 . --count --max-complexity=10 --max-line-length=127 --statistics
+          # Segunda pasada para el resto (respetará max-line-length, max-complexity y excludes de .flake8)
+          echo "Running Flake8 (style and complexity pass)..."
+          flake8 . --count --show-source --statistics
 
   generate_language_slice:
     name: Generate - Pages for ${{ matrix.language }}
@@ -85,7 +90,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: .cache/generation_manifest.json
-          key: ${{ runner.os }}-gen-manifest-v1-${{ github.ref }} # Consider a more stable key if this is per-branch
+          key: ${{ runner.os }}-gen-manifest-v1-${{ github.ref }}
 
       - name: Initialize manifest if not restored (fallback)
         run: |
@@ -118,7 +123,7 @@ jobs:
     needs: generate_language_slice
 
     permissions:
-      contents: write # Changed from read to write for manifest caching and gh-pages
+      contents: write
       pages: write
       id-token: write
 
@@ -153,16 +158,13 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: ./_temp_slices
-          # pattern: site-slice-* # Use pattern if there could be other artifacts
 
       - name: Combine language slices
         run: |
           echo "Combining language slices..."
-          # Ensure the glob matches only directories to avoid errors with non-directory items
           for slice_dir_container in ./_temp_slices/site-slice-*; do
             if [ -d "$slice_dir_container" ]; then
               echo "Processing slice container: $slice_dir_container"
-              # Copy contents of the slice, not the slice directory itself, into _site
               rsync -av "$slice_dir_container/" ./_site/
             else
               echo "Skipping non-directory item: $slice_dir_container"
@@ -175,14 +177,12 @@ jobs:
         run: |
           echo "Copying global static and public assets..."
           if [ -d "static" ]; then cp -r static ./_site/static; echo "Copied static folder."; fi
-          # Ensure public directory exists before trying to find files in it
-          if [ -d "public" ]; then 
-            find public -maxdepth 1 -type f -exec cp {} ./_site/ \; 
+          if [ -d "public" ]; then
+            find public -maxdepth 1 -type f -exec cp {} ./_site/ \;
             echo "Copied public files."
           else
             echo "Public directory not found, skipping."
           fi
-
 
       - name: Generate root index, sitemap.xml and final manifest
         env:
@@ -196,7 +196,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: .cache/generation_manifest.json
-          key: ${{ runner.os }}-gen-manifest-v1-${{ github.ref }} # This key should be consistent with restore
+          key: ${{ runner.os }}-gen-manifest-v1-${{ github.ref }}
 
       - name: Upload final full site artifact
         uses: actions/upload-artifact@v4
@@ -207,12 +207,8 @@ jobs:
           retention-days: 7
 
       - name: Deploy to GitHub Pages
-        # Typically, deploy only on pushes to the main/production branch, not PRs or other branches.
         if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/large-data-optimization')
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./_site
-          # user_name: 'github-actions[bot]' # Optional: Custom commit user
-          # user_email: 'github-actions[bot]@users.noreply.github.com' # Optional: Custom commit email
-          # cname: your.custom.domain # Optional: If you use a custom domain
