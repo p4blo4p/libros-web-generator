@@ -15,7 +15,6 @@ import time
 script_logger = logging.getLogger('generate_static_script')
 script_logger.setLevel(logging.INFO) # Cambia a DEBUG para ver más detalle
 script_handler = logging.StreamHandler()
-# Formato más detallado para debug
 script_formatter = logging.Formatter('%(asctime)s - %(name)s:%(processName)s - %(levelname)s - [%(funcName)s:%(lineno)d] - %(message)s')
 script_handler.setFormatter(script_formatter)
 if not script_logger.handlers:
@@ -23,8 +22,8 @@ if not script_logger.handlers:
 
 # --- Variables Globales para Workers ---
 worker_app_instance = None
-worker_logger = None # Se asignará en worker_init
-slugify_to_use_global_worker = None # Específico para el worker
+worker_logger = None
+slugify_to_use_global_worker = None # Se asignará en worker_init
 
 # --- CONSTANTES ---
 MANIFEST_DIR = Path(".cache")
@@ -47,9 +46,7 @@ def slugify_ascii_local(text):
     text_strip = text_re3.strip('-')
     return text_strip if text_strip else "na"
 
-# Determinar qué función slugify usar para el proceso principal
-# Los workers lo harán en worker_init
-slugify_to_use_global_main = slugify_ascii_local # Default
+slugify_to_use_global_main = slugify_ascii_local
 try:
     from app.utils.helpers import slugify_ascii as slugify_ascii_app_main
     slugify_to_use_global_main = slugify_ascii_app_main
@@ -59,30 +56,14 @@ except ImportError:
 
 
 def get_sitemap_char_group_for_author_local(author_name_or_slug, slugifier_func):
-    """
-    Determina a qué grupo de sitemap (letra o especial) pertenece un nombre/slug de autor.
-    Usa la función slugifier_func proporcionada.
-    """
-    # script_logger.debug(f"Input: '{author_name_or_slug}'") # Log de entrada si es necesario
     if not author_name_or_slug:
-        # script_logger.debug(f"Resultado: '{SPECIAL_CHARS_SITEMAP_KEY}' (input vacío)")
         return SPECIAL_CHARS_SITEMAP_KEY
-
-    # Es crucial aplicar la misma slugificación que se usará para generar las URLs
     processed_slug = slugifier_func(author_name_or_slug)
-    # script_logger.debug(f"Slug procesado: '{processed_slug}'")
-
-    if not processed_slug: # Si el slug se vuelve vacío después de procesar
-        # script_logger.debug(f"Resultado: '{SPECIAL_CHARS_SITEMAP_KEY}' (slug procesado vacío)")
+    if not processed_slug:
         return SPECIAL_CHARS_SITEMAP_KEY
-
     first_char = processed_slug[0].lower()
-    # script_logger.debug(f"Primer carácter: '{first_char}'")
-
     if first_char in ALPHABET:
-        # script_logger.debug(f"Resultado: '{first_char}' (alfabético)")
         return first_char
-    # script_logger.debug(f"Resultado: '{SPECIAL_CHARS_SITEMAP_KEY}' (no alfabético)")
     return SPECIAL_CHARS_SITEMAP_KEY
 
 
@@ -188,17 +169,14 @@ def worker_init():
 
     proc_name = current_process().name
     worker_app_instance = create_app()
-    # Configurar un logger específico para el worker si se quiere diferenciar del script_logger
-    # Por ahora, usamos el mismo logger principal para simplificar
     worker_logger = logging.getLogger(f'generate_static_worker.{proc_name}')
-    if not worker_logger.handlers: # Evitar duplicar handlers si el logger ya existe
+    if not worker_logger.handlers:
         worker_handler = logging.StreamHandler()
         worker_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - [%(funcName)s:%(lineno)d] - %(message)s')
         worker_handler.setFormatter(worker_formatter)
         worker_logger.addHandler(worker_handler)
-    worker_logger.setLevel(script_logger.level) # Heredar nivel del logger principal
-    worker_logger.propagate = False # Evitar que los logs del worker se propaguen al root logger
-
+    worker_logger.setLevel(script_logger.level)
+    worker_logger.propagate = False
 
     slugify_to_use_global_worker = slugify_ascii_local # Default
     try:
@@ -211,17 +189,16 @@ def worker_init():
 
 def generate_book_detail_pages_task(book_data_item, config_params_manifest_tuple):
     config_params, manifest_data_global = config_params_manifest_tuple
-    # Acceder a slugify_to_use_global_worker definido en worker_init
-    global slugify_to_use_global_worker
+    # La variable global slugify_to_use_global_worker es accesible aquí
+    # sin necesidad de redeclarar `global` si solo la lees.
 
-    # ... (resto de la lógica de la función como la tenías, usando slugify_to_use_global_worker) ...
     LANGUAGES = config_params['LANGUAGES']
     DEFAULT_LANGUAGE = config_params['DEFAULT_LANGUAGE']
     URL_SEGMENT_TRANSLATIONS_CONFIG = config_params['URL_SEGMENT_TRANSLATIONS_CONFIG']
     OUTPUT_DIR_BASE_STR = config_params['OUTPUT_DIR']
     FORCE_REGENERATE_ALL = config_params.get('FORCE_REGENERATE_ALL', False)
 
-    log_target = worker_logger # Usar el logger del worker
+    log_target = worker_logger
     generated_pages_info = []
 
     author_s_original = book_data_item.get('author_slug')
@@ -232,7 +209,6 @@ def generate_book_detail_pages_task(book_data_item, config_params_manifest_tuple
         log_target.debug(f"Saltando libro (datos incompletos): ID {identifier}")
         return generated_pages_info
 
-    # Usar la función slugify del worker
     author_s = slugify_to_use_global_worker(author_s_original)
     title_s = slugify_to_use_global_worker(title_s_original)
 
@@ -264,8 +240,8 @@ def generate_book_detail_pages_task(book_data_item, config_params_manifest_tuple
 
 def generate_author_pages_task(author_slug_original, config_params_manifest_tuple):
     config_params, manifest_data_global = config_params_manifest_tuple
-    global slugify_to_use_global_worker
-    # ... (resto de la lógica, usando slugify_to_use_global_worker) ...
+    # La variable global slugify_to_use_global_worker es accesible aquí
+
     LANGUAGES = config_params['LANGUAGES']
     DEFAULT_LANGUAGE = config_params['DEFAULT_LANGUAGE']
     URL_SEGMENT_TRANSLATIONS_CONFIG = config_params['URL_SEGMENT_TRANSLATIONS_CONFIG']
@@ -277,7 +253,6 @@ def generate_author_pages_task(author_slug_original, config_params_manifest_tupl
     generated_pages_info = []
     author_s = slugify_to_use_global_worker(author_slug_original)
 
-    # Filtrar libros por el slug del autor YA PROCESADO para consistencia
     author_books_data = [b for b in ALL_BOOKS_DATA if slugify_to_use_global_worker(b.get('author_slug')) == author_s]
     if not author_books_data:
         log_target.debug(f"No se encontraron libros para el slug de autor procesado '{author_s}' (original '{author_slug_original}').")
@@ -315,8 +290,8 @@ def generate_author_pages_task(author_slug_original, config_params_manifest_tupl
 
 def generate_versions_pages_task(author_base_title_slugs_original, config_params_manifest_tuple):
     config_params, manifest_data_global = config_params_manifest_tuple
-    global slugify_to_use_global_worker
-    # ... (resto de la lógica, usando slugify_to_use_global_worker) ...
+    # La variable global slugify_to_use_global_worker es accesible aquí
+
     LANGUAGES = config_params['LANGUAGES']
     DEFAULT_LANGUAGE = config_params['DEFAULT_LANGUAGE']
     URL_SEGMENT_TRANSLATIONS_CONFIG = config_params['URL_SEGMENT_TRANSLATIONS_CONFIG']
@@ -386,7 +361,6 @@ def _parse_cli_args():
 
 
 def _setup_environment_data(args, main_logger):
-    # ... (sin cambios significativos, solo asegurar que usa main_logger) ...
     main_logger.info(f"Iniciando script generate_static.py con argumentos: {args}")
     if args.force_regenerate:
         main_logger.info("FORZANDO REGENERACIÓN: El manifest será ignorado para 'should_regenerate'.")
@@ -464,18 +438,17 @@ def _prepare_output_directory(app_static_folder, app_static_url_path, output_dir
 
 def _generate_main_process_pages(app, languages_to_process, output_dir_path,
                                  current_lang_arg, force_regen_arg, char_key_arg, logger):
-    # ... (sin cambios significativos, la lógica de char_key_arg ya estaba bien) ...
     logger.info("Generando páginas de índice de idioma y sitemaps (proceso principal)...")
     with app.app_context():
         with app.test_client() as client_main:
-            if not current_lang_arg and not char_key_arg: # Globales solo si no hay filtro lang/char
+            if not current_lang_arg and not char_key_arg:
                 if force_regen_arg or not (output_dir_path / "index.html").exists():
                     _save_page_local(client_main, "/", output_dir_path / "index.html", logger)
-                if app.url_map.is_endpoint_expecting('main.test_page'): # Ejemplo
+                if app.url_map.is_endpoint_expecting('main.test_page'):
                     _save_page_local(client_main, "/test/", output_dir_path / "test_sitemap" / "index.html", logger)
 
             for lang in languages_to_process:
-                if not char_key_arg: # Index de idioma solo si no hay filtro char
+                if not char_key_arg:
                     if force_regen_arg or not (output_dir_path / lang / "index.html").exists():
                         _save_page_local(client_main, f"/{lang}/", output_dir_path / lang / "index.html", logger)
 
@@ -491,7 +464,7 @@ def _generate_main_process_pages(app, languages_to_process, output_dir_path,
                         _save_page_local(client_main, sitemap_url_char, sitemap_path_char, logger)
                     else:
                         logger.warning(f"char_key '{char_key_arg}' inválido para sitemap. Saltando.")
-                else: # Generar todos los sitemaps para el idioma
+                else:
                     _save_page_local(client_main, sitemap_url_core, sitemap_path_core, logger)
                     for char_k_iter in list(ALPHABET) + [SPECIAL_CHARS_SITEMAP_KEY]:
                         sitemap_url_char = f"/sitemap_{lang}_{char_k_iter}.xml"
@@ -515,11 +488,7 @@ def _run_parallel_tasks(env_data, force_regen_arg, char_key_arg, logger): # noqa
     all_new_manifest_entries = []
 
     all_books_source = env_data["books_data"]
-    # Para el filtrado, es importante usar la misma función slugify que usarán los workers
-    # Aquí usamos la del proceso principal (slugify_to_use_global_main) para la lógica de filtrado
-    # Los workers usarán slugify_to_use_global_worker que debería ser equivalente.
     current_slugifier_for_filtering = slugify_to_use_global_main
-
 
     books_to_process_for_detail_final = list(all_books_source)
     authors_to_process_slugs_orig_final = {b.get('author_slug') for b in all_books_source if b.get('author_slug')}
@@ -531,8 +500,7 @@ def _run_parallel_tasks(env_data, force_regen_arg, char_key_arg, logger): # noqa
 
     if char_key_arg and env_data["languages_to_process"]:
         logger.info(f"Filtrando tareas para char_key: '{char_key_arg}' en idioma(s): {env_data['languages_to_process']}")
-        # DEBUG: Imprimir algunos slugs de autor y sus grupos calculados
-        if logger.isEnabledFor(logging.DEBUG): # Solo si el nivel de log es DEBUG
+        if logger.isEnabledFor(logging.DEBUG):
             logger.debug("--- DEBUG: Verificando grupos de autor para filtrado (primeros 10) ---")
             for i, book_debug in enumerate(all_books_source):
                 if i < 10:
@@ -542,7 +510,6 @@ def _run_parallel_tasks(env_data, force_regen_arg, char_key_arg, logger): # noqa
                 else:
                     break
             logger.debug("--- FIN DEBUG ---")
-
 
         books_to_process_for_detail_final = [
             book for book in all_books_source
@@ -569,29 +536,33 @@ def _run_parallel_tasks(env_data, force_regen_arg, char_key_arg, logger): # noqa
             return all_new_manifest_entries
 
     with Pool(processes=num_processes, initializer=worker_init) as pool:
+        results_books, results_authors, results_versions = [], [], [] # Inicializar listas
+
         if books_to_process_for_detail_final:
             logger.info(f"Gen. paralela páginas detalle ({len(books_to_process_for_detail_final)} items)...")
             task = partial(generate_book_detail_pages_task, config_params_manifest_tuple=task_args_tuple)
-            for res_list in pool.map(task, books_to_process_for_detail_final): all_new_manifest_entries.extend(res_list)
-            logger.info(f"  Detalle libros: {sum(len(r) for r in _) if _ else 0} (re)generadas.")
+            results_books = pool.map(task, books_to_process_for_detail_final) # Asignar a results_books
+            for res_list in results_books: all_new_manifest_entries.extend(res_list)
+            logger.info(f"  Detalle libros: {sum(len(r) for r in results_books if r)} (re)generadas.")
 
         if authors_to_process_slugs_orig_final:
             logger.info(f"Gen. paralela páginas autor ({len(authors_to_process_slugs_orig_final)} items)...")
             task = partial(generate_author_pages_task, config_params_manifest_tuple=task_args_tuple)
-            for res_list in pool.map(task, list(authors_to_process_slugs_orig_final)): all_new_manifest_entries.extend(res_list)
-            logger.info(f"  Páginas autor: {sum(len(r) for r in _) if _ else 0} (re)generadas.")
+            results_authors = pool.map(task, list(authors_to_process_slugs_orig_final)) # Asignar
+            for res_list in results_authors: all_new_manifest_entries.extend(res_list)
+            logger.info(f"  Páginas autor: {sum(len(r) for r in results_authors if r)} (re)generadas.")
 
         if bases_to_process_tuples_orig_final:
             logger.info(f"Gen. paralela páginas versiones ({len(bases_to_process_tuples_orig_final)} items)...")
             task = partial(generate_versions_pages_task, config_params_manifest_tuple=task_args_tuple)
-            for res_list in pool.map(task, list(bases_to_process_tuples_orig_final)): all_new_manifest_entries.extend(res_list)
-            logger.info(f"  Páginas versiones: {sum(len(r) for r in _) if _ else 0} (re)generadas.")
+            results_versions = pool.map(task, list(bases_to_process_tuples_orig_final)) # Asignar
+            for res_list in results_versions: all_new_manifest_entries.extend(res_list)
+            logger.info(f"  Páginas versiones: {sum(len(r) for r in results_versions if r)} (re)generadas.")
     return all_new_manifest_entries
 
 
 def _finalize_generation(manifest_data, new_entries, app, output_dir_path,
                          current_lang_arg, force_regen_arg, char_key_arg, logger):
-    # ... (sin cambios significativos, la lógica de char_key_arg ya estaba bien) ...
     if char_key_arg and current_lang_arg:
         logger.info(f"Ejecución para lang '{current_lang_arg}' y char_key '{char_key_arg}'. Sitemap_index.xml NO actualizado.")
         if new_entries:
@@ -610,7 +581,7 @@ def _finalize_generation(manifest_data, new_entries, app, output_dir_path,
             with app.test_client() as client_main:
                 _save_page_local(client_main, "/sitemap.xml", output_dir_path / "sitemap.xml", logger)
         save_manifest(manifest_data)
-    else: # Solo idioma
+    else: 
         logger.info(f"Ejecución solo para idioma '{current_lang_arg}'. {len(new_entries)} págs (re)generadas.")
         if new_entries:
             logger.info(f"Actualizando manifest con {len(new_entries)} entradas para idioma {current_lang_arg}...")
