@@ -3,9 +3,9 @@ name: Build, Lint, Generate, and Deploy Static Site
 
 on:
   push:
-    branches: [ "large-data-optimization" ]
+    branches: [ "large-data-optimization" ] # Consider changing to "main" or your primary branch
   pull_request:
-    branches: [ "large-data-optimization" ]
+    branches: [ "large-data-optimization" ] # Consider changing to "main" or your primary branch
   workflow_dispatch:
     inputs:
       force_regenerate:
@@ -21,11 +21,16 @@ jobs:
   setup_and_lint:
     name: Setup, Cache & Lint
     runs-on: ubuntu-latest
-  
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-  
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
       - name: Cache pip dependencies
         uses: actions/cache@v4
         with:
@@ -33,18 +38,13 @@ jobs:
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-
-  
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.10"
-  
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install flake8
-  
+
       - name: Lint with flake8
         run: |
           flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics || exit 1
@@ -63,11 +63,29 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Cache pip dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
       - name: Restore Generation Manifest from Cache
         uses: actions/cache@v4
         with:
           path: .cache/generation_manifest.json
-          key: ${{ runner.os }}-gen-manifest-v1-${{ github.ref }}
+          key: ${{ runner.os }}-gen-manifest-v1-${{ github.ref }} # Consider a more stable key if this is per-branch
 
       - name: Initialize manifest if not restored (fallback)
         run: |
@@ -77,11 +95,6 @@ jobs:
             echo "{}" > .cache/generation_manifest.json
           fi
 
-      - name: Setup Python and install dependencies
-        uses: ./.github/actions/setup-python
-        with:
-          python-version: "3.10"
-      
       - name: Generate static site for language ${{ matrix.language }}
         env:
           FORCE_REGENERATE_FLAG: ${{ github.event.inputs.force_regenerate == 'true' && '--force-regenerate' || '' }}
@@ -105,7 +118,7 @@ jobs:
     needs: generate_language_slice
 
     permissions:
-      contents: write
+      contents: write # Changed from read to write for manifest caching and gh-pages
       pages: write
       id-token: write
 
@@ -113,10 +126,23 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Python and install dependencies
-        uses: ./.github/actions/setup-python
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
           python-version: "3.10"
+
+      - name: Cache pip dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
       - name: Clean and create final _site directory
         run: |
@@ -127,14 +153,19 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: ./_temp_slices
+          # pattern: site-slice-* # Use pattern if there could be other artifacts
 
       - name: Combine language slices
         run: |
           echo "Combining language slices..."
+          # Ensure the glob matches only directories to avoid errors with non-directory items
           for slice_dir_container in ./_temp_slices/site-slice-*; do
             if [ -d "$slice_dir_container" ]; then
               echo "Processing slice container: $slice_dir_container"
+              # Copy contents of the slice, not the slice directory itself, into _site
               rsync -av "$slice_dir_container/" ./_site/
+            else
+              echo "Skipping non-directory item: $slice_dir_container"
             fi
           done
           echo "Listing combined _site directory:"
@@ -144,7 +175,14 @@ jobs:
         run: |
           echo "Copying global static and public assets..."
           if [ -d "static" ]; then cp -r static ./_site/static; echo "Copied static folder."; fi
-          if [ -d "public" ]; then find public -maxdepth 1 -type f -exec cp {} ./_site/ \; echo "Copied public files."; fi
+          # Ensure public directory exists before trying to find files in it
+          if [ -d "public" ]; then 
+            find public -maxdepth 1 -type f -exec cp {} ./_site/ \; 
+            echo "Copied public files."
+          else
+            echo "Public directory not found, skipping."
+          fi
+
 
       - name: Generate root index, sitemap.xml and final manifest
         env:
@@ -158,7 +196,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: .cache/generation_manifest.json
-          key: ${{ runner.os }}-gen-manifest-v1-${{ github.ref }}
+          key: ${{ runner.os }}-gen-manifest-v1-${{ github.ref }} # This key should be consistent with restore
 
       - name: Upload final full site artifact
         uses: actions/upload-artifact@v4
@@ -168,9 +206,13 @@ jobs:
           if-no-files-found: error
           retention-days: 7
 
-      - name: Deploy to GitHub Pages (if on main branch push)
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      - name: Deploy to GitHub Pages
+        # Typically, deploy only on pushes to the main/production branch, not PRs or other branches.
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/large-data-optimization')
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./_site
+          # user_name: 'github-actions[bot]' # Optional: Custom commit user
+          # user_email: 'github-actions[bot]@users.noreply.github.com' # Optional: Custom commit email
+          # cname: your.custom.domain # Optional: If you use a custom domain
