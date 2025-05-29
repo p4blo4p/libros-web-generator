@@ -1,5 +1,5 @@
 # .github/workflows/main.yml
-name: Build, Lint, and Deploy Static Site
+name: Build, Lint, Generate, and Deploy Static Site
 
 on:
   push:
@@ -7,24 +7,24 @@ on:
   pull_request:
     branches: [ "main" ]
   workflow_dispatch:
+    inputs:
+      force_regenerate:
+        description: 'Forzar regeneración completa (ignora manifest)'
+        required: false
+        default: 'false'
+        type: boolean
 
 permissions:
   contents: read
 
 jobs:
-  build_dependencies:
-    name: Build - Install Application Dependencies
+  setup_and_lint:
+    name: Setup, Cache & Lint
     runs-on: ubuntu-latest
-    outputs:
-      status: success
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Set up Python 3.10
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.10"
 
       - name: Cache pip dependencies
         uses: actions/cache@v4
@@ -34,122 +34,153 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
 
-      - name: Install application dependencies
+      - name: Cache Generation Manifest
+        id: manifest_cache
+        uses: actions/cache@v4
+        with:
+          path: .cache/generation_manifest.json
+          key: ${{ runner.os }}-gen-manifest-v1-${{ github.ref }}
+          restore-keys: |
+            ${{ runner.os }}-gen-manifest-v1-
+
+      - name: Initialize manifest if not restored from cache
+        if: steps.manifest_cache.outputs.cache-hit != 'true'
         run: |
-          python -m pip install --upgrade pip
-          if [ -f requirements.txt ]; then
-            pip install -r requirements.txt
-          else
-            echo "ERROR: requirements.txt not found!"
-            exit 1
-          fi
+          mkdir -p .cache
+          echo "{}" > .cache/generation_manifest.json
+          echo "Initialized new generation_manifest.json"
 
-  test_and_lint: # Renombrado para reflejar que solo hace linting ahora
-    name: Lint Code with Flake8
-    runs-on: ubuntu-latest
-    needs: build_dependencies
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up Python 3.10
-        uses: actions/setup-python@v5
+      - name: Setup Python and install dependencies
+        uses: ./.github/actions/setup-python
         with:
           python-version: "3.10"
-
-      - name: Install application and linting dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install flake8 # Solo flake8 ahora
-          if [ -f requirements.txt ]; then
-            pip install -r requirements.txt # Aún necesario si flake8 necesita entender importaciones de tu app
-          else
-            echo "ERROR: requirements.txt not found!"
-            exit 1
-          fi
-
+      
       - name: Lint with flake8
         run: |
-          echo "Linting: Checking for critical Python syntax errors and undefined names..."
           flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics || exit 1
-
-          echo "Linting: Reporting full style and complexity (informational)..."
           flake8 . --count --max-complexity=10 --max-line-length=127 --statistics
 
-  generate_static_site:
-    name: Generate - Build Static Site
+  generate_language_slice:
+    name: Generate - Pages for ${{ matrix.language }}
     runs-on: ubuntu-latest
-    needs: test_and_lint # Actualizado el 'needs'
+    needs: setup_and_lint
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [en, es, fr, it, de]
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Python 3.10
-        uses: actions/setup-python@v5
+      - name: Restore Generation Manifest from Cache
+        uses: actions/cache@v4
+        with:
+          path: .cache/generation_manifest.json
+          key: ${{ runner.os }}-gen-manifest-v1-${{ github.ref }}
+
+      - name: Initialize manifest if not restored (fallback)
+        run: |
+          if [ ! -f ".cache/generation_manifest.json" ]; then
+            echo "Manifest not found after cache restore attempt, creating empty for this job."
+            mkdir -p .cache
+            echo "{}" > .cache/generation_manifest.json
+          fi
+
+      - name: Setup Python and install dependencies
+        uses: ./.github/actions/setup-python
         with:
           python-version: "3.10"
-
-      - name: Install application dependencies
-        run: |
-          python -m pip install --upgrade pip
-          if [ -f requirements.txt ]; then
-            pip install -r requirements.txt
-          else
-            echo "ERROR: requirements.txt not found!"
-            exit 1
-          fi
-
-      - name: Generate static site
+      
+      - name: Generate static site for language ${{ matrix.language }}
+        env:
+          FORCE_REGENERATE_FLAG: ${{ github.event.inputs.force_regenerate == 'true' && '--force-regenerate' || '' }}
         run: |
           set -e
-          echo "Running static site generator (generate_static.py)..."
-          python generate_static.py
-          echo "Static site generation script finished."
+          echo "Running static site generator for language: ${{ matrix.language }}"
+          python generate_static.py --language ${{ matrix.language }} $FORCE_REGENERATE_FLAG
+          echo "Static site generation for ${{ matrix.language }} finished."
 
-      - name: Validate static site output
-        run: |
-          echo "Validating presence of _site directory..."
-          if [ ! -d "_site" ]; then
-            echo "ERROR: Static site folder '_site' was not created by generate_static.py!"
-            exit 1
-          fi
-          echo "_site directory found. Listing contents:"
-          ls -alph _site
-
-      - name: Upload static site artifact
+      - name: Upload language slice artifact
         uses: actions/upload-artifact@v4
         with:
-          name: github-pages-site
+          name: site-slice-${{ matrix.language }}
           path: _site/
           if-no-files-found: error
-          retention-days: 7
+          retention-days: 3
 
-  deploy:
-    name: Deploy - Publish to GitHub Pages
+  combine_and_deploy:
+    name: Finalize - Combine Slices & Deploy to GitHub Pages
     runs-on: ubuntu-latest
-    needs: generate_static_site
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: generate_language_slice
 
     permissions:
       contents: write
       pages: write
-      id-token: write # Aunque no se use para OIDC en este caso, es buena práctica incluirlo si se usan tokens
+      id-token: write
 
     steps:
-      - name: Download static site artifact
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python and install dependencies
+        uses: ./.github/actions/setup-python
+        with:
+          python-version: "3.10"
+
+      - name: Clean and create final _site directory
+        run: |
+          rm -rf _site
+          mkdir -p _site
+
+      - name: Download all language slice artifacts
         uses: actions/download-artifact@v4
         with:
-          name: github-pages-site
+          path: ./_temp_slices
 
-      - name: Deploy to GitHub Pages
+      - name: Combine language slices
+        run: |
+          echo "Combining language slices..."
+          for slice_dir_container in ./_temp_slices/site-slice-*; do
+            if [ -d "$slice_dir_container" ]; then
+              echo "Processing slice container: $slice_dir_container"
+              rsync -av "$slice_dir_container/" ./_site/
+            fi
+          done
+          echo "Listing combined _site directory:"
+          ls -alph ./_site
+
+      - name: Copy static and public assets to final _site
+        run: |
+          echo "Copying global static and public assets..."
+          if [ -d "static" ]; then cp -r static ./_site/static; echo "Copied static folder."; fi
+          if [ -d "public" ]; then find public -maxdepth 1 -type f -exec cp {} ./_site/ \; echo "Copied public files."; fi
+
+      - name: Generate root index, sitemap.xml and final manifest
+        env:
+          FORCE_REGENERATE_FLAG: ${{ github.event.inputs.force_regenerate == 'true' && '--force-regenerate' || '' }}
+        run: |
+          echo "Generating root index.html, sitemap.xml, and updating global manifest..."
+          python generate_static.py $FORCE_REGENERATE_FLAG
+          echo "Final generation step complete."
+
+      - name: Cache Updated Generation Manifest
+        uses: actions/cache@v4
+        with:
+          path: .cache/generation_manifest.json
+          key: ${{ runner.os }}-gen-manifest-v1-${{ github.ref }}
+
+      - name: Upload final full site artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: github-pages-site-final
+          path: _site/
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Deploy to GitHub Pages (if on main branch push)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./github-pages-site
-          # Opciones comunes (descomentar y ajustar según sea necesario):
-          # publish_branch: gh-pages
-          # user_name: 'github-actions[bot]'
-          # user_email: 'github-actions[bot]@users.noreply.github.com'
-          # commit_message: 'Deploy to GitHub Pages'
-          # force_orphan: true
-          # cname: yourdomain.com
+          publish_dir: ./_site
