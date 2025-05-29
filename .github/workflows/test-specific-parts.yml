@@ -1,8 +1,8 @@
 # .github/workflows/test-specific-parts.yml
-name: Test Specific Parts of Generation
+name: Test Specific Parts (Lint on Push, Generate Manually)
 
 on:
-  workflow_dispatch: # Para ejecución manual
+  workflow_dispatch: # Para ejecución manual completa con inputs
     inputs:
       force_regenerate_test:
         description: 'Forzar regeneración para este test (ignora manifest)'
@@ -10,16 +10,16 @@ on:
         default: 'false'
         type: boolean
       test_language:
-        description: 'Idioma para testear (ej. es, en). Requerido si se usa test_char_key.'
-        required: false # Lo hacemos opcional; si está vacío, el script debería manejarlo (generar todos los idiomas)
-        default: 'es'
+        description: 'Idioma para testear generación (ej. es, en). Requerido si se usa test_char_key.'
+        required: false
+        default: 'es' # Default para cuando se ejecuta manualmente
         type: string
       test_char_key:
-        description: 'Clave de carácter para testear (ej. z, a, 0). Si se usa, test_language debe estar seteado.'
+        description: 'Clave de carácter para testear generación (ej. z, a, 0). Si se usa, test_language debe estar seteado.'
         required: false
-        default: 'z' # Default a 'z' para tu caso de uso específico
+        default: 'z' # Default para cuando se ejecuta manualmente
         type: string
-      log_level:
+      log_level: # Este input solo se usará si el job de generación se ejecuta
         description: 'Nivel de log para generate_static.py (INFO, DEBUG)'
         required: false
         default: 'INFO'
@@ -27,12 +27,17 @@ on:
         options:
           - INFO
           - DEBUG
+  push: # Trigger para el linting
+    branches:
+      - 'large-data-optimization' # Ejecutar linting en push a esta rama
+      # - 'feature/**'
+      # - '!main' # No ejecutar en main si el workflow principal ya lo hace
 
 permissions:
-  contents: read # Generalmente suficiente para leer código y generar artefactos
+  contents: read
 
 jobs:
-  test_lint_setup_only:
+  test_lint_setup_only: # Este job se ejecutará en push y workflow_dispatch
     name: Setup, Cache & Lint (Test)
     runs-on: ubuntu-latest
     steps:
@@ -41,7 +46,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.10" # Asegúrate que coincida con tu entorno de desarrollo
+          python-version: "3.10"
       - name: Cache pip dependencies
         uses: actions/cache@v4
         with:
@@ -62,9 +67,11 @@ jobs:
           flake8 . --count --format=pylint --statistics
 
   test_generate_specific_slice:
-    name: Test Generate - Lang ${{ github.event.inputs.test_language || 'ALL' }} / Char Key ${{ github.event.inputs.test_char_key || 'ALL' }}
+    # ESTE JOB SOLO SE EJECUTARÁ EN WORKFLOW_DISPATCH (ejecución manual)
+    name: Test Generate (Manual Only) - Lang ${{ github.event.inputs.test_language }} / Char ${{ github.event.inputs.test_char_key || 'ALL' }}
+    if: github.event_name == 'workflow_dispatch' # Condición clave
     runs-on: ubuntu-latest
-    # needs: test_lint_setup_only # Opcional: descomentar si quieres que el lint pase primero
+    needs: test_lint_setup_only # Opcional: Aún puede depender del linting si lo deseas, incluso si solo se ejecuta manualmente
     
     steps:
       - name: Checkout repository
@@ -79,7 +86,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-test-specific-${{ hashFiles('**/requirements.txt') }}
+          key: ${{ runner.os }}-pip-test-specific-${{ hashFiles('**/requirements.txt') }} # Misma clave que el job de lint
           restore-keys: |
             ${{ runner.os }}-pip-test-specific-
 
@@ -89,18 +96,15 @@ jobs:
           pip install -r requirements.txt
 
       - name: Restore/Initialize Manifest (for testing)
-        # Para testeos específicos de char_key, el manifest global podría no ser tan relevante
-        # o podrías querer una clave de caché distinta para no interferir.
-        # Aquí, creamos uno vacío si no existe, generate_static.py lo actualizará.
         id: manifest_cache
         uses: actions/cache@v4
         with:
           path: .cache/generation_manifest.json
+          # La clave de caché usa los inputs, que solo están definidos en workflow_dispatch
           key: ${{ runner.os }}-gen-manifest-test-slice-v1-${{ github.event.inputs.test_language }}-${{ github.event.inputs.test_char_key }}
-          # restore-keys: | # Podrías añadir claves de restauración si es útil
-          #  ${{ runner.os }}-gen-manifest-test-slice-v1-${{ github.event.inputs.test_language }}-
       
       - name: Initialize manifest if not restored by cache
+        # Este if también está implícitamente condicionado por github.event_name == 'workflow_dispatch' debido al if del job
         if: steps.manifest_cache.outputs.cache-hit != 'true'
         run: |
           echo "Test manifest not restored from cache, creating empty for this job."
@@ -109,25 +113,25 @@ jobs:
         
       - name: Generate static site for specific slice
         env:
+          # Todos estos inputs solo existen en workflow_dispatch
           FORCE_REGENERATE_FLAG: ${{ github.event.inputs.force_regenerate_test == 'true' && '--force-regenerate' || '' }}
           TARGET_LANG: ${{ github.event.inputs.test_language }}
           TARGET_CHAR_KEY: ${{ github.event.inputs.test_char_key }}
-          # Pasar el nivel de log al script si el script lo soporta
           # PYTHON_LOG_LEVEL: ${{ github.event.inputs.log_level }}
         run: |
-          set -e # Salir inmediatamente si un comando falla
+          set -e
           
           COMMAND_ARGS=""
           if [[ -n "$TARGET_LANG" ]]; then
             COMMAND_ARGS="$COMMAND_ARGS --language $TARGET_LANG"
-          fi
-          if [[ -n "$TARGET_CHAR_KEY" ]]; then
-            # Solo añadir --char-key si TARGET_LANG también está seteado, ya que es un requisito del script
-            if [[ -n "$TARGET_LANG" ]]; then
+            if [[ -n "$TARGET_CHAR_KEY" ]]; then
               COMMAND_ARGS="$COMMAND_ARGS --char-key $TARGET_CHAR_KEY"
-            else
-              echo "Advertencia: TARGET_CHAR_KEY ('$TARGET_CHAR_KEY') se ignora porque TARGET_LANG está vacío."
             fi
+          else
+            # Si TARGET_LANG está vacío (aunque tiene default 'es' para workflow_dispatch)
+            # El script generate_static.py debería manejar la generación de todos los idiomas.
+            # No se aplicaría TARGET_CHAR_KEY.
+            echo "TARGET_LANG está vacío, se intentará generar para todos los idiomas (comportamiento de generate_static.py)."
           fi
           
           echo "Running: python generate_static.py $COMMAND_ARGS $FORCE_REGENERATE_FLAG"
@@ -136,7 +140,7 @@ jobs:
           echo "Static site generation for specific slice finished."
 
       - name: List generated files in _site (for debugging)
-        if: always() # Ejecutar incluso si el paso anterior falla, para ver qué se generó
+        if: always()
         run: |
           echo "Contenido de _site:"
           ls -R _site || echo "_site no existe o está vacío."
