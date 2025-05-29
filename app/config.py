@@ -1,27 +1,28 @@
 # app/config.py
 import os
 
+
 class Config:
     """Configuraciones base de la aplicación."""
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'una-clave-secreta-muy-dificil-de-adivinar'
-    MINIFY_HTML = True # Opcional: si usas alguna extensión para minificar HTML
-    #SERVER_NAME = 'localhost:5000' # Descomentar y ajustar para url_for(_external=True) si es necesario localmente
+    MINIFY_HTML = True  # Opcional: si usas alguna extensión para minificar HTML
+    # SERVER_NAME = 'localhost:5000'  # Descomentar y ajustar para url_for(_external=True) si es necesario localmente
     # APPLICATION_ROOT = '/'
-    # PREFERRED_URL_SCHEME = 'http' # O 'https' si se sirve bajo HTTPS
-
+    # PREFERRED_URL_SCHEME = 'http'  # O 'https' si se sirve bajo HTTPS
+    
     # Rutas a archivos de datos
     BOOKS_DATA_DIR = 'data/books_collection/'
-    BESTSELLERS_JSON_PATH = 'social/amazon_bestsellers_es.json' # Ajustar si es necesario
+    BESTSELLERS_JSON_PATH = 'social/amazon_bestsellers_es.json'  # Ajustar si es necesario
     TRANSLATIONS_JSON_PATH = 'data/translations.json'
-
+    
     # Carpetas de la aplicación Flask
     STATIC_FOLDER = 'static'
     TEMPLATE_FOLDER = 'templates'
-
+    
     # Configuraciones de idioma
     SUPPORTED_LANGUAGES = ['en', 'es', 'fr', 'it', 'de']
     DEFAULT_LANGUAGE = 'en'
-
+    
     # Traducciones para segmentos de URL (clave canónica -> {'lang': 'traduccion'})
     URL_SEGMENT_TRANSLATIONS = {
         'book': {'en': 'book', 'es': 'libro', 'fr': 'livre', 'it': 'libro', 'de': 'buch'},
@@ -30,7 +31,7 @@ class Config:
         # Añade otros segmentos estructurales si los tienes, ej:
         # 'category': {'en': 'category', 'es': 'categoria', ...}
     }
-
+    
     # Mapeo de endpoints a los segmentos de URL que deben ser traducidos
     # y el nombre del parámetro de URL que usan en la definición de la ruta.
     # Clave: 'nombre_del_blueprint.nombre_de_la_funcion_vista'
@@ -39,7 +40,7 @@ class Config:
         'main.book_by_identifier': {'book': 'book_url_segment'},
         'main.book_versions': {'versions': 'versions_url_segment'},
         'main.author_books': {'author': 'author_url_segment'},
-        # 'main.index': {}, # No necesita segmentos traducibles en la ruta (aparte del lang_code)
+        # 'main.index': {},  # No necesita segmentos traducibles en la ruta (aparte del lang_code)
         # Si tuvieras una ruta como /<lang_code>/<category_url_segment>/...
         # 'main.category_page': {'category': 'category_url_segment'},
     }
