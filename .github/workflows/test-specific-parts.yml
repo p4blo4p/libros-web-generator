@@ -3,8 +3,6 @@
 name: Test Specific Parts of Generation
 
 on:
-  push:
-    branches: [ "large-data-optimization" ] # Consider changing to "main" or your primary branch
   workflow_dispatch: # Para ejecución manual
     inputs:
       force_regenerate_test:
