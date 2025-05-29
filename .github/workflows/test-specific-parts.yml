@@ -11,21 +11,28 @@ on:
         type: boolean
       test_language:
         description: 'Idioma para testear (ej. es, en). Requerido si se usa test_char_key.'
-        required: false
-        default: 'es' # Default a 'es' para tu caso de uso
+        required: false # Lo hacemos opcional; si está vacío, el script debería manejarlo (generar todos los idiomas)
+        default: 'es'
         type: string
       test_char_key:
-        description: 'Clave de carácter para testear (ej. z, a, 0). Opcional.'
+        description: 'Clave de carácter para testear (ej. z, a, 0). Si se usa, test_language debe estar seteado.'
         required: false
-        default: 'z' # Default a 'z' para tu caso de uso
+        default: 'z' # Default a 'z' para tu caso de uso específico
         type: string
-
+      log_level:
+        description: 'Nivel de log para generate_static.py (INFO, DEBUG)'
+        required: false
+        default: 'INFO'
+        type: choice
+        options:
+          - INFO
+          - DEBUG
 
 permissions:
-  contents: read
+  contents: read # Generalmente suficiente para leer código y generar artefactos
 
 jobs:
-  test_lint_setup_only: # Renombrado para claridad, ya que solo hace lint y setup
+  test_lint_setup_only:
     name: Setup, Cache & Lint (Test)
     runs-on: ubuntu-latest
     steps:
@@ -34,7 +41,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.10"
+          python-version: "3.10" # Asegúrate que coincida con tu entorno de desarrollo
       - name: Cache pip dependencies
         uses: actions/cache@v4
         with:
@@ -52,12 +59,12 @@ jobs:
           echo "Running Flake8 (strict pass for E9,F63,F7,F82)..."
           flake8 . --count --select=E9,F63,F7,F82 --format=pylint --statistics || exit 1
           echo "Running Flake8 (style and complexity pass)..."
-          flake8 . --count --format=pylint --statistics # Descomentado para un lint completo
+          flake8 . --count --format=pylint --statistics
 
   test_generate_specific_slice:
-    name: Test Generate - Lang ${{ github.event.inputs.test_language }} / Char Key ${{ github.event.inputs.test_char_key || 'ALL' }}
+    name: Test Generate - Lang ${{ github.event.inputs.test_language || 'ALL' }} / Char Key ${{ github.event.inputs.test_char_key || 'ALL' }}
     runs-on: ubuntu-latest
-    # needs: test_lint_setup_only # Puedes descomentar si quieres que el lint pase primero
+    # needs: test_lint_setup_only # Opcional: descomentar si quieres que el lint pase primero
     
     steps:
       - name: Checkout repository
@@ -81,38 +88,63 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Initialize manifest (for testing, could be more robust with specific cache key)
+      - name: Restore/Initialize Manifest (for testing)
+        # Para testeos específicos de char_key, el manifest global podría no ser tan relevante
+        # o podrías querer una clave de caché distinta para no interferir.
+        # Aquí, creamos uno vacío si no existe, generate_static.py lo actualizará.
+        id: manifest_cache
+        uses: actions/cache@v4
+        with:
+          path: .cache/generation_manifest.json
+          key: ${{ runner.os }}-gen-manifest-test-slice-v1-${{ github.event.inputs.test_language }}-${{ github.event.inputs.test_char_key }}
+          # restore-keys: | # Podrías añadir claves de restauración si es útil
+          #  ${{ runner.os }}-gen-manifest-test-slice-v1-${{ github.event.inputs.test_language }}-
+      
+      - name: Initialize manifest if not restored by cache
+        if: steps.manifest_cache.outputs.cache-hit != 'true'
         run: |
-          if [ ! -d ".cache" ]; then mkdir -p .cache; fi
-          if [ ! -f ".cache/generation_manifest.json" ]; then
-            echo "Test manifest not found, creating empty for this job."
-            echo "{}" > .cache/generation_manifest.json
-          else
-            echo "Existing manifest found, will be used/updated by generate_static.py"
-          fi
-
+          echo "Test manifest not restored from cache, creating empty for this job."
+          mkdir -p .cache
+          echo "{}" > .cache/generation_manifest.json
+        
       - name: Generate static site for specific slice
         env:
           FORCE_REGENERATE_FLAG: ${{ github.event.inputs.force_regenerate_test == 'true' && '--force-regenerate' || '' }}
           TARGET_LANG: ${{ github.event.inputs.test_language }}
           TARGET_CHAR_KEY: ${{ github.event.inputs.test_char_key }}
+          # Pasar el nivel de log al script si el script lo soporta
+          # PYTHON_LOG_LEVEL: ${{ github.event.inputs.log_level }}
         run: |
-          set -e
-          echo "Running static site generator for language: $TARGET_LANG, char_key: $TARGET_CHAR_KEY"
+          set -e # Salir inmediatamente si un comando falla
           
-          COMMAND_ARGS="--language $TARGET_LANG"
+          COMMAND_ARGS=""
+          if [[ -n "$TARGET_LANG" ]]; then
+            COMMAND_ARGS="$COMMAND_ARGS --language $TARGET_LANG"
+          fi
           if [[ -n "$TARGET_CHAR_KEY" ]]; then
-            COMMAND_ARGS="$COMMAND_ARGS --char-key $TARGET_CHAR_KEY"
+            # Solo añadir --char-key si TARGET_LANG también está seteado, ya que es un requisito del script
+            if [[ -n "$TARGET_LANG" ]]; then
+              COMMAND_ARGS="$COMMAND_ARGS --char-key $TARGET_CHAR_KEY"
+            else
+              echo "Advertencia: TARGET_CHAR_KEY ('$TARGET_CHAR_KEY') se ignora porque TARGET_LANG está vacío."
+            fi
           fi
           
+          echo "Running: python generate_static.py $COMMAND_ARGS $FORCE_REGENERATE_FLAG"
           python generate_static.py $COMMAND_ARGS $FORCE_REGENERATE_FLAG
           
           echo "Static site generation for specific slice finished."
 
+      - name: List generated files in _site (for debugging)
+        if: always() # Ejecutar incluso si el paso anterior falla, para ver qué se generó
+        run: |
+          echo "Contenido de _site:"
+          ls -R _site || echo "_site no existe o está vacío."
+
       - name: Upload specific slice artifact
         uses: actions/upload-artifact@v4
         with:
-          name: test-site-slice-${{ github.event.inputs.test_language }}-${{ github.event.inputs.test_char_key || 'allchars' }}
+          name: test-site-slice-${{ github.event.inputs.test_language || 'all_langs' }}-${{ github.event.inputs.test_char_key || 'all_chars' }}
           path: _site/
-          if-no-files-found: error # Cambiado a error si no se encuentran archivos
+          if-no-files-found: error 
           retention-days: 1
