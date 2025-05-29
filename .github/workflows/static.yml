@@ -21,16 +21,10 @@ jobs:
   setup_and_lint:
     name: Setup, Cache & Lint
     runs-on: ubuntu-latest
-    outputs:
-      manifest_path: .cache/generation_manifest.json # Para que otros jobs sepan dónde está
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Set up Python 3.10
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.10"
 
       - name: Cache pip dependencies
         uses: actions/cache@v4
@@ -40,12 +34,12 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
 
-      - name: Cache Generation Manifest # NEW: Cachear el manifest
-        id: manifest_cache # Darle un id para referenciar su salida
+      - name: Cache Generation Manifest
+        id: manifest_cache
         uses: actions/cache@v4
         with:
           path: .cache/generation_manifest.json
-          key: ${{ runner.os }}-gen-manifest-v1-${{ github.ref }} # Cache por rama
+          key: ${{ runner.os }}-gen-manifest-v1-${{ github.ref }}
           restore-keys: |
             ${{ runner.os }}-gen-manifest-v1-
 
@@ -56,16 +50,10 @@ jobs:
           echo "{}" > .cache/generation_manifest.json
           echo "Initialized new generation_manifest.json"
 
-      - name: Install dependencies (app, flake8)
-        run: |
-          python -m pip install --upgrade pip
-          pip install flake8
-          if [ -f requirements.txt ]; then
-            pip install -r requirements.txt
-          else
-            echo "ERROR: requirements.txt not found!"
-            exit 1
-          fi
+      - name: Setup Python and install dependencies
+        uses: ./.github/actions/setup-python
+        with:
+          python-version: "3.10"
       
       - name: Lint with flake8
         run: |
@@ -79,26 +67,19 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: [en, es, fr, it, de] # Tus idiomas
+        language: [en, es, fr, it, de]
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Python 3.10
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.10"
-
-      - name: Restore Generation Manifest from Cache # NEW
+      - name: Restore Generation Manifest from Cache
         uses: actions/cache@v4
         with:
-          path: .cache/generation_manifest.json # Debe ser la misma ruta
-          key: ${{ runner.os }}-gen-manifest-v1-${{ github.ref }} # Misma clave que en setup_and_lint
-          # No necesitamos restore-keys aquí si el job de setup siempre lo crea/restaura
+          path: .cache/generation_manifest.json
+          key: ${{ runner.os }}-gen-manifest-v1-${{ github.ref }}
 
       - name: Initialize manifest if not restored (fallback)
-        # Este if es por si el cache no se propaga instantáneamente o hay algún problema
         run: |
           if [ ! -f ".cache/generation_manifest.json" ]; then
             echo "Manifest not found after cache restore attempt, creating empty for this job."
@@ -106,10 +87,10 @@ jobs:
             echo "{}" > .cache/generation_manifest.json
           fi
 
-      - name: Install application dependencies (pip cache helps)
-        run: |
-          python -m pip install --upgrade pip
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      - name: Setup Python and install dependencies
+        uses: ./.github/actions/setup-python
+        with:
+          python-version: "3.10"
       
       - name: Generate static site for language ${{ matrix.language }}
         env:
@@ -117,7 +98,6 @@ jobs:
         run: |
           set -e
           echo "Running static site generator for language: ${{ matrix.language }}"
-          # Pasar --force-regenerate si el input del workflow es true
           python generate_static.py --language ${{ matrix.language }} $FORCE_REGENERATE_FLAG
           echo "Static site generation for ${{ matrix.language }} finished."
 
@@ -129,28 +109,29 @@ jobs:
           if-no-files-found: error
           retention-days: 3
 
-  combine_and_deploy: # Combinado los jobs de "combine" y "deploy"
+  combine_and_deploy:
     name: Finalize - Combine Slices & Deploy to GitHub Pages
     runs-on: ubuntu-latest
     needs: generate_language_slice
 
-    # Permisos específicos para este job (si se va a desplegar)
     permissions:
       contents: write
       pages: write
-      id-token: write 
+      id-token: write
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Python 3.10
-        uses: actions/setup-python@v5
+      - name: Setup Python and install dependencies
+        uses: ./.github/actions/setup-python
         with:
           python-version: "3.10"
 
-      - name: Create final _site directory
-        run: mkdir -p _site
+      - name: Clean and create final _site directory
+        run: |
+          rm -rf _site
+          mkdir -p _site
 
       - name: Download all language slice artifacts
         uses: actions/download-artifact@v4
@@ -163,7 +144,6 @@ jobs:
           for slice_dir_container in ./_temp_slices/site-slice-*; do
             if [ -d "$slice_dir_container" ]; then
               echo "Processing slice container: $slice_dir_container"
-              # El contenido de _site está directamente dentro de $slice_dir_container
               rsync -av "$slice_dir_container/" ./_site/
             fi
           done
@@ -176,43 +156,31 @@ jobs:
           if [ -d "static" ]; then cp -r static ./_site/static; echo "Copied static folder."; fi
           if [ -d "public" ]; then find public -maxdepth 1 -type f -exec cp {} ./_site/ \; echo "Copied public files."; fi
 
-      - name: Install dependencies for final manifest/sitemap/index generation
-        run: |
-          python -m pip install --upgrade pip
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-          
       - name: Generate root index, sitemap.xml and final manifest
         env:
           FORCE_REGENERATE_FLAG: ${{ github.event.inputs.force_regenerate == 'true' && '--force-regenerate' || '' }}
         run: |
           echo "Generating root index.html, sitemap.xml, and updating global manifest..."
-          # Ejecutar SIN --language para que genere el sitemap.xml, /index.html
-          # y ACTUALICE el manifest global con todos los cambios.
-          # El script generate_static.py ahora (con la modif.) SOLO guarda el manifest si no tiene --language.
           python generate_static.py $FORCE_REGENERATE_FLAG
           echo "Final generation step complete."
 
-      - name: Cache Updated Generation Manifest # NEW: Guardar el manifest actualizado
-        # Este paso se ejecutará incluso si el despliegue se salta (por no ser push a main)
-        # Lo cual es bueno para que el manifest esté actualizado para la próxima ejecución.
+      - name: Cache Updated Generation Manifest
         uses: actions/cache@v4
         with:
           path: .cache/generation_manifest.json
-          key: ${{ runner.os }}-gen-manifest-v1-${{ github.ref }} # Misma clave para sobrescribir
+          key: ${{ runner.os }}-gen-manifest-v1-${{ github.ref }}
 
-      - name: Upload final full site artifact (for inspection or manual deploy)
+      - name: Upload final full site artifact
         uses: actions/upload-artifact@v4
         with:
           name: github-pages-site-final
           path: _site/
           if-no-files-found: error
           retention-days: 7
-      
-      # --- Despliegue a GitHub Pages ---
+
       - name: Deploy to GitHub Pages (if on main branch push)
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./_site # Ahora _site contiene todo lo combinado
-          # ... (otras opciones de peaceiris/actions-gh-pages) ...
+          publish_dir: ./_site
