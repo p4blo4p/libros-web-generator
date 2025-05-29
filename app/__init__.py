@@ -79,3 +79,5 @@ def create_app(config_class=Config):
         app.logger.error("CRITICAL ERROR: Book data not loaded (app.books_data is empty).")
     if not app.bestsellers_data:
         app.logger.warning("WARNING: Bestsellers data not loaded (app.bestsellers_data is empty).")
+
+    return app
