@@ -411,7 +411,7 @@ def _setup_environment_data(args, main_logger):
     }
 
 
-def _prepare_output_directory(app_static_folder, app_static_url_path, output_dir_path,
+def _prepare_output_directory(app_static_folder, app_static_url_path, output_dir_path, # noqa: C901
                               current_lang_arg, perform_full_cleanup, logger):
     if perform_full_cleanup and not current_lang_arg:
         if output_dir_path.exists():
@@ -495,7 +495,7 @@ def _run_parallel_tasks(env_data, force_regen_arg, logger):
         results_books = pool.map(book_detail_task_with_args, env_data["books_data"])
         for res_list in results_books:
             all_new_manifest_entries.extend(res_list)
-        count_book_detail = sum(len(r) for r in results_books) # Count from results of this batch
+        count_book_detail = sum(len(r) for r in results_books)  # Count from results of this batch
         log_msg_book_detail = (
             f"Proceso de detalle de libros completado. {count_book_detail} "
             "páginas cacheadas (re)generadas o marcadas."
