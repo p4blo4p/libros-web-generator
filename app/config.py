@@ -1,17 +1,18 @@
 # app/config.py
 import os
 
+
 class Config:
     """Configuraciones base de la aplicación."""
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'una-clave-secreta-muy-dificil-de-adivinar'
-    MINIFY_HTML = True # Opcional: si usas alguna extensión para minificar HTML
-    #SERVER_NAME = 'localhost:5000' # Descomentar y ajustar para url_for(_external=True) si es necesario localmente
+    MINIFY_HTML = True  # Opcional: si usas alguna extensión para minificar HTML
+    # SERVER_NAME = 'localhost:5000' # Descomentar y ajustar para url_for(_external=True) si es necesario localmente
     # APPLICATION_ROOT = '/'
     # PREFERRED_URL_SCHEME = 'http' # O 'https' si se sirve bajo HTTPS
 
     # Rutas a archivos de datos
     BOOKS_DATA_DIR = 'data/books_collection/'
-    BESTSELLERS_JSON_PATH = 'social/amazon_bestsellers_es.json' # Ajustar si es necesario
+    BESTSELLERS_JSON_PATH = 'social/amazon_bestsellers_es.json'  # Ajustar si es necesario
     TRANSLATIONS_JSON_PATH = 'data/translations.json'
 
     # Carpetas de la aplicación Flask

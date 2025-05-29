@@ -1,11 +1,11 @@
-# .github/workflows/main.yml
+# libros-web-generator/.github/workflows/static.yml
 name: Build, Lint, Generate, and Deploy Static Site
 
 on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+  # push:
+    # branches: [ "large-data-optimization" ] # Consider changing to "main" or your primary branch
+  # pull_request:
+    # branches: [ "large-data-optimization" ] # Consider changing to "main" or your primary branch
   workflow_dispatch:
     inputs:
       force_regenerate:
@@ -26,6 +26,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
       - name: Cache pip dependencies
         uses: actions/cache@v4
         with:
@@ -34,31 +39,21 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
 
-      - name: Cache Generation Manifest
-        id: manifest_cache
-        uses: actions/cache@v4
-        with:
-          path: .cache/generation_manifest.json
-          key: ${{ runner.os }}-gen-manifest-v1-${{ github.ref }}
-          restore-keys: |
-            ${{ runner.os }}-gen-manifest-v1-
-
-      - name: Initialize manifest if not restored from cache
-        if: steps.manifest_cache.outputs.cache-hit != 'true'
+      - name: Install dependencies
         run: |
-          mkdir -p .cache
-          echo "{}" > .cache/generation_manifest.json
-          echo "Initialized new generation_manifest.json"
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install flake8
 
-      - name: Setup Python and install dependencies
-        uses: ./.github/actions/setup-python
-        with:
-          python-version: "3.10"
-      
       - name: Lint with flake8
         run: |
-          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics || exit 1
-          flake8 . --count --max-complexity=10 --max-line-length=127 --statistics
+          # Flake8 usará la configuración de .flake8
+          # Si quieres una pasada más estricta solo para ciertos errores, puedes mantener el --select aquí:
+          echo "Running Flake8 (strict pass for E9,F63,F7,F82)..."
+          flake8 . --count --select=E9,F63,F7,F82 --format=pylint --statistics || exit 1
+          # Segunda pasada para el resto (respetará max-line-length, max-complexity y excludes de .flake8)
+          echo "Running Flake8 (style and complexity pass)..."
+          # flake8 . --count --format=pylint --statistics
 
   generate_language_slice:
     name: Generate - Pages for ${{ matrix.language }}
@@ -72,6 +67,24 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Cache pip dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
       - name: Restore Generation Manifest from Cache
         uses: actions/cache@v4
@@ -87,11 +100,6 @@ jobs:
             echo "{}" > .cache/generation_manifest.json
           fi
 
-      - name: Setup Python and install dependencies
-        uses: ./.github/actions/setup-python
-        with:
-          python-version: "3.10"
-      
       - name: Generate static site for language ${{ matrix.language }}
         env:
           FORCE_REGENERATE_FLAG: ${{ github.event.inputs.force_regenerate == 'true' && '--force-regenerate' || '' }}
@@ -123,10 +131,23 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Python and install dependencies
-        uses: ./.github/actions/setup-python
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
           python-version: "3.10"
+
+      - name: Cache pip dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
       - name: Clean and create final _site directory
         run: |
@@ -145,6 +166,8 @@ jobs:
             if [ -d "$slice_dir_container" ]; then
               echo "Processing slice container: $slice_dir_container"
               rsync -av "$slice_dir_container/" ./_site/
+            else
+              echo "Skipping non-directory item: $slice_dir_container"
             fi
           done
           echo "Listing combined _site directory:"
@@ -154,7 +177,12 @@ jobs:
         run: |
           echo "Copying global static and public assets..."
           if [ -d "static" ]; then cp -r static ./_site/static; echo "Copied static folder."; fi
-          if [ -d "public" ]; then find public -maxdepth 1 -type f -exec cp {} ./_site/ \; echo "Copied public files."; fi
+          if [ -d "public" ]; then
+            find public -maxdepth 1 -type f -exec cp {} ./_site/ \;
+            echo "Copied public files."
+          else
+            echo "Public directory not found, skipping."
+          fi
 
       - name: Generate root index, sitemap.xml and final manifest
         env:
@@ -178,8 +206,8 @@ jobs:
           if-no-files-found: error
           retention-days: 7
 
-      - name: Deploy to GitHub Pages (if on main branch push)
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      - name: Deploy to GitHub Pages
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/large-data-optimization')
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}

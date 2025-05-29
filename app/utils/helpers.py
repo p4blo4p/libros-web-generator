@@ -4,6 +4,7 @@ from unidecode import unidecode
 import json
 import sys
 
+
 def slugify_ascii(text):
     """Genera un slug ASCII limpio."""
     if text is None:
@@ -17,6 +18,7 @@ def slugify_ascii(text):
     text = text.strip('-')
     return text if text else "na"
 
+
 def ensure_https_filter(url_string):
     """Filtro Jinja2 para asegurar que una URL es HTTPS."""
     if not url_string:
@@ -25,13 +27,16 @@ def ensure_https_filter(url_string):
         return url_string.replace('http://', 'https://', 1)
     return url_string
 
+
 def is_valid_isbn(isbn_str):
     """Valida un formato de ISBN-10 o ISBN-13."""
     return bool(re.match(r'^\d{10}(\d{3})?$', str(isbn_str or '')))
 
+
 def is_valid_asin(asin_str):
     """Valida un formato de ASIN."""
     return bool(re.match(r'^[A-Z0-9]{10}$', str(asin_str or '')))
+
 
 def load_json_file(filepath):
     """Carga datos desde un archivo JSON."""
