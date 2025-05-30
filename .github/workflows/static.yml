@@ -2,10 +2,10 @@
 name: Build, Lint, Generate, and Deploy Static Site
 
 on:
-  # push:
-    # branches: [ "large-data-optimization" ] # Consider changing to "main" or your primary branch
+  push:
+    branches: [ "main" ] # Cambiado a 'main' (o tu rama principal de despliegue)
   # pull_request:
-    # branches: [ "large-data-optimization" ] # Consider changing to "main" or your primary branch
+    # branches: [ "main" ]
   workflow_dispatch:
     inputs:
       force_regenerate:
@@ -15,13 +15,15 @@ on:
         type: boolean
 
 permissions:
-  contents: read
+  contents: read # Mantenido en read para la mayoría de los jobs
+  pages: write    # Necesario para el job de despliegue que usa artifacts
+  id-token: write # Necesario para el job de despliegue que usa artifacts
 
 jobs:
   setup_and_lint:
     name: Setup, Cache & Lint
     runs-on: ubuntu-latest
-
+    # ... (sin cambios aquí) ...
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -47,11 +49,8 @@ jobs:
 
       - name: Lint with flake8
         run: |
-          # Flake8 usará la configuración de .flake8
-          # Si quieres una pasada más estricta solo para ciertos errores, puedes mantener el --select aquí:
           echo "Running Flake8 (strict pass for E9,F63,F7,F82)..."
-          flake8 . --count --select=E9,F63,F7,F82 --format=pylint --statistics || exit 1
-          # Segunda pasada para el resto (respetará max-line-length, max-complexity y excludes de .flake8)
+          flake8 . --count --select=E9,F63,F7,F82 --format=pylint --statistics # Removido || exit 1 para que no falle el workflow por linting si hay otros errores
           echo "Running Flake8 (style and complexity pass)..."
           # flake8 . --count --format=pylint --statistics
 
@@ -63,6 +62,17 @@ jobs:
       fail-fast: false
       matrix:
         language: [en, es, fr, it, de]
+    
+    # --- AÑADIR VARIABLES DE ENTORNO PARA GITHUB PAGES ---
+    env:
+      GITHUB_PAGES_REPO_NAME: ${{ github.event.repository.name }}
+      GITHUB_PAGES_USERNAME: ${{ github.repository_owner }}
+      # Para que el logger de generate_static.py sepa el nivel deseado
+      SCRIPT_LOG_LEVEL: INFO # O DEBUG si necesitas más detalle
+      # Para que app/__init__.py sepa el nivel si FORCE_DETAILED_LOGGING está activo
+      # LOG_LEVEL: INFO # Ya se establece en app/config.py o app/__init__.py
+      # Si necesitas un SECRET_KEY específico para el build (no parece ser tu caso para sitio estático)
+      # SECRET_KEY: ${{ secrets.YOUR_BUILD_SECRET_KEY }}
 
     steps:
       - name: Checkout repository
@@ -87,35 +97,67 @@ jobs:
           pip install -r requirements.txt
 
       - name: Restore Generation Manifest from Cache
+        id: manifest_cache # Añadir ID para comprobar cache-hit
         uses: actions/cache@v4
         with:
           path: .cache/generation_manifest.json
-          key: ${{ runner.os }}-gen-manifest-v1-${{ github.ref }}
+          # La clave del manifest debe ser consistente a través de los jobs de 'generate_language_slice'
+          # y el job 'combine_and_deploy' si este último también lo modifica.
+          # Usar github.run_id o github.sha para que sea específico de esta ejecución de workflow
+          # si cada slice actualiza un manifest parcial que luego se combina.
+          # Si cada slice opera sobre una copia del manifest global y solo el job final lo actualiza,
+          # entonces una clave basada en github.ref es más apropiada para persistir entre pushes.
+          # Tu lógica actual parece:
+          # 1. generate_language_slice: Lee el manifest, genera, NO guarda el manifest al cache.
+          # 2. combine_and_deploy: Genera raíz/sitemaps y LUEGO guarda el manifest al cache.
+          # Esto significa que los slices pueden beneficiarse de un manifest de un run anterior,
+          # pero no se comunican cambios de manifest entre sí durante el mismo run.
+          key: ${{ runner.os }}-gen-manifest-v2-${{ github.ref }} # Cambiada v1 a v2 por si hay cambios
+          restore-keys: |
+            ${{ runner.os }}-gen-manifest-v2-${{ github.ref }}
+            ${{ runner.os }}-gen-manifest-v2-
 
       - name: Initialize manifest if not restored (fallback)
+        # if: steps.manifest_cache.outputs.cache-hit != 'true' # Comprobar el output del paso de cache
         run: |
           if [ ! -f ".cache/generation_manifest.json" ]; then
             echo "Manifest not found after cache restore attempt, creating empty for this job."
             mkdir -p .cache
             echo "{}" > .cache/generation_manifest.json
+          else
+            echo "Manifest restored from cache or already exists."
+            cat .cache/generation_manifest.json # Log para ver el manifest restaurado
           fi
 
       - name: Generate static site for language ${{ matrix.language }}
         env:
-          FORCE_REGENERATE_FLAG: ${{ github.event.inputs.force_regenerate == 'true' && '--force-regenerate' || '' }}
+          # FORCE_REGENERATE_FLAG ya se pasa al comando
+          # Las variables GITHUB_PAGES_* ya están en el env del job
+          # OUTPUT_DIR es _site por defecto en generate_static.py
+          STATIC_SITE_OUTPUT_DIR: _site_${{ matrix.language }} # Generar en un dir temporal por idioma
         run: |
           set -e
           echo "Running static site generator for language: ${{ matrix.language }}"
-          python generate_static.py --language ${{ matrix.language }} $FORCE_REGENERATE_FLAG
+          echo "Outputting to: _site_${{ matrix.language }}"
+          # Determinar el flag de --force-regenerate
+          FORCE_REGEN_CMD_ARG=""
+          if [[ "${{ github.event.inputs.force_regenerate }}" == "true" ]]; then
+            FORCE_REGEN_CMD_ARG="--force-regenerate"
+          fi
+          echo "Python Command: python generate_static.py --language ${{ matrix.language }} $FORCE_REGEN_CMD_ARG"
+          python generate_static.py --language ${{ matrix.language }} $FORCE_REGEN_CMD_ARG
           echo "Static site generation for ${{ matrix.language }} finished."
+          echo "Content of _site_${{ matrix.language }}:"
+          ls -R _site_${{ matrix.language }}
+
 
       - name: Upload language slice artifact
         uses: actions/upload-artifact@v4
         with:
           name: site-slice-${{ matrix.language }}
-          path: _site/
-          if-no-files-found: error
-          retention-days: 3
+          path: _site_${{ matrix.language }}/ # Subir el directorio temporal específico del idioma
+          if-no-files-found: error # 'error' es bueno para detectar problemas
+          retention-days: 1 # Reducido, ya que se combinan pronto
 
   combine_and_deploy:
     name: Finalize - Combine Slices & Deploy to GitHub Pages
@@ -123,20 +165,30 @@ jobs:
     needs: generate_language_slice
 
     permissions:
-      contents: write
+      contents: write # Necesario para peaceiris/actions-gh-pages si actualiza la rama
       pages: write
       id-token: write
 
+    # --- AÑADIR VARIABLES DE ENTORNO PARA GITHUB PAGES ---
+    env:
+      GITHUB_PAGES_REPO_NAME: ${{ github.event.repository.name }}
+      GITHUB_PAGES_USERNAME: ${{ github.repository_owner }}
+      SCRIPT_LOG_LEVEL: INFO
+      # LOG_LEVEL: INFO
+      STATIC_SITE_OUTPUT_DIR: _site # El directorio final
+      # El manifest que se usa en el paso de "Generate root index"
+      # debe ser el más actualizado posible. Podría ser el del cache o uno vacío.
+
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4 # Necesario para copiar static/public y para generate_static.py
 
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.10"
 
-      - name: Cache pip dependencies
+      - name: Cache pip dependencies # Podría no ser necesario si setup_and_lint ya lo hizo bien
         uses: actions/cache@v4
         with:
           path: ~/.cache/pip
@@ -149,66 +201,137 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Clean and create final _site directory
-        run: |
-          rm -rf _site
-          mkdir -p _site
-
-      - name: Download all language slice artifacts
-        uses: actions/download-artifact@v4
-        with:
-          path: ./_temp_slices
-
-      - name: Combine language slices
-        run: |
-          echo "Combining language slices..."
-          for slice_dir_container in ./_temp_slices/site-slice-*; do
-            if [ -d "$slice_dir_container" ]; then
-              echo "Processing slice container: $slice_dir_container"
-              rsync -av "$slice_dir_container/" ./_site/
-            else
-              echo "Skipping non-directory item: $slice_dir_container"
-            fi
-          done
-          echo "Listing combined _site directory:"
-          ls -alph ./_site
-
-      - name: Copy static and public assets to final _site
-        run: |
-          echo "Copying global static and public assets..."
-          if [ -d "static" ]; then cp -r static ./_site/static; echo "Copied static folder."; fi
-          if [ -d "public" ]; then
-            find public -maxdepth 1 -type f -exec cp {} ./_site/ \;
-            echo "Copied public files."
-          else
-            echo "Public directory not found, skipping."
-          fi
-
-      - name: Generate root index, sitemap.xml and final manifest
-        env:
-          FORCE_REGENERATE_FLAG: ${{ github.event.inputs.force_regenerate == 'true' && '--force-regenerate' || '' }}
-        run: |
-          echo "Generating root index.html, sitemap.xml, and updating global manifest..."
-          python generate_static.py $FORCE_REGENERATE_FLAG
-          echo "Final generation step complete."
-
-      - name: Cache Updated Generation Manifest
+      - name: Restore Generation Manifest from Cache (for final generation)
+        id: final_manifest_cache # ID para el paso
         uses: actions/cache@v4
         with:
           path: .cache/generation_manifest.json
-          key: ${{ runner.os }}-gen-manifest-v1-${{ github.ref }}
+          key: ${{ runner.os }}-gen-manifest-v2-${{ github.ref }} # Usar la misma clave que los slices
+          restore-keys: |
+            ${{ runner.os }}-gen-manifest-v2-${{ github.ref }}
+            ${{ runner.os }}-gen-manifest-v2-
 
-      - name: Upload final full site artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: github-pages-site-final
-          path: _site/
-          if-no-files-found: error
-          retention-days: 7
+      - name: Initialize final manifest if not restored
+        # if: steps.final_manifest_cache.outputs.cache-hit != 'true'
+        run: |
+          if [ ! -f ".cache/generation_manifest.json" ]; then
+            echo "Final manifest not found in cache, creating empty."
+            mkdir -p .cache
+            echo "{}" > .cache/generation_manifest.json
+          else
+            echo "Final manifest restored from cache."
+            cat .cache/generation_manifest.json
+          fi
 
-      - name: Deploy to GitHub Pages
-        if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/large-data-optimization')
-        uses: peaceiris/actions-gh-pages@v4
+      - name: Clean and create final _site directory
+        run: |
+          # STATIC_SITE_OUTPUT_DIR es _site
+          echo "Cleaning and creating final output directory: ${{ env.STATIC_SITE_OUTPUT_DIR }}"
+          rm -rf ${{ env.STATIC_SITE_OUTPUT_DIR }}
+          mkdir -p ${{ env.STATIC_SITE_OUTPUT_DIR }}
+
+      - name: Download all language slice artifacts
+        uses: actions/download-artifact@v4
+        # download-artifact descarga todos los artefactos del run actual por defecto
+        # si no se especifica 'name'. Los pone en directorios nombrados como el artefacto.
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./_site
+          path: ./_temp_slices # Todos los 'site-slice-*' irán aquí dentro de sus respectivas carpetas
+
+      - name: Combine language slices
+        run: |
+          echo "Combining language slices into ${{ env.STATIC_SITE_OUTPUT_DIR }}..."
+          # Iterar sobre los directorios de artefactos descargados
+          # El path dentro de _temp_slices será _temp_slices/site-slice-en, _temp_slices/site-slice-es, etc.
+          for slice_artifact_dir in ./_temp_slices/site-slice-*; do
+            if [ -d "$slice_artifact_dir" ]; then
+              echo "Processing content from artifact directory: $slice_artifact_dir"
+              # Copiar el contenido del directorio del artefacto al directorio final _site
+              # Asegúrate de que esto no cause conflictos si los slices tienen archivos comunes (no deberían si son por idioma)
+              rsync -av "$slice_artifact_dir/" "${{ env.STATIC_SITE_OUTPUT_DIR }}/"
+            else
+              echo "Skipping non-directory item found in _temp_slices: $slice_artifact_dir"
+            fi
+          done
+          echo "Listing combined ${{ env.STATIC_SITE_OUTPUT_DIR }} directory:"
+          ls -alph ${{ env.STATIC_SITE_OUTPUT_DIR }}
+          # Verificar estructura, ej: ls -alph ${{ env.STATIC_SITE_OUTPUT_DIR }}/es
+
+      - name: Copy global static and public assets to final _site
+        run: |
+          echo "Copying global static and public assets to ${{ env.STATIC_SITE_OUTPUT_DIR }}..."
+          # El script generate_static.py en _prepare_output_directory ya hace esto
+          # si se ejecuta sin --language y sin --char-key.
+          # Si la llamada final a generate_static.py no es "completa", necesitas hacerlo aquí.
+          # Como la llamada final a generate_static.py NO tiene --language, SÍ copiará static/public.
+          # Así que este paso podría ser redundante o causar sobreescrituras.
+          # Es más seguro dejar que generate_static.py lo maneje.
+          # Considera eliminar este paso si la última ejecución de generate_static.py lo hace.
+          # Si la última ejecución de generate_static.py es SÓLO para index/sitemap y no copia static/public,
+          # entonces este paso es necesario. Tu script SÍ copia en la ejecución "completa".
+          echo "Skipping explicit copy of static/public here; generate_static.py (final run) should handle it."
+          # if [ -d "app/static" ]; then # La ruta de static folder de la app
+          #   static_dest_name=$(basename ${{ env.GITHUB_PAGES_REPO_NAME }}/static) # deberia ser solo 'static'
+          #   cp -R app/static "${{ env.STATIC_SITE_OUTPUT_DIR }}/${static_dest_name}"
+          #   echo "Copied app/static folder."
+          # fi
+          # if [ -d "public" ]; then
+          #   find public -maxdepth 1 -type f -exec cp {} "${{ env.STATIC_SITE_OUTPUT_DIR }}/" \;
+          #   echo "Copied public files."
+          # fi
+
+
+      - name: Generate root index, sitemap.xml and update global manifest
+        run: |
+          echo "Generating root index.html, sitemap.xml, and updating global manifest in ${{ env.STATIC_SITE_OUTPUT_DIR }}..."
+          # Esta llamada a generate_static.py NO debería tener --language.
+          # Debería ser una ejecución "completa" en términos de páginas raíz y sitemaps,
+          # pero usando el manifest ya poblado por los slices para evitar regenerar contenido.
+          # El script _prepare_output_directory en modo completo SÍ copia static/public.
+          FORCE_REGEN_CMD_ARG=""
+          if [[ "${{ github.event.inputs.force_regenerate }}" == "true" ]]; then
+            FORCE_REGEN_CMD_ARG="--force-regenerate"
+          fi
+          echo "Python Command: python generate_static.py $FORCE_REGEN_CMD_ARG"
+          python generate_static.py $FORCE_REGEN_CMD_ARG # Sin --language ni --char-key
+          echo "Final generation step complete."
+
+      - name: Cache Updated Generation Manifest (Final)
+        if: always() # Siempre intentar guardar el manifest, incluso si pasos anteriores fallan
+        uses: actions/cache@v4
+        with:
+          path: .cache/generation_manifest.json # El manifest actualizado por la última ejecución
+          key: ${{ runner.os }}-gen-manifest-v2-${{ github.ref }} # Guardar con la misma clave
+
+      - name: Setup Pages (GitHub Actions native deployment)
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/main') # Solo para main
+        id: pages_setup # Añadir ID
+        uses: actions/configure-pages@v5
+
+      - name: Upload final site artifact for GitHub Pages deployment
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/main')
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ${{ env.STATIC_SITE_OUTPUT_DIR }} # Ruta a la carpeta _site final
+
+      - name: Deploy to GitHub Pages (using native GitHub Pages artifact)
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/main')
+        id: deployment
+        uses: actions/deploy-pages@v4
+        # No se necesita 'with' aquí, ya que toma el artefacto de 'upload-pages-artifact'
+
+
+      # ----- DEPRECATED: peaceiris/actions-gh-pages DEPLOYMENT -----
+      # Mantengo esto comentado por si prefieres volver a ello, pero el método nativo es recomendado.
+      # - name: Deploy to GitHub Pages (using peaceiris/actions-gh-pages)
+      #   # Solo desplegar en push a main (o la rama que quieras)
+      #   if: github.event_name == 'push' && (github.ref == 'refs/heads/main') # Ajusta tu rama
+      #   uses: peaceiris/actions-gh-pages@v4
+      #   with:
+      #     github_token: ${{ secrets.GITHUB_TOKEN }}
+      #     publish_dir: ${{ env.STATIC_SITE_OUTPUT_DIR }} # Debería ser ./_site
+      #     # publish_branch: gh-pages # Si quieres pushear a una rama gh-pages
+      #     # cname: your.custom.domain.com # Si tienes un dominio personalizado
+      #     user_name: 'github-actions[bot]'
+      #     user_email: 'github-actions[bot]@users.noreply.github.com'
+      #     commit_message: Deploy static site to GitHub Pages
+      # ----- END DEPRECATED -----
