@@ -5,7 +5,7 @@ import re
 from unidecode import unidecode
 import logging
 import os
-# from logging.handlers import RotatingFileHandler # F401: No se usa directamente aquí. Se usa en app/__init__.py
+# from logging.handlers import RotatingFileHandler # F401: No se usa directamente aquí.
 from multiprocessing import Pool, cpu_count, current_process
 from functools import partial
 import argparse
@@ -17,7 +17,7 @@ import time
 try:
     from dotenv import load_dotenv
     dotenv_path = Path(__file__).resolve().parent / '.env'
-    if not dotenv_path.exists():
+    if not dotenv_path.exists():  # Si no está al mismo nivel, buscar un nivel arriba
         dotenv_path = Path(__file__).resolve().parent.parent / '.env'
 
     if dotenv_path.exists():
@@ -211,11 +211,16 @@ def worker_init():
     worker_log_level_name = os.environ.get('SCRIPT_LOG_LEVEL', 'INFO').upper()
     worker_logger.setLevel(getattr(logging, worker_log_level_name, logging.INFO))
     worker_logger.propagate = False
-    worker_logger.info(
-        f"Worker {proc_name} inicializado. App APPLICATION_ROOT: "
-        f"'{worker_app_instance.config.get('APPLICATION_ROOT')}', "
-        f"SERVER_NAME: '{worker_app_instance.config.get('SERVER_NAME')}'"
+
+    app_root_info = worker_app_instance.config.get('APPLICATION_ROOT')
+    server_name_info = worker_app_instance.config.get('SERVER_NAME')
+    log_message = (
+        f"Worker {proc_name} inicializado. "
+        f"App APPLICATION_ROOT: '{app_root_info}', "
+        f"SERVER_NAME: '{server_name_info}'"
     )
+    worker_logger.info(log_message)
+
     slugify_to_use_global_worker = slugify_ascii_local  # Default
     try:
         from app.utils.helpers import slugify_ascii as slugify_ascii_app_worker
@@ -306,7 +311,10 @@ def _generate_task_common(item_data, config_params_manifest_tuple, page_type):
                 flask_url_parts_str = [str(p) for p in [f"/{lang}", translated_segment] + url_parts_dynamic]
                 flask_url = "/".join(part for part in flask_url_parts_str if part) + "/"
 
-                output_path_parts_str = [str(p) for p in [Path(OUTPUT_DIR_BASE_STR), lang, translated_segment] + url_parts_dynamic + ["index.html"]]
+                output_path_parts_str = [
+                    str(p) for p in
+                    [Path(OUTPUT_DIR_BASE_STR), lang, translated_segment] + url_parts_dynamic + ["index.html"]
+                ]
                 output_path_obj = Path(*[part for part in output_path_parts_str if part])
                 output_path_str = str(output_path_obj)
 
@@ -378,12 +386,9 @@ def _setup_environment_data(args, main_logger):
     }
 
 
-# C901: '_prepare_output_directory' is too complex (12) -> Aceptar por ahora
-def _prepare_output_directory(app_instance, output_dir_path,
+def _prepare_output_directory(app_instance, output_dir_path,  # noqa: C901
                               current_lang_arg, perform_full_cleanup, char_key_arg, logger):
     app_static_folder_path = Path(app_instance.static_folder)  # Ruta absoluta a app/static
-    # app_static_url_path es la URL base para los estáticos, ej: /static o /repo/static
-    # app_static_url_path_str = app_instance.static_url_path  # F841: No se usa directamente
 
     if char_key_arg and current_lang_arg:
         (output_dir_path / current_lang_arg).mkdir(parents=True, exist_ok=True)
@@ -398,8 +403,6 @@ def _prepare_output_directory(app_instance, output_dir_path,
         logger.info(f"{output_dir_path} creado/limpiado.")
 
         if app_static_folder_path.exists() and app_static_folder_path.is_dir():
-            # Las URLs HTML apuntarán a /APPLICATION_ROOT/static/...
-            # pero la carpeta en _site debe ser _site/static/...
             static_dir_name_in_output = "static"  # Nombre estándar
             static_output_target_dir = output_dir_path / static_dir_name_in_output
 
@@ -428,8 +431,7 @@ def _prepare_output_directory(app_instance, output_dir_path,
         logger.info(f"Asegurando {output_dir_path} y subdirs de idioma si aplican (sin limpieza completa).")
 
 
-# C901: '_generate_main_process_pages' is too complex (11) -> Aceptar por ahora
-def _generate_main_process_pages(app, languages_to_process, output_dir_path,
+def _generate_main_process_pages(app, languages_to_process, output_dir_path,  # noqa: C901
                                  current_lang_arg, force_regen_arg, char_key_arg, logger):
     logger.info("Generando páginas de índice de idioma y sitemaps (proceso principal)...")
     with app.app_context(), app.test_client() as client_main:
@@ -528,8 +530,8 @@ def _run_parallel_tasks(env_data, force_regen_arg, char_key_arg, logger):
     return all_new_manifest_entries
 
 
-def _finalize_generation(manifest_data, new_entries, output_dir_path,  # app no se usa aquí
-                         current_lang_arg, char_key_arg, logger):  # force_regen_arg no se usa
+def _finalize_generation(manifest_data, new_entries, output_dir_path,
+                         current_lang_arg, char_key_arg, logger):
     if new_entries:
         logger.info(f"Actualizando manifest con {len(new_entries)} entradas.")
         for entry in new_entries:
@@ -563,7 +565,7 @@ def main():
     perform_full_cleanup = (not args.language and not args.char_key) or \
                            (args.force_regenerate and not args.language and not args.char_key)
 
-    _prepare_output_directory(
+    _prepare_output_directory(  # Pasar app para acceder a config
         app, output_dir, args.language, perform_full_cleanup, args.char_key, main_logger
     )
     _generate_main_process_pages(
@@ -573,11 +575,13 @@ def main():
     new_manifest_entries = _run_parallel_tasks(
         env_data, args.force_regenerate, args.char_key, main_logger
     )
-    _finalize_generation(
-        env_data["manifest"], new_manifest_entries, output_dir,  # Removido app, force_regen_arg
+    _finalize_generation(  # Removidos app, force_regen_arg que no se usaban
+        env_data["manifest"], new_manifest_entries, output_dir,
         args.language, args.char_key, main_logger
     )
 
 
 if __name__ == '__main__':
     main()
+
+# Añadir una nueva línea al final del archivo si no existe
