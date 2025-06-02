@@ -16,7 +16,7 @@ class TranslationManager:
             if logger:
                 logger.warning(log_message)
             else:
-                print(log_message) # Fallback a print si no hay logger
+                print(log_message)  # Fallback a print si no hay logger  # E261 Corregido
             self.translations = {
                 'en': {'title': 'Book List (Default)', 'author': 'Author (Default)'},
                 'es': {'title': 'Lista de Libros (Por Defecto)', 'author': 'Autor (Por Defecto)'}
@@ -30,14 +30,13 @@ class TranslationManager:
 
         if translation_string is None:
             logger = getattr(current_app, 'logger', None)
-            # Loguear siempre si falta una clave y hay logger
-            if logger: # No necesitamos la condición de debug aquí, loguear siempre si falta
+            if logger:  # Loguear siempre si falta una clave y hay logger  # E261 Corregido
                 log_msg = (
                     f"Translation key '{key}' not found for lang '{effective_lang}' "
                     f"or default '{self.default_lang}'."
                 )
                 logger.warning(log_msg)
-            return key # Devolver la clave si no se encuentra traducción
+            return key  # Devolver la clave si no se encuentra traducción  # E261 Corregido
         return translation_string
 
     def _format_translation(self, key, translation_string, logger, **kwargs):
@@ -74,11 +73,10 @@ class TranslationManager:
             translation_string = self._get_translation_string(
                 key, lang_dict_effective, lang_dict_default, effective_lang
             )
-            # Si la clave se devolvió porque no se encontró traducción, no intentar formatear
-            if translation_string == key and kwargs: # Solo loguear si hay kwargs y no se encontró
+            if translation_string == key and kwargs:  # Solo loguear si hay kwargs y no se encontró  # E261 Corregido
                 if logger:
                     logger.debug(f"Key '{key}' not found, returning key. Kwargs {kwargs} ignored.")
-                return key # Devuelve la clave directamente si no se encontró
+                return key  # Devuelve la clave directamente si no se encontró  # E261 Corregido
 
             if kwargs:
                 return self._format_translation(key, translation_string, logger, **kwargs)
