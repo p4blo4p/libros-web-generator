@@ -375,7 +375,8 @@ def _run_parallel_tasks(env_data, force_regen, author_filter_char_key, logger): 
             for res in results:
                 if res and isinstance(res,list): new_entries.extend(res); count+=len(res)
             logger.info(f"  {name}: {count} (re)generadas.")
-            else: logger.info(f"No items para '{name}'.")
+            else: 
+                logger.info(f"No items para '{name}'.")
     return new_entries
 
 
