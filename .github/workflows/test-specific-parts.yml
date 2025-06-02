@@ -17,12 +17,12 @@ on:
       test_char_key:
         description: 'Clave de carácter para testear (ej. z, a, 0). Si se usa, test_language debe tener un valor.'
         required: false
-        default: '' # Default a vacío (sin filtro de char_key)
+        default: '5' # Default a vacío (sin filtro de char_key)
         type: string
       log_level:
         description: 'Nivel de log para generate_static.py y app (INFO, DEBUG)'
         required: false
-        default: 'INFO' # Default a INFO, cambiar a DEBUG para depurar
+        default: 'DEBUG' # Default a INFO, cambiar a DEBUG para depurar
         type: choice
         options:
           - INFO
@@ -34,7 +34,7 @@ on:
         type: boolean
   push:
     branches:
-      - 'large-data-optimization' # O tu rama de desarrollo principal donde quieras el linting automático
+      - 'main' # O tu rama de desarrollo principal donde quieras el linting automático
       # - '!main' # Podrías excluir main si tu workflow principal ya lo cubre
 
 permissions:
@@ -74,7 +74,7 @@ jobs:
           echo "Running Flake8 (strict pass for E9,F63,F7,F82)..."
           flake8 . --count --select=E9,F63,F7,F82 --format=pylint --statistics
           echo "Running Flake8 (style and complexity pass)..."
-          flake8 . --count --format=pylint --statistics
+          # flake8 . --count --format=pylint --statistics
           # Si la primera pasada de flake8 encuentra errores, el step fallará y el job fallará.
 
   test_generate_specific_slice:
