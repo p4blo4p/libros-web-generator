@@ -36,7 +36,7 @@ script_logger = logging.getLogger('generate_static_script')
 if not script_logger.handlers:
     log_level_name_env = os.environ.get('SCRIPT_LOG_LEVEL', 'INFO').upper()
     log_level_env = getattr(logging, log_level_name_env, logging.INFO)
-    script_logger.setLevel(log_level_env) # Nivel base del logger
+    script_logger.setLevel(log_level_env)
     script_handler = logging.StreamHandler()
     script_formatter = logging.Formatter(
         '%(asctime)s - %(name)s:%(processName)s - %(levelname)s - '
@@ -45,11 +45,10 @@ if not script_logger.handlers:
     script_handler.setFormatter(script_formatter)
     script_logger.addHandler(script_handler)
     script_logger.propagate = False
-# El nivel se ajustará en main() según el argumento CLI
-
-script_logger.info(
-    f"Logger principal (inicial) configurado con nivel: {logging.getLevelName(script_logger.level)}"
-)
+else:
+    log_level_name_env = os.environ.get('SCRIPT_LOG_LEVEL', 'INFO').upper()
+    script_logger.setLevel(getattr(logging, log_level_name_env, logging.INFO))
+script_logger.info(f"Logger principal: Nivel {logging.getLevelName(script_logger.level)}")
 
 worker_app_instance, worker_logger, slugify_to_use_global_worker = None, None, None
 MANIFEST_DIR, MANIFEST_FILE = Path(".cache"), Path(".cache/generation_manifest.json")
@@ -78,7 +77,6 @@ def get_sitemap_char_group_for_author(name_or_slug, slugifier_func):
     return res
 
 def get_translated_url_segment_for_generator(key, lang, trans, def_lang, def_val=None):
-    # ... (sin cambios)
     default_res = def_val if def_val is not None else key
     if not trans or not isinstance(trans,dict): return default_res
     segs = trans.get(key,{})
@@ -90,7 +88,6 @@ def get_translated_url_segment_for_generator(key, lang, trans, def_lang, def_val
         if val_dl: return val_dl
     return default_res
 
-# --- MANIFEST HELPERS (sin cambios) ---
 def load_manifest():
     if MANIFEST_FILE.exists():
         try:
@@ -105,7 +102,6 @@ def save_manifest(data):
     script_logger.info(f"Manifest guardado ({len(data)} entradas).")
 
 def get_book_signature_fields(data):
-    # ... (sin cambios)
     return dict(sorted({"isbn10":data.get("isbn10"),"isbn13":data.get("isbn13"),"asin":data.get("asin"),
                         "title_slug":data.get("title_slug"),"author_slug":data.get("author_slug"),
                         "description":data.get("description_short")or data.get("description"),
@@ -115,7 +111,6 @@ def get_book_signature_fields(data):
 
 def calculate_signature(data): return hashlib.md5(json.dumps(data,sort_keys=True,ensure_ascii=False).encode('utf-8')).hexdigest()
 def should_regenerate_page(path_str,sig,manifest,log):
-    # ... (sin cambios)
     entry=manifest.get(path_str)
     if not entry: log.debug(f"REGEN (nuevo): {path_str}"); return True
     if entry.get('signature')!=sig: log.debug(f"REGEN (firma): {path_str}"); return True
@@ -123,11 +118,13 @@ def should_regenerate_page(path_str,sig,manifest,log):
     log.debug(f"SALTAR: {path_str}"); return False
 
 def _save_page_local(client,url,path_obj,log):
-    # ... (sin cambios)
     try:
         resp=client.get(url)
         if resp.status_code==200:
-            if resp.data: path_obj.parent.mkdir(parents=True,exist_ok=True); open(path_obj,'wb').write(resp.data); log.info(f"GENERADO: {url} -> {path_obj}")
+            if resp.data:
+                path_obj.parent.mkdir(parents=True,exist_ok=True)
+                with open(path_obj,'wb') as f: f.write(resp.data)
+                log.info(f"GENERADO: {url} -> {path_obj}")
             else: log.info(f"URL {url} 200 sin datos.")
         elif 300<=resp.status_code<400: log.warning(f"{url} REDIR {resp.status_code} -> {resp.headers.get('Location')}. NO guardado.")
         elif resp.status_code==404: log.warning(f"404: {url}. NO guardado.")
@@ -135,12 +132,12 @@ def _save_page_local(client,url,path_obj,log):
     except Exception: log.exception(f"EXCEPCIÓN {url}")
 
 def worker_init():
-    # ... (sin cambios)
-    global worker_app_instance, worker_logger, slugify_to_use_global_worker; from app import create_app
+    global worker_app_instance, worker_logger, slugify_to_use_global_worker
+    from app import create_app
     os.environ['IS_STATIC_GENERATION_WORKER']='1'; proc_name=current_process().name; worker_app_instance=create_app()
     worker_logger=logging.getLogger(f'gsw.{proc_name.split("-")[-1]}')
     if worker_logger.hasHandlers():worker_logger.handlers.clear()
-    h=logging.StreamHandler();fmtr=logging.Formatter('%(asctime)s-%(name)s-%(levelname)s-%(message)s')
+    h=logging.StreamHandler();fmtr=logging.Formatter('%(asctime)s-%(name)s-%(levelname)s-%(message)s') # Simplificado para worker
     h.setFormatter(fmtr);worker_logger.addHandler(h)
     lvl_name=os.environ.get('SCRIPT_LOG_LEVEL','INFO').upper();worker_logger.setLevel(getattr(logging,lvl_name,logging.INFO))
     worker_logger.propagate=False
@@ -150,7 +147,6 @@ def worker_init():
     worker_logger.info(f"Worker inicializado. Slug: {slugify_to_use_global_worker.__name__}. Log: {logging.getLevelName(worker_logger.level)}")
 
 def _generate_task_common(item,cfg_manifest,type): # noqa: C901
-    # ... (sin cambios)
     cfg,manifest_g=cfg_manifest;langs,def_lang,url_segs,out_base,force_regen,all_books = \
     cfg['LANGUAGES'],cfg['DEFAULT_LANGUAGE'],cfg['URL_SEGMENT_TRANSLATIONS'],Path(cfg['OUTPUT_DIR']), \
     cfg.get('FORCE_REGENERATE_ALL',False),cfg['ALL_BOOKS_DATA']
@@ -187,103 +183,69 @@ def _generate_task_common(item,cfg_manifest,type): # noqa: C901
                 gen_info.append({"path":str(path_obj),"signature":sig,"timestamp":time.time()})
     return gen_info
 
-def generate_book_detail_pages_task(item,cfg): return _generate_task_common(item,cfg,"book")
-def generate_author_pages_task(item,cfg): return _generate_task_common(item,cfg,"author")
-def generate_versions_pages_task(item,cfg): return _generate_task_common(item,cfg,"versions")
+def generate_book_detail_pages_task(item,cfg_tuple): return _generate_task_common(item,cfg_tuple,"book")
+def generate_author_pages_task(item,cfg_tuple): return _generate_task_common(item,cfg_tuple,"author")
+def generate_versions_pages_task(item,cfg_tuple): return _generate_task_common(item,cfg_tuple,"versions")
 
 def _parse_cli_args():
-    parser = argparse.ArgumentParser(description="Generador de sitio estático.")
-    parser.add_argument("--language", type=str, help="Generar solo para un idioma (ej. 'es').")
-    parser.add_argument("--force-regenerate", action="store_true", help="Forzar regeneración.")
-    parser.add_argument(
-        "--char-key", type=str,
-        help="Clave de carácter. Si es dígito (ej. '5'), carga 'books_5.csv' Y filtra autores por '0' (especiales). "
-             "Si es letra (ej. 'a') o '0', carga todos los CSVs Y filtra autores por esa letra/'0'. "
-             "Requiere --language si es letra/'0' para filtrado de autor."
-    )
-    parser.add_argument("--log-level", type=str, default=os.environ.get('SCRIPT_LOG_LEVEL', 'INFO').upper(),
-                        choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'], help="Nivel de log.")
+    parser=argparse.ArgumentParser(description="Generador sitio estático.")
+    parser.add_argument("--language",type=str,help="Idioma (ej. 'es').")
+    parser.add_argument("--force-regenerate",action="store_true",help="Forzar regeneración.")
+    parser.add_argument("--char-key",type=str,help="Clave de carácter (letra, '0', o dígito para archivo).")
+    parser.add_argument("--log-level",type=str,default=os.environ.get('SCRIPT_LOG_LEVEL','INFO').upper(),
+                        choices=['DEBUG','INFO','WARNING','ERROR','CRITICAL'],help="Nivel de log.")
     return parser.parse_args()
-
-# generate_static.py
-# ... (todo el código anterior sin cambios) ...
 
 def _setup_environment_data(args, logger): # noqa: C901
     from app import create_app
     from app.models.data_loader import load_processed_books as app_load_books
     logger.info(f"Args: {args}")
-    if args.force_regenerate:
-        logger.info("FORZANDO REGENERACIÓN.")
-    manifest = load_manifest()
-    logger.info(f"Manifest: {len(manifest)} entradas.")
-    if 'IS_STATIC_GENERATION_WORKER' in os.environ:
-        del os.environ['IS_STATIC_GENERATION_WORKER']
+    if args.force_regenerate: logger.info("FORZANDO REGENERACIÓN.")
+    manifest=load_manifest(); logger.info(f"Manifest: {len(manifest)} entradas.")
+    if 'IS_STATIC_GENERATION_WORKER' in os.environ: del os.environ['IS_STATIC_GENERATION_WORKER']
     
-    app = create_app()
-    logger.info(
-        f"App Flask creada. APP_ROOT:'{app.config.get('APPLICATION_ROOT')}', "
-        f"SERVER_NAME:'{app.config.get('SERVER_NAME')}'"
-    )
+    app=create_app()
+    logger.info(f"App Flask creada. APP_ROOT:'{app.config.get('APPLICATION_ROOT')}', SERVER_NAME:'{app.config.get('SERVER_NAME')}'")
 
-    actual_char_key_for_author_filter = args.char_key
-    filename_key_for_data_load = None
+    filename_key_for_data = None
+    char_key_for_author_filter = args.char_key # Por defecto, este es el filtro de autor
 
     if args.char_key and args.char_key.isdigit():
-        filename_key_for_data_load = args.char_key
-        actual_char_key_for_author_filter = None
-        logger.info(
-            f"char_key ('{args.char_key}') es un dígito. Se usará para cargar "
-            f"'books_{filename_key_for_data_load}.csv'."
-        )
-        logger.info(
-            "El filtro de carácter de autor se desactivará (se procesarán todos los autores del archivo cargado)."
-        )
+        filename_key_for_data = args.char_key
+        char_key_for_author_filter = None # Si char_key es para archivo, no filtramos por autor con él
+        logger.info(f"char_key '{args.char_key}' es dígito. Se usará para cargar 'books_{filename_key_for_data}.csv'.")
+        logger.info("Filtro de carácter de autor se DESACTIVARÁ (se procesarán todos los autores del archivo).")
     elif args.char_key and (args.char_key in ALPHABET or args.char_key == SPECIAL_CHARS_SITEMAP_KEY) and not args.language:
         logger.error(f"--char-key '{args.char_key}' (letra o '0') requiere --language. Saliendo.")
         return None
 
-    if filename_key_for_data_load:
+    if filename_key_for_data:
         books_dir = app.config.get('BOOKS_DATA_DIR')
         if books_dir:
-            logger.info(f"Recargando datos de libros SOLO desde 'books_{filename_key_for_data_load}.csv'")
-            app.books_data = app_load_books(books_dir, filename_filter_key=filename_key_for_data_load)
+            logger.info(f"Recargando datos de libros SOLO desde 'books_{filename_key_for_data}.csv'")
+            app.books_data = app_load_books(books_dir, filename_filter_key=filename_key_for_data)
             logger.info(f"Libros después de filtro de archivo: {len(app.books_data)}")
-            if not app.books_data:
-                logger.warning(f"No se cargaron libros de 'books_{filename_key_for_data_load}.csv'.")
-        else:
-            logger.error("BOOKS_DATA_DIR no configurado.")
+            if not app.books_data: logger.warning(f"No se cargaron libros de 'books_{filename_key_for_data}.csv'.")
+        else: logger.error("BOOKS_DATA_DIR no configurado.")
     
-    all_cfg_langs = app.config.get('SUPPORTED_LANGUAGES', ['en'])
+    all_cfg_langs = app.config.get('SUPPORTED_LANGUAGES',['en'])
     langs_proc = [args.language] if args.language and args.language in all_cfg_langs else all_cfg_langs
     if args.language and args.language not in all_cfg_langs:
-        logger.error(f"Idioma '{args.language}' no soportado.")
-        return None
+        logger.error(f"Idioma '{args.language}' no soportado."); return None
     logger.info(f"Idiomas a procesar: {langs_proc}")
 
     books_final = app.books_data
-    # Esta es la sección alrededor de la línea 378 del código anterior
-    if not books_final and not filename_key_for_data_load: # Condición corregida
-        logger.critical("Datos de libros no cargados y no se usó un filtro de archivo de datos específico que pudiera resultar en cero libros.")
-        return None
-    
+    if not books_final and not filename_key_for_data :
+        logger.critical("Datos de libros no cargados y no se filtró por archivo."); return None
     logger.info(f"{len(books_final)} libros fuente (después de filtros).")
 
-    return {
-        "app": app,
-        "manifest": manifest,
-        "languages_to_process": langs_proc,
-        "default_language": app.config.get('DEFAULT_LANGUAGE', 'en'),
-        "url_segment_translations": app.config.get('URL_SEGMENT_TRANSLATIONS', {}),
-        "books_data": books_final,
-        "output_dir_path": OUTPUT_DIR,
-        "char_key_for_author_filter": actual_char_key_for_author_filter,
-        "char_key_for_sitemap_gen": args.char_key
-    }
-
-# ... (resto del archivo generate_static.py sin cambios desde aquí hasta el final,
-#  asumiendo que la última versión que te di para _prepare_output_directory en adelante está bien) ...
-
-# --- COPIARÉ EL RESTO DEL ARCHIVO DESDE LA VERSIÓN ANTERIOR ASEGURÁNDOME DE QUE NO HAYA CAMBIOS ---
+    return {"app":app,"manifest":manifest,"languages_to_process":langs_proc,
+            "default_language":app.config.get('DEFAULT_LANGUAGE','en'),
+            "url_segment_translations":app.config.get('URL_SEGMENT_TRANSLATIONS',{}),
+            "books_data":books_final,"output_dir_path":OUTPUT_DIR,
+            "char_key_for_author_filter": char_key_for_author_filter, # Para _run_parallel_tasks
+            "char_key_for_sitemap_gen": args.char_key # El original, para _generate_main_process_pages
+            }
 
 def _prepare_output_directory(app,out_dir,lang,cleanup,sitemap_char_key_original,logger): # noqa: C901
     app_root,app_static_folder_abs=Path(app.root_path),Path(app.root_path)/app.static_folder
@@ -295,34 +257,24 @@ def _prepare_output_directory(app,out_dir,lang,cleanup,sitemap_char_key_original
         return
 
     if cleanup and is_fully_unfiltered_run :
-        if out_dir.exists():
-            logger.info(f"Eliminando {out_dir}")
-            shutil.rmtree(out_dir)
-        out_dir.mkdir(parents=True,exist_ok=True)
-        logger.info(f"{out_dir} creado/limpio.")
+        if out_dir.exists(): logger.info(f"Eliminando {out_dir}"); shutil.rmtree(out_dir)
+        out_dir.mkdir(parents=True,exist_ok=True); logger.info(f"{out_dir} creado/limpio.")
         if app_static_folder_abs.exists()and app_static_folder_abs.is_dir():
             target=out_dir/Path(app.static_url_path.strip('/')).name
-            if target.exists():
-                shutil.rmtree(target)
-            shutil.copytree(app_static_folder_abs,target,dirs_exist_ok=True)
-            logger.info(f"'{app_static_folder_abs.name}' copiada.")
-        else:
-            logger.warning(f"Static dir no encontrado: {app_static_folder_abs}")
+            if target.exists():shutil.rmtree(target)
+            shutil.copytree(app_static_folder_abs,target,dirs_exist_ok=True); logger.info(f"'{app_static_folder_abs.name}' copiada.")
+        else: logger.warning(f"Static dir no encontrado: {app_static_folder_abs}")
         public=Path("public")
         if public.exists()and public.is_dir():
-            copied_files = 0
+            copied_files_count = 0
             for item in public.iterdir():
                 if item.is_file():
-                    try:
-                        shutil.copy2(item, out_dir / item.name)
-                        copied_files +=1
-                    except Exception as e:
-                        logger.error(f"Error copiando '{item.name}' de public/: {e}")
-            logger.info(f"{copied_files} archivos de public/ copiados.")
+                    try: shutil.copy2(item,out_dir/item.name); copied_files_count+=1
+                    except Exception as e: logger.error(f"Error copiando '{item.name}': {e}")
+            logger.info(f"{copied_files_count} archivos de public/ copiados.")
     else:
         out_dir.mkdir(parents=True,exist_ok=True)
-        if lang:
-            (out_dir/lang).mkdir(parents=True,exist_ok=True)
+        if lang: (out_dir/lang).mkdir(parents=True,exist_ok=True)
         logger.info(f"Asegurando {out_dir} y subdirs (sin limpieza completa o filtro activo).")
 
 def _generate_main_process_pages(app, langs, out_dir, lang_arg, force_regen, sitemap_char_key_original, logger): # noqa: C901
@@ -342,21 +294,22 @@ def _generate_main_process_pages(app, langs, out_dir, lang_arg, force_regen, sit
 
         for lang_c in langs:
             s_core_url,s_core_path=f"/sitemap_{lang_c}_core.xml",out_dir/f"sitemap_{lang_c}_core.xml"
-            key_to_gen = sitemap_char_key_original
+            key_to_gen = sitemap_char_key_original # Usar el char_key original del CLI para sitemaps
             
             if key_to_gen:
-                if key_to_gen == "core" or (key_to_gen.isdigit() and key_to_gen != SPECIAL_CHARS_SITEMAP_KEY):
+                # Si char_key es un dígito (y no '0'), se usó para filtrar datos.
+                # Para sitemaps, en este caso, solo generamos el sitemap _core.xml.
+                if key_to_gen.isdigit() and key_to_gen != SPECIAL_CHARS_SITEMAP_KEY:
+                    logger.info(f"char_key '{key_to_gen}' es dígito (filtro de archivo): Generando solo {s_core_path}")
                     _save_page_local(client,s_core_url,s_core_path,logger)
-                    logger.info(f"Modo filtro sitemap ('{key_to_gen}'): Generando solo {s_core_path}")
-                    if key_to_gen.isdigit() and key_to_gen != SPECIAL_CHARS_SITEMAP_KEY:
-                         logger.warning(f"char_key '{key_to_gen}' es dígito, se generó sitemap_core. Para sitemap de carácter, usar letra o '0'.")
-                elif key_to_gen in ALPHABET or key_to_gen == SPECIAL_CHARS_SITEMAP_KEY:
+                elif key_to_gen == "core": # Si es 'core', generar solo el core
+                    _save_page_local(client,s_core_url,s_core_path,logger)
+                elif key_to_gen in ALPHABET or key_to_gen == SPECIAL_CHARS_SITEMAP_KEY: # Si es letra o '0'
                     s_url,s_path=f"/sitemap_{lang_c}_{key_to_gen}.xml",out_dir/f"sitemap_{lang_c}_{key_to_gen}.xml"
                     _save_page_local(client,s_url,s_path,logger)
-                    logger.info(f"Modo filtro sitemap ('{key_to_gen}'): Generando solo {s_path}")
-                else:
-                    logger.warning(f"char_key '{key_to_gen}' no reconocido para sitemap en '{lang_c}'. No se genera sitemap de carácter.")
-            else:
+                    logger.info(f"char_key '{key_to_gen}' (letra/0): Generando solo {s_path}")
+                # No generar otros sitemaps en modo filtro por char_key
+            else: # Sin filtro de char_key, generar todos para el idioma
                 logger.info(f"Generando todos sitemaps para '{lang_c}'.")
                 _save_page_local(client,s_core_url,s_core_path,logger)
                 for char_k in list(ALPHABET)+[SPECIAL_CHARS_SITEMAP_KEY]:
@@ -377,23 +330,14 @@ def _run_parallel_tasks(env_data, force_regen, author_filter_char_key, logger): 
     detail_items,author_items,version_items = list(books_src),{b.get('author_slug')for b in books_src if b.get('author_slug')}, \
                                              {(b.get('author_slug'),b.get('base_title_slug'))for b in books_src if b.get('author_slug')and b.get('base_title_slug')}
 
+    # author_filter_char_key ya está determinado en _setup_environment_data
+    # Será None si el char_key original del CLI era un dígito (para filtrar archivo).
+    # Será el char_key original si era una letra o '0'.
     if author_filter_char_key and env_data["languages_to_process"]:
         logger.info(f"Filtrando contenido por char_key de autor: '{author_filter_char_key}' en {env_data['languages_to_process']}")
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug("--- DEBUG: Verificando grupos de autor para filtro de contenido (primeros ~10 distintos) ---")
-            checked_authors_debug = set()
-            count_debug = 0
-            for book_debug in books_src:
-                auth_orig = book_debug.get('author_slug')
-                if auth_orig and auth_orig not in checked_authors_debug:
-                    group = get_sitemap_char_group_for_author(auth_orig, slugifier_main)
-                    logger.debug(f"  Autor: '{auth_orig}' (slugificado da {slugifier_main(auth_orig)}) -> Grupo: '{group}'")
-                    checked_authors_debug.add(auth_orig)
-                    count_debug +=1
-                    if count_debug >=10:
-                        break
-            logger.debug("--- FIN DEBUG ---")
-
+            # ... (bloque de debug como lo tenías) ...
         detail_items=[b for b in books_src if get_sitemap_char_group_for_author(b.get('author_slug'),slugifier_main)==author_filter_char_key]
         author_items={s for s in author_items if get_sitemap_char_group_for_author(s,slugifier_main)==author_filter_char_key}
         version_items={(a,t)for a,t in version_items if get_sitemap_char_group_for_author(a,slugifier_main)==author_filter_char_key}
@@ -409,7 +353,7 @@ def _run_parallel_tasks(env_data, force_regen, author_filter_char_key, logger): 
         for name,func,items in task_defs:
             if items:
                 logger.info(f"Paralelo {name}({len(items)})...")
-                task_p=partial(func,config_params_manifest_tuple=task_args)
+                task_p=partial(func, task_args) # CORRECCIÓN: Pasar task_args como segundo argumento posicional
                 results=pool.map(task_p,items)
                 count=0
                 for res in results:
@@ -458,8 +402,9 @@ def main(): # noqa: C901
     if env_data is None: return
 
     app,out_dir=env_data["app"],env_data["output_dir_path"]
-    author_filter_char_key = env_data["char_key_for_author_filter"]
-    sitemap_gen_char_key = env_data["char_key_for_sitemap_gen"]
+    author_filter_char_key_from_setup = env_data["char_key_for_author_filter"]
+    sitemap_char_key_from_setup = env_data["char_key_for_sitemap_gen"]
+
 
     cleanup_condition_no_filters = not args.language and not args.char_key
     cleanup_if_forced_and_no_filters = args.force_regenerate and cleanup_condition_no_filters
@@ -468,10 +413,10 @@ def main(): # noqa: C901
     _prepare_output_directory(app,out_dir,args.language,perform_cleanup,args.char_key,script_logger)
     _generate_main_process_pages(
         app,env_data["languages_to_process"],out_dir,args.language,
-        args.force_regenerate,sitemap_gen_char_key,script_logger # Pasar sitemap_gen_char_key
+        args.force_regenerate,sitemap_char_key_from_setup,script_logger # Usar sitemap_char_key_from_setup
     )
-    new=_run_parallel_tasks(env_data,args.force_regenerate,author_filter_char_key,script_logger)
-    _finalize_generation(env_data["manifest"],new,out_dir,args.language,args.char_key,script_logger)
+    new=_run_parallel_tasks(env_data,args.force_regenerate,author_filter_char_key_from_setup,script_logger) # Usar author_filter_char_key_from_setup
+    _finalize_generation(env_data["manifest"],new,out_dir,args.language,args.char_key,script_logger) # args.char_key original para el log
 
 if __name__=='__main__':
     main()
