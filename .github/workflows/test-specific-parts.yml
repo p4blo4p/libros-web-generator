@@ -113,7 +113,7 @@ jobs:
       python generate_static.py $COMMAND_ARGS $FORCE_REGENERATE_FLAG_CMD
       
       echo "Static site generation for specific slice finished."
-    run: |
+    run: 
       set -e
       
       COMMAND_ARGS=""
