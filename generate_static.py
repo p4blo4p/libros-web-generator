@@ -45,7 +45,7 @@ if not script_logger.handlers:
     script_handler.setFormatter(script_formatter)
     script_logger.addHandler(script_handler)
     script_logger.propagate = False
-else: # Asegurar que el nivel se actualiza si ya existe el logger
+else:
     log_level_name = os.environ.get('SCRIPT_LOG_LEVEL', 'INFO').upper()
     log_level = getattr(logging, log_level_name, logging.INFO)
     script_logger.setLevel(log_level)
@@ -56,8 +56,8 @@ script_logger.info(
 
 # --- Variables Globales (se inicializarán más tarde) ---
 worker_app_instance = None
-worker_logger = None # Será un logger específico del worker
-slugify_to_use_global_worker = None # El slugifier que usará el worker
+worker_logger = None
+slugify_to_use_global_worker = None
 
 # --- CONSTANTES ---
 MANIFEST_DIR = Path(".cache")
@@ -87,7 +87,6 @@ except ImportError:
     script_logger.warning("Proceso principal: Usando slugify_ascii local (app.utils.helpers no encontrado).")
 
 def get_sitemap_char_group_for_author(author_name_or_slug, slugifier_func):
-    """Determina el grupo de sitemap para un autor usando el slugifier_func provisto."""
     if not author_name_or_slug:
         script_logger.debug(f"get_sitemap_char_group: Input vacío, devolviendo '{SPECIAL_CHARS_SITEMAP_KEY}'")
         return SPECIAL_CHARS_SITEMAP_KEY
@@ -199,27 +198,21 @@ def worker_init():
     proc_name = current_process().name
     worker_app_instance = create_app()
 
-    # Configurar logger para el worker
     worker_logger = logging.getLogger(f'generate_static_worker.{proc_name}')
-    # Limpiar handlers existentes para evitar duplicación si worker_init se llama múltiples veces
-    # (aunque no debería en un Pool estándar)
     if worker_logger.hasHandlers():
         worker_logger.handlers.clear()
-
     worker_handler = logging.StreamHandler()
     worker_formatter = logging.Formatter(
         '%(asctime)s - %(name)s:%(processName)s - %(levelname)s - [%(funcName)s:%(lineno)d] - %(message)s'
     )
     worker_handler.setFormatter(worker_formatter)
     worker_logger.addHandler(worker_handler)
-
     main_log_level_name = os.environ.get('SCRIPT_LOG_LEVEL', 'INFO').upper()
     worker_log_level = getattr(logging, main_log_level_name, logging.INFO)
     worker_logger.setLevel(worker_log_level)
-    worker_logger.propagate = False # Muy importante para evitar logs duplicados en la consola principal
+    worker_logger.propagate = False
 
-    # Configurar slugify para el worker
-    slugify_to_use_global_worker = slugify_ascii_local # Default
+    slugify_to_use_global_worker = slugify_ascii_local
     try:
         from app.utils.helpers import slugify_ascii as slugify_ascii_app_worker
         slugify_to_use_global_worker = slugify_ascii_app_worker
@@ -228,11 +221,9 @@ def worker_init():
         worker_logger.warning("Worker: Usando slugify_ascii local (app.utils.helpers no encontrado).")
     worker_logger.info(f"Worker {proc_name} inicializado. Slugifier: {slugify_to_use_global_worker.__name__}. Nivel de log: {logging.getLevelName(worker_logger.level)}")
 
-
 # --- TAREAS DE GENERACIÓN REFACTORIZADAS ---
 def _generate_task_common(item_data, config_params_manifest_tuple, page_type): # noqa: C901
     config_params, manifest_data_global = config_params_manifest_tuple
-    # Estas variables son globales DENTRO DEL CONTEXTO DEL WORKER
     LANGUAGES = config_params['LANGUAGES']
     DEFAULT_LANGUAGE = config_params['DEFAULT_LANGUAGE']
     URL_SEGMENT_TRANSLATIONS = config_params['URL_SEGMENT_TRANSLATIONS']
@@ -295,7 +286,6 @@ def _generate_task_common(item_data, config_params_manifest_tuple, page_type): #
                 )
                 str_dynamic_parts = [str(p) for p in dynamic_url_parts]
                 flask_url_path_elements = [f"/{lang}", segment_translated] + str_dynamic_parts
-                # Construir URL asegurando un solo slash entre partes y al final
                 flask_url = "/" + "/".join(s.strip("/") for s in flask_url_path_elements if s.strip("/")) + "/"
 
                 output_path_parts = [lang, segment_translated] + str_dynamic_parts + ["index.html"]
@@ -363,8 +353,6 @@ def _setup_environment_data(args, main_logger):
 def _prepare_output_directory(app_instance, output_dir,  # noqa: C901
                               current_lang, perform_cleanup, char_key, logger):
     app_root_path = Path(app_instance.root_path)
-    # app.static_folder es el nombre de la carpeta (ej. 'static')
-    # app.static_url_path es la ruta URL (ej. '/static')
     app_static_folder_abs = app_root_path / app_instance.static_folder
 
     if char_key and current_lang:
@@ -380,7 +368,6 @@ def _prepare_output_directory(app_instance, output_dir,  # noqa: C901
         logger.info(f"{output_dir} creado/limpiado.")
 
         if app_static_folder_abs.exists() and app_static_folder_abs.is_dir():
-            # El nombre del directorio en _site debe ser el nombre base de static_url_path
             static_dir_name_in_output = Path(app_instance.static_url_path.strip('/')).name
             static_target = output_dir / static_dir_name_in_output
             if static_target.exists(): shutil.rmtree(static_target)
@@ -406,54 +393,55 @@ def _prepare_output_directory(app_instance, output_dir,  # noqa: C901
             (output_dir / current_lang).mkdir(parents=True, exist_ok=True)
         logger.info(f"Asegurando {output_dir} y subdirs (sin limpieza completa).")
 
-def _generate_main_process_pages(app, langs_to_process, out_dir, lang_arg, force_regen, char_key_arg, logger): # noqa: C901
-    logger.info("Generando páginas de índice y sitemaps (proceso principal)...")
+def _generate_main_process_pages(app, langs_to_process, out_dir, lang_arg, force_regen, char_key_arg, logger):  # noqa: C901
+    logger.info(
+        f"INICIO _generate_main_process_pages: lang_arg='{lang_arg}', char_key_arg='{char_key_arg}' "
+        f"(tipo: {type(char_key_arg)}), langs_to_process={langs_to_process}"
+    )
     with app.app_context(), app.test_client() as client:
-        # --- Generación de Páginas de Índice (HTML) ---
-        # El index.html global solo se genera si no hay filtro de idioma NI de char_key
         if not lang_arg and not char_key_arg:
+            logger.info("Generando index.html global.")
             if force_regen or not (out_dir / "index.html").exists():
                 _save_page_local(client, "/", out_dir / "index.html", logger)
 
-        # Los index.html de idioma solo se generan si no hay filtro de char_key
-        # (pero sí puede haber filtro de idioma, en cuyo caso langs_to_process tendrá un solo idioma)
-        if not char_key_arg:
-            for lang_code in langs_to_process: # Iterar sobre los idiomas a procesar
-                if force_regen or not (out_dir / lang_code / "index.html").exists():
-                    _save_page_local(client, f"/{lang_code}/", out_dir / lang_code / "index.html", logger)
+        if not char_key_arg: # Generar índices de idioma si no hay filtro de char_key
+            for lang_code_idx in langs_to_process:
+                logger.info(f"Generando index.html para idioma '{lang_code_idx}'.")
+                if force_regen or not (out_dir / lang_code_idx / "index.html").exists():
+                    _save_page_local(client, f"/{lang_code_idx}/", out_dir / lang_code_idx / "index.html", logger)
 
-        # --- Generación de Sitemaps (XML) ---
-        # Iterar sobre los idiomas a procesar (puede ser uno o todos)
-        for lang_code in langs_to_process:
-            sitemap_core_url = f"/sitemap_{lang_code}_core.xml"
-            sitemap_core_path = out_dir / f"sitemap_{lang_code}_core.xml"
+        for lang_code_sitemap in langs_to_process:
+            logger.info(
+                f"Procesando sitemaps para idioma: '{lang_code_sitemap}'. "
+                f"Valor actual de char_key_arg: '{char_key_arg}'"
+            )
+            sitemap_core_url = f"/sitemap_{lang_code_sitemap}_core.xml"
+            sitemap_core_path = out_dir / f"sitemap_{lang_code_sitemap}_core.xml"
 
-            if char_key_arg:
-                # Si se especifica un char_key, SOLO generamos el sitemap para ese char_key (y lang_code).
-                # No se genera el sitemap_core a menos que char_key sea "core".
+            if char_key_arg: # Comprobar si char_key_arg tiene un valor (no es None ni vacío)
+                logger.info(
+                    f"Modo char_key='{char_key_arg}' para idioma '{lang_code_sitemap}': "
+                    "Generando sitemap específico si es válido."
+                )
                 if char_key_arg == "core":
-                    logger.info(f"Modo char_key='core': Generando {sitemap_core_path}")
                     _save_page_local(client, sitemap_core_url, sitemap_core_path, logger)
                 elif char_key_arg in ALPHABET or char_key_arg == SPECIAL_CHARS_SITEMAP_KEY:
-                    sitemap_url_char = f"/sitemap_{lang_code}_{char_key_arg}.xml"
-                    sitemap_path_char = out_dir / f"sitemap_{lang_code}_{char_key_arg}.xml"
-                    logger.info(f"Modo char_key='{char_key_arg}': Generando {sitemap_path_char}")
-                    _save_page_local(client, sitemap_url_char, sitemap_path_char, logger)
+                    s_url = f"/sitemap_{lang_code_sitemap}_{char_key_arg}.xml"
+                    s_path = out_dir / f"sitemap_{lang_code_sitemap}_{char_key_arg}.xml"
+                    _save_page_local(client, s_url, s_path, logger)
                 else:
                     logger.warning(
-                        f"char_key '{char_key_arg}' inválido para sitemap específico. No se generará sitemap para esta clave."
+                        f"char_key '{char_key_arg}' proporcionado para idioma '{lang_code_sitemap}' "
+                        "no es 'core' ni una letra/clave especial válida. No se generará sitemap de carácter."
                     )
-            else:
-                # Si NO se especifica char_key, generar todos los sitemaps para este lang_code:
-                # el _core.xml y todos los de letra/carácter.
-                logger.info(f"Modo NO char_key: Generando todos los sitemaps para idioma '{lang_code}'")
+            else: # char_key_arg es None o vacío, generar todos los sitemaps para este idioma
+                logger.info(f"Modo NO char_key: Generando todos los sitemaps para idioma '{lang_code_sitemap}'.")
                 _save_page_local(client, sitemap_core_url, sitemap_core_path, logger)
                 for char_k_iter in list(ALPHABET) + [SPECIAL_CHARS_SITEMAP_KEY]:
-                    sitemap_url_ch = f"/sitemap_{lang_code}_{char_k_iter}.xml"
-                    sitemap_path_ch = out_dir / f"sitemap_{lang_code}_{char_k_iter}.xml"
+                    sitemap_url_ch = f"/sitemap_{lang_code_sitemap}_{char_k_iter}.xml"
+                    sitemap_path_ch = out_dir / f"sitemap_{lang_code_sitemap}_{char_k_iter}.xml"
                     _save_page_local(client, sitemap_url_ch, sitemap_path_ch, logger)
 
-        # El sitemap_index.xml principal solo se genera si no hay filtro de idioma NI de char_key
         if not lang_arg and not char_key_arg:
             logger.info("Generando sitemap_index.xml principal...")
             _save_page_local(client, "/sitemap.xml", out_dir / "sitemap.xml", logger)
@@ -472,16 +460,14 @@ def _run_parallel_tasks(env_data, force_regen, char_key, logger): # noqa: C901
     task_args = (config_tasks, env_data["manifest"].copy())
     all_new_entries = []
     books_src = env_data["books_data"]
-    # IMPORTANTE: Para el filtrado en el proceso principal, usamos el slugifier del proceso principal.
-    # Los workers usarán su propio slugifier (que debería ser el mismo si la app se carga igual).
     slugifier_for_main_filtering = slugify_to_use_global_main
 
-    detail_items = list(books_src) # Por defecto, procesar todos
+    detail_items = list(books_src)
     author_items_orig = {b.get('author_slug') for b in books_src if b.get('author_slug')}
     version_items_orig = {(b.get('author_slug'), b.get('base_title_slug')) for b in books_src
                           if b.get('author_slug') and b.get('base_title_slug')}
 
-    if char_key and env_data["languages_to_process"]:
+    if char_key and env_data["languages_to_process"]: # Asegurar que hay un char_key Y al menos un idioma
         logger.info(f"Filtrando tareas para char_key: '{char_key}' en {env_data['languages_to_process']}")
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug("--- DEBUG: Verificando grupos de autor para filtrado (primeros ~10 distintos) ---")
@@ -540,11 +526,10 @@ def _finalize_generation(manifest, new_entries, out_dir, lang_arg, char_key, log
         updated_manifest = True
 
     is_full_run_no_filters = (not lang_arg and not char_key)
-    # Guardar manifest si se actualizó o si es una ejecución completa
     if updated_manifest or is_full_run_no_filters:
         save_manifest(manifest)
         if not updated_manifest and is_full_run_no_filters:
-            logger.info("Ejecución completa sin nuevas entradas, manifest guardado (podría estar vacío si es la primera vez).")
+            logger.info("Ejecución completa sin nuevas entradas, manifest guardado.")
     else:
         logger.info("Manifest no actualizado y no es ejecución completa. No se guardó.")
 
@@ -556,11 +541,11 @@ def _finalize_generation(manifest, new_entries, out_dir, lang_arg, char_key, log
 # --- FUNCIÓN MAIN ---
 def main(): # noqa: C901
     args = _parse_cli_args()
-    log_level_name_main = args.log_level # Ya tiene un default de os.environ o INFO
+    log_level_name_main = args.log_level
     log_level_main_actual = getattr(logging, log_level_name_main, logging.INFO)
-    script_logger.setLevel(log_level_main_actual) # Aplicar el nivel al logger principal
+    script_logger.setLevel(log_level_main_actual)
     script_logger.info(f"Nivel de log para script principal establecido a: {log_level_name_main}")
-    os.environ['SCRIPT_LOG_LEVEL'] = log_level_name_main # Para que los workers lo hereden
+    os.environ['SCRIPT_LOG_LEVEL'] = log_level_name_main
 
     if args.char_key and not args.language:
         script_logger.error("--char-key requiere --language. Saliendo."); return
