@@ -2,14 +2,15 @@
 import csv
 import sys
 import os
-from flask import current_app
+import logging # <--- AÑADIR ESTA LÍNEA
+from flask import current_app # Sigue siendo útil si se corre en contexto de app
 from app.utils.helpers import slugify_ascii, load_json_file
 
 
 def _process_book_row(row_data):
     """Procesa una fila de datos de libro y añade campos slug."""
-    author = row_data.get('author', "")  # Usar default si es None
-    title = row_data.get('title', "")   # Usar default si es None
+    author = row_data.get('author', "")
+    title = row_data.get('title', "")
 
     row_data['author_slug'] = slugify_ascii(author)
     row_data['title_slug'] = slugify_ascii(title)
@@ -19,36 +20,45 @@ def _process_book_row(row_data):
     return row_data
 
 
-def _log_message(message, level="INFO"):
+def _log_message(message, level_name="INFO"): # Cambiado level a level_name para claridad
     """Helper para loguear o imprimir mensajes."""
-    logger = current_app.logger if current_app else None # Cuidado con current_app fuera de contexto de app
-    # Para este script, es mejor pasar el logger o usar un logger de módulo
-    # Si se llama desde generate_static.py y current_app no está disponible, logger será None.
-
-    # Solución temporal para data_loader: si no hay logger de app, usar un logger de módulo.
-    if not logger:
-        module_logger = logging.getLogger(__name__) # Logger específico para este módulo
-        if not module_logger.hasHandlers(): # Evitar duplicar handlers
-            handler = logging.StreamHandler(sys.stdout) # o sys.stderr para errores
+    logger_to_use = None
+    if current_app: # Priorizar logger de la app si está disponible
+        logger_to_use = current_app.logger
+    
+    if not logger_to_use: # Fallback a logger de módulo si no hay app logger
+        module_logger = logging.getLogger(__name__)
+        if not module_logger.hasHandlers():
+            handler = logging.StreamHandler(sys.stdout)
             formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
             handler.setFormatter(formatter)
             module_logger.addHandler(handler)
-            module_logger.setLevel(logging.INFO) # o el nivel que desees
+            # Usar un nivel por defecto para el logger de módulo si no hay SCRIPT_LOG_LEVEL
+            module_log_level_name = os.environ.get('SCRIPT_LOG_LEVEL', 'INFO').upper()
+            module_log_level = getattr(logging, module_log_level_name, logging.INFO)
+            module_logger.setLevel(module_log_level)
+            module_logger.propagate = False # Evitar duplicación
         logger_to_use = module_logger
-    else:
-        logger_to_use = logger
+
+    log_level_int = getattr(logging, level_name.upper(), logging.INFO) # Convertir nombre a int
+
+    if logger_to_use.isEnabledFor(log_level_int): # Comprobar si el logger está habilitado para este nivel
+        if level_name.upper() == "ERROR":
+            logger_to_use.error(message)
+        elif level_name.upper() == "WARNING":
+            logger_to_use.warning(message)
+        elif level_name.upper() == "DEBUG":
+            logger_to_use.debug(message)
+        else: # INFO y otros
+            logger_to_use.info(message)
+    elif not current_app : # Si no hay logger de app y el nivel no está habilitado, imprimir
+         print(f"[{level_name.upper()}] {message}", file=sys.stderr if level_name in ["ERROR", "WARNING"] else sys.stdout)
 
 
-    if hasattr(logger_to_use, level.lower()):
-        getattr(logger_to_use, level.lower())(message)
-    else:
-        logger_to_use.info(f"({level}) {message}")
-
-
-def load_processed_books(directory_path, target_filename_key=None):  # noqa: C901
+def load_processed_books(directory_path, filename_filter_key=None):  # Cambiado nombre de parámetro
     """
-    Carga libros. Si target_filename_key se proporciona (ej. '5'),
-    solo carga de 'books_TARGET_FILENAME_KEY.csv'.
+    Carga libros. Si filename_filter_key se proporciona (ej. '5'),
+    solo carga de 'books_FILENAME_FILTER_KEY.csv'.
     Sino, carga de todos los CSVs en el directorio.
     """
     processed_books = []
@@ -59,8 +69,8 @@ def load_processed_books(directory_path, target_filename_key=None):  # noqa: C90
         return processed_books
 
     files_to_process = []
-    if target_filename_key:
-        specific_filename = f"books_{target_filename_key}.csv"
+    if filename_filter_key:
+        specific_filename = f"books_{filename_filter_key}.csv"
         specific_filepath = os.path.join(directory_path_str, specific_filename)
         if os.path.isfile(specific_filepath):
             files_to_process.append(specific_filename)
@@ -70,7 +80,6 @@ def load_processed_books(directory_path, target_filename_key=None):  # noqa: C90
                 f"Archivo específico '{specific_filename}' no encontrado en '{directory_path_str}'. "
                 "No se cargarán libros para esta clave.", "WARNING"
             )
-            # No retornar aquí, para que el log de "Total de libros cargados" sea 0
     else:
         files_to_process = [
             fname for fname in os.listdir(directory_path_str)
@@ -85,14 +94,11 @@ def load_processed_books(directory_path, target_filename_key=None):  # noqa: C90
             with open(csv_filepath, mode='r', encoding='utf-8-sig') as csvfile:
                 reader = csv.DictReader(csvfile)
                 for row in reader:
-                    # Validar que author y title no sean None antes de slugify
-                    # _process_book_row ya lo maneja con .get('key', "")
                     processed_row = _process_book_row(row)
                     processed_books.append(processed_row)
                     file_book_count += 1
             _log_message(f"Cargados {file_book_count} libros desde '{csv_filepath}'")
         except FileNotFoundError:
-            # Esto no debería ocurrir si os.path.isfile fue true, pero por si acaso.
             _log_message(f"Archivo de libros no encontrado (inesperado): '{csv_filepath}'", "ERROR")
         except Exception as e:
             _log_message(f"ERROR cargando/procesando libros desde '{csv_filepath}': {e}", "ERROR")
