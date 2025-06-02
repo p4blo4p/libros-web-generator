@@ -1,9 +1,82 @@
 # .github/workflows/test-specific-parts.yml
-# ... (on: workflow_dispatch: inputs: ... sin cambios en los defaults aquí por ahora) ...
-# ...
-    # .github/workflows/test-specific-parts.yml
-# ... (on: workflow_dispatch: inputs: ... sin cambios en los defaults aquí por ahora) ...
-# ...
+name: Test Specific Parts (Lint on Push, Generate/Deploy Manually)
+
+on:
+  workflow_dispatch: # Para ejecución manual completa con inputs
+    inputs:
+      force_regenerate_test:
+        description: 'Forzar regeneración para este test (ignora manifest)'
+        required: false
+        default: 'false'
+        type: boolean
+      test_language:
+        description: 'Idioma para testear generación (ej. es, en). Dejar vacío para todos.'
+        required: false
+        default: '' # Default a vacío para generar todos si no se especifica
+        type: string
+      test_char_key:
+        description: 'Clave de carácter para testear generación (ej. z, a, 0). Dejar vacío si test_language está vacío o para generar todos los caracteres para el idioma especificado.'
+        required: false
+        default: '5' # Default a vacío
+        type: string
+      log_level:
+        description: 'Nivel de log para generate_static.py y app (INFO, DEBUG)'
+        required: false
+        default: 'DEBUG'
+        type: choice
+        options:
+          - INFO
+          - DEBUG
+      deploy_test_slice:
+        description: 'DESPLEGAR este slice a GitHub Pages (SOBREESCRIBIRÁ el sitio existente en la raíz)'
+        required: false
+        default: 'true'
+        type: boolean
+  push:
+    branches:
+      - 'large-data-optimization' # O tu rama de desarrollo principal
+
+permissions:
+  contents: write # Necesario para peaceiris/actions-gh-pages si pushea a una rama
+  pages: write    # Necesario si se despliega a través del artefacto de GitHub Pages (no usado aquí directamente para deploy)
+  id-token: write # A menudo necesario para acciones de despliegue seguras
+
+jobs:
+  test_lint_setup_only:
+    name: Setup, Cache & Lint (Test)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10" # Asegúrate que coincide con tu entorno
+      - name: Cache pip dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-test-specific-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-test-specific-
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install flake8
+      - name: Lint with flake8
+        run: |
+          echo "Running Flake8 (strict pass for E9,F63,F7,F82)..."
+          flake8 . --count --select=E9,F63,F7,F82 --format=pylint --statistics
+          echo "Running Flake8 (style and complexity pass)..."
+          # flake8 . --count --format=pylint --statistics
+
+  test_generate_specific_slice:
+    name: Test Generate & Deploy (Manual) - Lang ${{ github.event.inputs.test_language || 'ALL' }} / Char ${{ github.event.inputs.test_char_key || 'ALL' }}
+    if: github.event_name == 'workflow_dispatch' # Solo ejecutar en dispatch manual
+    runs-on: ubuntu-latest
+    needs: test_lint_setup_only
+    
     env:
       FORCE_REGENERATE_FLAG_CMD: ${{ github.event.inputs.force_regenerate_test == 'true' && '--force-regenerate' || '' }}
       INPUT_LANG: ${{ github.event.inputs.test_language }}
@@ -70,3 +143,102 @@
       python generate_static.py $COMMAND_ARGS $FORCE_REGENERATE_FLAG_CMD
       
       echo "Static site generation for specific slice finished."
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Cache pip dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-test-specific-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-test-specific-
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Restore/Initialize Manifest (for testing)
+        id: manifest_cache
+        uses: actions/cache@v4
+        with:
+          path: .cache/generation_manifest.json
+          # Clave de cache específica para este test para no interferir con el manifest de producción
+          key: ${{ runner.os }}-gen-manifest-test-slice-v2-${{ github.event.inputs.test_language }}-${{ github.event.inputs.test_char_key }}-${{ github.run_id }}
+          restore-keys: |
+            ${{ runner.os }}-gen-manifest-test-slice-v2-${{ github.event.inputs.test_language }}-${{ github.event.inputs.test_char_key }}-
+      
+      - name: Initialize manifest if not restored by cache
+        if: steps.manifest_cache.outputs.cache-hit != 'true'
+        run: |
+          echo "Test manifest not restored from cache, creating empty for this job."
+          mkdir -p .cache
+          echo "{}" > .cache/generation_manifest.json
+        
+      - name: Generate static site for specific slice
+        run: |
+          set -e
+          COMMAND_ARGS=""
+          if [[ -n "$TARGET_LANG_CMD" ]]; then
+            COMMAND_ARGS="$COMMAND_ARGS --language $TARGET_LANG_CMD"
+            # Solo añadir --char-key si TARGET_LANG_CMD también está presente
+            if [[ -n "$TARGET_CHAR_KEY_CMD" ]]; then
+              COMMAND_ARGS="$COMMAND_ARGS --char-key $TARGET_CHAR_KEY_CMD"
+            fi
+          else
+            # Si no hay TARGET_LANG_CMD, se asume generación completa (o lo que el script haga por defecto)
+            # No añadir --char-key si no hay --language
+            echo "TARGET_LANG_CMD está vacío. generate_static.py se ejecutará sin --language ni --char-key (generación completa)."
+          fi
+          
+          # Construir el comando final
+          # El script generate_static.py usará STATIC_SITE_OUTPUT_DIR del entorno para la salida.
+          echo "Running: python generate_static.py $COMMAND_ARGS $FORCE_REGENERATE_FLAG_CMD"
+          python generate_static.py $COMMAND_ARGS $FORCE_REGENERATE_FLAG_CMD
+          echo "Static site generation for specific slice finished. Output in ${{ env.STATIC_SITE_OUTPUT_DIR }}"
+
+      - name: List generated files (for debugging)
+        if: always() # Siempre ejecutar para ver qué se generó
+        run: |
+          echo "Contenido de ${{ env.STATIC_SITE_OUTPUT_DIR }}:"
+          ls -R ${{ env.STATIC_SITE_OUTPUT_DIR }} || echo "${{ env.STATIC_SITE_OUTPUT_DIR }} no existe o está vacío."
+
+      - name: Upload specific slice artifact (for inspection)
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-site-slice-${{ github.event.inputs.test_language || 'all_langs' }}-${{ github.event.inputs.test_char_key || 'all_chars' }}
+          path: ${{ env.STATIC_SITE_OUTPUT_DIR }}/ # Subir el contenido de _test_site_slice
+          if-no-files-found: error 
+          retention-days: 1
+
+      - name: Deploy Test Slice to GitHub Pages (IF ENABLED)
+        # Solo se ejecuta si es workflow_dispatch Y el input deploy_test_slice es 'true'
+        if: github.event_name == 'workflow_dispatch' && github.event.inputs.deploy_test_slice == 'true'
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ${{ env.STATIC_SITE_OUTPUT_DIR }} # Publicar el contenido de _test_site_slice
+          # ATENCIÓN: Esto sobreescribirá el contenido de tu rama gh-pages (o el despliegue de Actions)
+          # con el contenido de ./_test_site_slice de este testeo.
+          # Si GITHUB_PAGES_REPO_NAME está definido arriba, las URLs serán /repo_name/...
+          # lo que es correcto si esto se despliega a la raíz del sitio GH Pages (usuario.github.io/repo_name/).
+          # publish_branch: gh-pages # Descomentar si quieres pushear a una rama específica
+          # cname: test.yourdomain.com # Si tienes un subdominio para tests
+          # destination_dir:  # Si quieres desplegar a una subcarpeta, ej: previews/test-slice
+                            # PERO si haces esto, GITHUB_PAGES_REPO_NAME arriba causará problemas de URL base.
+                            # Para destination_dir, probablemente NO deberías definir GITHUB_PAGES_REPO_NAME.
+          keep_files: false # false para limpiar el directorio de destino (si no es la raíz) o la rama
+          allow_empty_commit: false
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
+          commit_message: Deploy test slice for ${{ github.event.inputs.test_language || 'ALL' }}/${{ github.event.inputs.test_char_key || 'ALL' }}
+
+
