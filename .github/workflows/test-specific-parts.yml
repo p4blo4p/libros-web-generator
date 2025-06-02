@@ -10,19 +10,24 @@ on:
         default: 'false'
         type: boolean
       test_language:
-        description: 'Idioma para testear generación (ej. es, en). Dejar vacío para todos los idiomas configurados.'
+        description: 'Idioma para testear (ej. es, en). Dejar vacío para todos los idiomas.'
         required: false
-        default: '' # Default a vacío para indicar "todos los idiomas" si char_key también está vacío
+        default: ''
         type: string
       test_char_key:
-        description: 'Clave de carácter para testear (ej. z, a, 0). Si se usa, test_language debe tener un valor.'
+        description: 'Clave de carácter de autor (ej. z, 0). Si se usa, test_language debe tener valor (o se usará default).'
         required: false
-        default: '5' # Default a vacío (sin filtro de char_key)
+        default: ''
+        type: string
+      test_data_file_key: # NUEVO INPUT
+        description: "Clave del archivo de datos CSV (ej. '5' para books_5.csv). Dejar vacío para todos los CSV."
+        required: false
+        default: '' # Default a vacío (procesar todos los archivos CSV)
         type: string
       log_level:
         description: 'Nivel de log para generate_static.py y app (INFO, DEBUG)'
         required: false
-        default: 'DEBUG' # Default a INFO, cambiar a DEBUG para depurar
+        default: 'DEBUG' # Default a DEBUG para facilitar la depuración de los tests
         type: choice
         options:
           - INFO
@@ -30,17 +35,18 @@ on:
       deploy_test_slice:
         description: 'DESPLEGAR este slice a GitHub Pages (SOBREESCRIBIRÁ el sitio existente en la raíz)'
         required: false
-        default: 'false' # Por defecto, NO desplegar
+        default: 'false'
         type: boolean
   push:
     branches:
-      - 'main' # O tu rama de desarrollo principal donde quieras el linting automático
-      # - '!main' # Podrías excluir main si tu workflow principal ya lo cubre
+      - 'main' # Cambiado a 'main', ajusta a tu rama de desarrollo/principal
+      # - 'large-data-optimization' # Puedes tener múltiples ramas
+      # - '!main' # Si tu workflow principal ya cubre 'main' y no quieres duplicar el linting
 
 permissions:
-  contents: write # Necesario para peaceiris/actions-gh-pages y caché de manifest
-  pages: write    # Necesario para el despliegue de GitHub Pages
-  id-token: write # Necesario para autenticación segura en despliegues
+  contents: write
+  pages: write
+  id-token: write
 
 jobs:
   test_lint_setup_only:
@@ -53,7 +59,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.10" # Asegúrate que coincida con tu entorno
+          python-version: "3.10"
 
       - name: Cache pip dependencies
         uses: actions/cache@v4
@@ -74,14 +80,14 @@ jobs:
           echo "Running Flake8 (strict pass for E9,F63,F7,F82)..."
           flake8 . --count --select=E9,F63,F7,F82 --format=pylint --statistics
           echo "Running Flake8 (style and complexity pass)..."
-          # flake8 . --count --format=pylint --statistics
-          # Si la primera pasada de flake8 encuentra errores, el step fallará y el job fallará.
+          flake8 . --count --format=pylint --statistics
+          # El job fallará si flake8 devuelve un código de error.
 
   test_generate_specific_slice:
-    name: Test Generate & Deploy (Manual) - Lang ${{ github.event.inputs.test_language || 'ALL' }} / Char ${{ github.event.inputs.test_char_key || 'ALL' }}
-    if: github.event_name == 'workflow_dispatch' # Solo ejecutar en dispatch manual
-    runs-on: ubuntu-latest # Puedes probar ubuntu-20.04 o ubuntu-22.04 si sospechas del runner
-    needs: test_lint_setup_only # Opcional: Asegura que el linting pase primero
+    name: Test Generate & Deploy (Manual) - Lang ${{ github.event.inputs.test_language || 'ALL' }} / Char ${{ github.event.inputs.test_char_key || 'ALL' }} / DataFile ${{ github.event.inputs.test_data_file_key || 'ALL' }}
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    needs: test_lint_setup_only
     
     env:
       GITHUB_PAGES_REPO_NAME: ${{ github.event.repository.name }}
@@ -90,8 +96,9 @@ jobs:
       FORCE_REGENERATE_FLAG_CMD: ${{ github.event.inputs.force_regenerate_test == 'true' && '--force-regenerate' || '' }}
       INPUT_LANG: ${{ github.event.inputs.test_language }}
       INPUT_CHAR_KEY: ${{ github.event.inputs.test_char_key }}
-      DEFAULT_LANG_FOR_CHAR_KEY_TEST: 'es'
-      STATIC_SITE_OUTPUT_DIR_TEST_JOB: _test_site_slice # Directorio de salida para este job de testeo
+      INPUT_DATA_FILE_KEY: ${{ github.event.inputs.test_data_file_key }} # Variable para el nuevo input
+      DEFAULT_LANG_FOR_FILTERS: 'es' # Idioma por defecto si se usa char_key o data_file_key sin language
+      STATIC_SITE_OUTPUT_DIR_TEST_JOB: _test_site_slice
 
     steps:
       - name: Checkout repository
@@ -120,9 +127,9 @@ jobs:
         uses: actions/cache@v4
         with:
           path: .cache/generation_manifest.json
-          key: ${{ runner.os }}-gen-manifest-test-slice-v4-${{ github.event.inputs.test_language }}-${{ github.event.inputs.test_char_key }}-${{ github.run_id }}
+          key: ${{ runner.os }}-gen-manifest-test-slice-v5-${{ github.event.inputs.test_language }}-${{ github.event.inputs.test_char_key }}-${{ github.event.inputs.test_data_file_key }}-${{ github.run_id }}
           restore-keys: |
-            ${{ runner.os }}-gen-manifest-test-slice-v4-${{ github.event.inputs.test_language }}-${{ github.event.inputs.test_char_key }}-
+            ${{ runner.os }}-gen-manifest-test-slice-v5-${{ github.event.inputs.test_language }}-${{ github.event.inputs.test_char_key }}-${{ github.event.inputs.test_data_file_key }}-
       
       - name: Initialize manifest if not restored by cache
         if: steps.manifest_cache.outputs.cache-hit != 'true'
@@ -136,22 +143,32 @@ jobs:
           STATIC_SITE_OUTPUT_DIR: ${{ env.STATIC_SITE_OUTPUT_DIR_TEST_JOB }}
         run: |
           set -e
+          
           COMMAND_ARGS=""
           EFFECTIVE_LANG="$INPUT_LANG"
           EFFECTIVE_CHAR_KEY="$INPUT_CHAR_KEY"
+          EFFECTIVE_DATA_FILE_KEY="$INPUT_DATA_FILE_KEY"
 
-          if [[ -n "$EFFECTIVE_CHAR_KEY" && -z "$EFFECTIVE_LANG" ]]; then
-            echo "Advertencia: Se proporcionó test_char_key ('$EFFECTIVE_CHAR_KEY') sin test_language. Usando idioma por defecto para test: '$DEFAULT_LANG_FOR_CHAR_KEY_TEST'."
-            EFFECTIVE_LANG="$DEFAULT_LANG_FOR_CHAR_KEY_TEST"
+          # Si se proporciona un char_key O un data_file_key pero no un idioma, usar un idioma por defecto.
+          if [[ ( -n "$EFFECTIVE_CHAR_KEY" || -n "$EFFECTIVE_DATA_FILE_KEY" ) && -z "$EFFECTIVE_LANG" ]]; then
+            echo "Advertencia: Se proporcionó char_key ('$EFFECTIVE_CHAR_KEY') o data_file_key ('$EFFECTIVE_DATA_FILE_KEY') sin test_language. Usando idioma por defecto para test: '$DEFAULT_LANG_FOR_FILTERS'."
+            EFFECTIVE_LANG="$DEFAULT_LANG_FOR_FILTERS"
           fi
 
+          # Construir los argumentos basados en los valores efectivos
           if [[ -n "$EFFECTIVE_LANG" ]]; then
             COMMAND_ARGS="--language $EFFECTIVE_LANG"
+            # Solo añadir --char-key si EFFECTIVE_CHAR_KEY también está presente (y EFFECTIVE_LANG lo está)
             if [[ -n "$EFFECTIVE_CHAR_KEY" ]]; then
               COMMAND_ARGS="$COMMAND_ARGS --char-key $EFFECTIVE_CHAR_KEY"
             fi
           else
-            echo "EFFECTIVE_LANG está vacío. El script generate_static.py se ejecutará para todos los idiomas."
+            echo "EFFECTIVE_LANG está vacío. El script se ejecutará para todos los idiomas (y sin filtro de char_key, ya que requiere idioma)."
+          fi
+          
+          # Añadir el argumento --data-file-key si está presente
+          if [[ -n "$EFFECTIVE_DATA_FILE_KEY" ]]; then
+            COMMAND_ARGS="$COMMAND_ARGS --data-file-key $EFFECTIVE_DATA_FILE_KEY"
           fi
           
           echo "Output directory for script: $STATIC_SITE_OUTPUT_DIR"
@@ -160,9 +177,8 @@ jobs:
           
           echo "Static site generation for specific slice finished. Output in $STATIC_SITE_OUTPUT_DIR"
 
-      # --- PASOS DE DEPURACIÓN ADICIONALES ---
       - name: Debug Paths and Variables
-        if: always() # Ejecutar incluso si el paso de generación falla
+        if: always()
         run: |
           echo "--- Debug Information ---"
           echo "Runner OS: ${{ runner.os }}"
@@ -174,18 +190,17 @@ jobs:
           echo "--- End Debug Information ---"
 
       - name: List generated files (for debugging)
-        if: always() # Ejecutar incluso si el paso de generación falla
+        if: always()
         run: |
           echo "Contenido detallado de ${{ github.workspace }}/${{ env.STATIC_SITE_OUTPUT_DIR_TEST_JOB }} (incluyendo permisos y enlaces):"
           ls -Rahl ${{ github.workspace }}/${{ env.STATIC_SITE_OUTPUT_DIR_TEST_JOB }} || echo "El directorio ${{ env.STATIC_SITE_OUTPUT_DIR_TEST_JOB }} no existe o está vacío."
           echo "--- Fin del listado detallado ---"
-      # --- FIN PASOS DE DEPURACIÓN ---
 
       - name: Upload specific slice artifact (for inspection)
-        uses: actions/upload-artifact@v4 # O prueba con actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: test-site-slice-${{ env.INPUT_LANG || 'all_langs' }}-${{ env.INPUT_CHAR_KEY || 'all_chars' }}
-          path: ${{ env.STATIC_SITE_OUTPUT_DIR_TEST_JOB }} # Path relativo al workspace
+          name: test-site-slice-${{ env.INPUT_LANG || 'all_langs' }}-${{ env.INPUT_CHAR_KEY || 'all_chars' }}-${{ env.INPUT_DATA_FILE_KEY || 'all_data' }}
+          path: ${{ env.STATIC_SITE_OUTPUT_DIR_TEST_JOB }}/
           if-no-files-found: error 
           retention-days: 1
 
@@ -199,4 +214,4 @@ jobs:
           allow_empty_commit: false
           user_name: 'github-actions[bot]'
           user_email: 'github-actions[bot]@users.noreply.github.com'
-          commit_message: Deploy test slice for ${{ env.INPUT_LANG || 'ALL' }}/${{ env.INPUT_CHAR_KEY || 'ALL' }} (Run ID ${{ github.run_id }})
+          commit_message: Deploy test slice for ${{ env.INPUT_LANG || 'ALL' }}/${{ env.INPUT_CHAR_KEY || 'ALL' }}/DataFile:${{ env.INPUT_DATA_FILE_KEY || 'ALL' }} (Run ID ${{ github.run_id }})
