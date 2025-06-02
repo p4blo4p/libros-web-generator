@@ -17,7 +17,7 @@ on:
       test_char_key:
         description: 'Clave de carácter para testear generación (ej. z, a, 0). Dejar vacío si test_language está vacío o para generar todos los caracteres para el idioma especificado.'
         required: false
-        default: '' # Default a vacío
+        default: '5' # Default a vacío
         type: string
       log_level:
         description: 'Nivel de log para generate_static.py y app (INFO, DEBUG)'
