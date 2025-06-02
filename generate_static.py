@@ -39,7 +39,8 @@ if not script_logger.handlers:
     script_logger.setLevel(log_level)
     script_handler = logging.StreamHandler()
     script_formatter = logging.Formatter(
-        '%(asctime)s - %(name)s:%(processName)s - %(levelname)s - [%(funcName)s:%(lineno)d] - %(message)s'
+        '%(asctime)s - %(name)s:%(processName)s - %(levelname)s - '
+        '[%(funcName)s:%(lineno)d] - %(message)s'  # E501 Corregido (dividido)
     )
     script_handler.setFormatter(script_formatter)
     script_logger.addHandler(script_handler)
@@ -49,12 +50,16 @@ else:
     log_level = getattr(logging, log_level_name, logging.INFO)
     script_logger.setLevel(log_level)
 
-script_logger.info(f"Logger principal configurado con nivel: {logging.getLevelName(script_logger.level)}")
+script_logger.info(
+    f"Logger principal configurado con nivel: {logging.getLevelName(script_logger.level)}"
+)
+
 
 # --- Variables Globales (se inicializarán más tarde) ---
 worker_app_instance = None
 worker_logger = None
 slugify_to_use_global_worker = None
+
 
 # --- CONSTANTES ---
 MANIFEST_DIR = Path(".cache")
@@ -63,9 +68,11 @@ OUTPUT_DIR = Path(os.environ.get('STATIC_SITE_OUTPUT_DIR', '_site'))
 ALPHABET = "abcdefghijklmnopqrstuvwxyz"
 SPECIAL_CHARS_SITEMAP_KEY = "0"
 
+
 # --- FUNCIONES DE UTILIDAD ---
 def slugify_ascii_local(text):
-    if text is None: return ""
+    if text is None:
+        return ""  # E701 Corregido
     text_str = str(text)
     text_und = unidecode(text_str)
     text_low = text_und.lower()
@@ -75,20 +82,27 @@ def slugify_ascii_local(text):
     text_strip = text_re3.strip('-')
     return text_strip if text_strip else "na"
 
-slugify_to_use_global_main = slugify_ascii_local
+
+slugify_to_use_global_main = slugify_ascii_local  # Default  # E261 Corregido (2 espacios)
 try:
     from app.utils.helpers import slugify_ascii as slugify_ascii_app_main
     slugify_to_use_global_main = slugify_ascii_app_main
     script_logger.info("Proceso principal: Usando slugify_ascii de app.utils.helpers.")
 except ImportError:
-    script_logger.warning("Proceso principal: Usando slugify_ascii local (app.utils.helpers no encontrado).")
+    script_logger.warning(
+        "Proceso principal: Usando slugify_ascii local (app.utils.helpers no encontrado)."
+    )
+
 
 def get_sitemap_char_group_for_author(author_name_or_slug, slugifier_func):
-    if not author_name_or_slug: return SPECIAL_CHARS_SITEMAP_KEY
+    if not author_name_or_slug:
+        return SPECIAL_CHARS_SITEMAP_KEY  # E701 Corregido
     processed_slug = slugifier_func(str(author_name_or_slug))
-    if not processed_slug: return SPECIAL_CHARS_SITEMAP_KEY
+    if not processed_slug:
+        return SPECIAL_CHARS_SITEMAP_KEY  # E701 Corregido
     first_char = processed_slug[0].lower()
     return first_char if first_char in ALPHABET else SPECIAL_CHARS_SITEMAP_KEY
+
 
 def get_translated_url_segment_for_generator(
     segment_key, lang_code, url_segment_translations,
@@ -109,21 +123,28 @@ def get_translated_url_segment_for_generator(
             return translated_segment_default_lang
     return default_res
 
+
 # --- MANIFEST HELPER FUNCTIONS ---
+
+
 def load_manifest():
     if MANIFEST_FILE.exists():
         try:
-            with open(MANIFEST_FILE, 'r', encoding='utf-8') as f: return json.load(f)
+            with open(MANIFEST_FILE, 'r', encoding='utf-8') as f:
+                return json.load(f)  # E701 Corregido
         except json.JSONDecodeError:
             script_logger.warning(f"Error decodificando {MANIFEST_FILE}. Se creará nuevo.")
     else:
         script_logger.info(f"Manifest {MANIFEST_FILE} no encontrado. Se creará nuevo.")
     return {}
 
+
 def save_manifest(manifest_data):
     MANIFEST_DIR.mkdir(parents=True, exist_ok=True)
-    with open(MANIFEST_FILE, 'w', encoding='utf-8') as f: json.dump(manifest_data, f, indent=2)
+    with open(MANIFEST_FILE, 'w', encoding='utf-8') as f:
+        json.dump(manifest_data, f, indent=2)  # E701 Corregido
     script_logger.info(f"Manifest guardado en {MANIFEST_FILE} ({len(manifest_data)} entradas).")
+
 
 def get_book_signature_fields(book_data):
     return dict(sorted({
@@ -131,23 +152,40 @@ def get_book_signature_fields(book_data):
         "asin": book_data.get("asin"), "title_slug": book_data.get("title_slug"),
         "author_slug": book_data.get("author_slug"),
         "description": book_data.get("description_short") or book_data.get("description"),
-        "cover_image_url": (book_data.get("image_url_l") or book_data.get("image_url_m") or book_data.get("image_url_s")),
+        "cover_image_url": (
+            book_data.get("image_url_l") or
+            book_data.get("image_url_m") or
+            book_data.get("image_url_s")
+        ),
         "publication_date": book_data.get("publication_date"),
-        "publisher": book_data.get("publisher_name"), "language_code": book_data.get("language_code"),
+        "publisher": book_data.get("publisher_name"),
+        "language_code": book_data.get("language_code"),
     }.items()))
+
 
 def calculate_signature(data_dict):
     json_string = json.dumps(data_dict, sort_keys=True, ensure_ascii=False)
     return hashlib.md5(json_string.encode('utf-8')).hexdigest()
 
+
 def should_regenerate_page(path_str, signature, manifest, logger):
     entry = manifest.get(path_str)
-    if not entry: logger.debug(f"REGENERAR (nuevo): {path_str}"); return True
-    if entry.get('signature') != signature: logger.debug(f"REGENERAR (firma cambiada): {path_str}"); return True
-    if not Path(path_str).exists(): logger.debug(f"REGENERAR (no existe): {path_str}"); return True
-    logger.debug(f"SALTAR (sin cambios): {path_str}"); return False
+    if not entry:
+        logger.debug(f"REGENERAR (nuevo): {path_str}")
+        return True  # E701 Corregido
+    if entry.get('signature') != signature:
+        logger.debug(f"REGENERAR (firma cambiada): {path_str}")
+        return True  # E701 Corregido
+    if not Path(path_str).exists():
+        logger.debug(f"REGENERAR (no existe): {path_str}")
+        return True  # E701 Corregido
+    logger.debug(f"SALTAR (sin cambios): {path_str}")
+    return False  # E701 Corregido
+
 
 # --- FUNCIÓN _save_page_local ---
+
+
 def _save_page_local(client, url, path_obj, logger):
     try:
         response = client.get(url)
@@ -160,7 +198,9 @@ def _save_page_local(client, url, path_obj, logger):
             else:
                 logger.info(f"URL {url} devolvió 200 sin datos. No se guardó.")
         elif 300 <= response.status_code < 400:
-            logger.warning(f"{url} REDIR {response.status_code} -> {response.headers.get('Location')}. NO guardado.")
+            logger.warning(
+                f"{url} REDIR {response.status_code} -> {response.headers.get('Location')}. NO guardado."
+            )
         elif response.status_code == 404:
             logger.warning(f"404: {url} no encontrado. NO guardado.")
         else:
@@ -168,7 +208,10 @@ def _save_page_local(client, url, path_obj, logger):
     except Exception:
         logger.exception(f"EXCEPCIÓN generando/guardando {url}")
 
+
 # --- FUNCIONES WORKER PARA MULTIPROCESSING ---
+
+
 def worker_init():
     global worker_app_instance, worker_logger, slugify_to_use_global_worker
     from app import create_app
@@ -180,7 +223,8 @@ def worker_init():
     if not worker_logger.handlers:
         worker_handler = logging.StreamHandler()
         worker_formatter = logging.Formatter(
-            '%(asctime)s - %(name)s:%(processName)s - %(levelname)s - [%(funcName)s:%(lineno)d] - %(message)s'
+            '%(asctime)s - %(name)s:%(processName)s - %(levelname)s - '
+            '[%(funcName)s:%(lineno)d] - %(message)s'  # E501 Corregido
         )
         worker_handler.setFormatter(worker_formatter)
         worker_logger.addHandler(worker_handler)
@@ -189,7 +233,7 @@ def worker_init():
     worker_logger.setLevel(worker_log_level)
     worker_logger.propagate = False
 
-    slugify_to_use_global_worker = slugify_ascii_local
+    slugify_to_use_global_worker = slugify_ascii_local  # Default  # E261 Corregido
     try:
         from app.utils.helpers import slugify_ascii as slugify_ascii_app_worker
         slugify_to_use_global_worker = slugify_ascii_app_worker
@@ -198,11 +242,12 @@ def worker_init():
         worker_logger.warning("Worker: Usando slugify_ascii local (app.utils.helpers no encontrado).")
     worker_logger.info(f"Worker {proc_name} inicializado. Nivel de log: {logging.getLevelName(worker_logger.level)}")
 
+
 # --- TAREAS DE GENERACIÓN REFACTORIZADAS ---
-def _generate_task_common(item_data, config_params_manifest_tuple, page_type): # noqa: C901
+
+
+def _generate_task_common(item_data, config_params_manifest_tuple, page_type):  # noqa: C901
     config_params, manifest_data_global = config_params_manifest_tuple
-    # Las siguientes variables son globales DENTRO DEL CONTEXTO DEL WORKER,
-    # establecidas por worker_init(). No se necesita `global` si solo se leen.
 
     LANGUAGES = config_params['LANGUAGES']
     DEFAULT_LANGUAGE = config_params['DEFAULT_LANGUAGE']
@@ -211,13 +256,14 @@ def _generate_task_common(item_data, config_params_manifest_tuple, page_type): #
     FORCE_REGENERATE = config_params.get('FORCE_REGENERATE_ALL', False)
     ALL_BOOKS = config_params['ALL_BOOKS_DATA']
 
-    # Estas variables se refieren a las globales del worker
     log_target = worker_logger
     current_slugifier = slugify_to_use_global_worker
     app_for_context = worker_app_instance
 
     generated_pages_info = []
-    current_page_signature, segment_key_for_url, dynamic_url_parts = "", "", []
+    current_page_signature = ""
+    segment_key_for_url = ""
+    dynamic_url_parts = []
 
     if page_type == "book":
         book = item_data
@@ -228,7 +274,8 @@ def _generate_task_common(item_data, config_params_manifest_tuple, page_type): #
             return []
         author_s, title_s = current_slugifier(author_orig), current_slugifier(title_orig)
         current_page_signature = calculate_signature(get_book_signature_fields(book))
-        segment_key_for_url, dynamic_url_parts = 'book', [author_s, title_s, str(ident)]
+        segment_key_for_url = 'book'
+        dynamic_url_parts = [author_s, title_s, str(ident)]
     elif page_type == "author":
         author_orig = item_data
         author_s = current_slugifier(author_orig)
@@ -238,14 +285,15 @@ def _generate_task_common(item_data, config_params_manifest_tuple, page_type): #
             return []
         ids = sorted([b.get('isbn10') or b.get('isbn13') or b.get('asin') for b in related_books])
         current_page_signature = calculate_signature({"book_ids": ids, "author_slug": author_orig})
-        segment_key_for_url, dynamic_url_parts = 'author', [author_s]
+        segment_key_for_url = 'author'
+        dynamic_url_parts = [author_s]
     elif page_type == "versions":
         author_orig, base_title_orig = item_data
         author_s, base_title_s = current_slugifier(author_orig), current_slugifier(base_title_orig)
         related_books = [
             b for b in ALL_BOOKS
             if current_slugifier(b.get('author_slug')) == author_s and
-               current_slugifier(b.get('base_title_slug')) == base_title_s
+            current_slugifier(b.get('base_title_slug')) == base_title_s
         ]
         if not related_books:
             log_target.debug(f"No hay versiones para '{author_s}', '{base_title_s}'.")
@@ -254,7 +302,8 @@ def _generate_task_common(item_data, config_params_manifest_tuple, page_type): #
         current_page_signature = calculate_signature({
             "book_ids": ids, "author_slug": author_orig, "base_title_slug": base_title_orig
         })
-        segment_key_for_url, dynamic_url_parts = 'versions', [author_s, base_title_s]
+        segment_key_for_url = 'versions'
+        dynamic_url_parts = [author_s, base_title_s]
     else:
         log_target.error(f"Tipo de página desconocido: {page_type}")
         return []
@@ -263,16 +312,20 @@ def _generate_task_common(item_data, config_params_manifest_tuple, page_type): #
         with app_for_context.test_client() as client:
             for lang in LANGUAGES:
                 segment_translated = get_translated_url_segment_for_generator(
-                    segment_key_for_url, lang, URL_SEGMENT_TRANSLATIONS, DEFAULT_LANGUAGE, segment_key_for_url
+                    segment_key_for_url, lang, URL_SEGMENT_TRANSLATIONS,
+                    DEFAULT_LANGUAGE, segment_key_for_url
                 )
                 str_dynamic_parts = [str(p) for p in dynamic_url_parts]
-                flask_url_path_parts = [f"/{lang}", segment_translated] + str_dynamic_parts
+                # E131 Corregido (alineación)
+                flask_url_path_parts = [
+                    f"/{lang}",
+                    segment_translated
+                ] + str_dynamic_parts
                 flask_url = "/".join(part.strip('/') for part in flask_url_path_parts if part)
                 if not flask_url.startswith('/'):
                     flask_url = '/' + flask_url
                 if not flask_url.endswith('/'):
                     flask_url += '/'
-
 
                 output_path_parts = [lang, segment_translated] + str_dynamic_parts + ["index.html"]
                 output_path_obj = OUTPUT_DIR_BASE.joinpath(*output_path_parts)
@@ -283,34 +336,49 @@ def _generate_task_common(item_data, config_params_manifest_tuple, page_type): #
                 ):
                     _save_page_local(client, flask_url, output_path_obj, log_target)
                     generated_pages_info.append({
-                        "path": output_path_str, "signature": current_page_signature, "timestamp": time.time()
+                        "path": output_path_str,
+                        "signature": current_page_signature,
+                        "timestamp": time.time()
                     })
     return generated_pages_info
+
 
 def generate_book_detail_pages_task(book_data_item, config_params_manifest_tuple):
     return _generate_task_common(book_data_item, config_params_manifest_tuple, "book")
 
+
 def generate_author_pages_task(author_slug_original, config_params_manifest_tuple):
     return _generate_task_common(author_slug_original, config_params_manifest_tuple, "author")
 
+
 def generate_versions_pages_task(author_base_title_slugs_original, config_params_manifest_tuple):
-    return _generate_task_common(author_base_title_slugs_original, config_params_manifest_tuple, "versions")
+    return _generate_task_common(
+        author_base_title_slugs_original, config_params_manifest_tuple, "versions"
+    )
+
 
 # --- MAIN FUNCTION HELPERS ---
+
+
 def _parse_cli_args():
     parser = argparse.ArgumentParser(description="Generador de sitio estático.")
     parser.add_argument("--language", type=str, help="Generar solo para un idioma (ej. 'es').")
     parser.add_argument("--force-regenerate", action="store_true", help="Forzar regeneración.")
     parser.add_argument("--char-key", type=str, help="Generar para clave de carácter. Requiere --language.")
-    parser.add_argument("--log-level", type=str, default=os.environ.get('SCRIPT_LOG_LEVEL', 'INFO').upper(),
-                        choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'],
-                        help="Nivel de log para el script.")
+    parser.add_argument(
+        "--log-level", type=str,
+        default=os.environ.get('SCRIPT_LOG_LEVEL', 'INFO').upper(),
+        choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'],
+        help="Nivel de log para el script."
+    )
     return parser.parse_args()
+
 
 def _setup_environment_data(args, main_logger):
     from app import create_app
     main_logger.info(f"Iniciando con argumentos: {args}")
-    if args.force_regenerate: main_logger.info("FORZANDO REGENERACIÓN.")
+    if args.force_regenerate:
+        main_logger.info("FORZANDO REGENERACIÓN.")
     manifest_data = load_manifest()
     main_logger.info(f"Manifest cargado: {len(manifest_data)} entradas.")
     if 'IS_STATIC_GENERATION_WORKER' in os.environ:
@@ -323,10 +391,13 @@ def _setup_environment_data(args, main_logger):
     all_langs = app_instance.config.get('SUPPORTED_LANGUAGES', ['en'])
     langs_to_process = [args.language] if args.language and args.language in all_langs else all_langs
     if args.language and args.language not in all_langs:
-        main_logger.error(f"Idioma '{args.language}' no soportado. Saliendo."); return None
+        main_logger.error(f"Idioma '{args.language}' no soportado. Saliendo.")
+        return None  # E701, E702 Corregido
     main_logger.info(f"Procesando para idiomas: {langs_to_process}")
     books_list = app_instance.books_data
-    if not books_list: main_logger.critical("Datos de libros no cargados. Saliendo."); return None
+    if not books_list:
+        main_logger.critical("Datos de libros no cargados. Saliendo.")
+        return None  # E701, E702 Corregido
     main_logger.info(f"{len(books_list)} libros fuente.")
     return {
         "app": app_instance, "manifest": manifest_data,
@@ -335,6 +406,7 @@ def _setup_environment_data(args, main_logger):
         "url_segment_translations": app_instance.config.get('URL_SEGMENT_TRANSLATIONS', {}),
         "books_data": books_list, "output_dir_path": OUTPUT_DIR,
     }
+
 
 def _prepare_output_directory(app_instance, output_dir,  # noqa: C901
                               current_lang, perform_cleanup, char_key, logger):
@@ -355,7 +427,8 @@ def _prepare_output_directory(app_instance, output_dir,  # noqa: C901
 
         if app_static_folder_abs.exists() and app_static_folder_abs.is_dir():
             static_target = output_dir / app_instance.static_url_path.strip('/')
-            if static_target.exists(): shutil.rmtree(static_target)
+            if static_target.exists():
+                shutil.rmtree(static_target)
             shutil.copytree(app_static_folder_abs, static_target, dirs_exist_ok=True)
             logger.info(f"'{app_static_folder_abs.name}' copiada a '{static_target}'")
         else:
@@ -378,7 +451,8 @@ def _prepare_output_directory(app_instance, output_dir,  # noqa: C901
             (output_dir / current_lang).mkdir(parents=True, exist_ok=True)
         logger.info(f"Asegurando {output_dir} y subdirs (sin limpieza completa).")
 
-def _generate_main_process_pages(app, langs, out_dir, lang_arg, force_regen, char_key, logger): # noqa: C901
+
+def _generate_main_process_pages(app, langs, out_dir, lang_arg, force_regen, char_key, logger):  # noqa: C901
     logger.info("Generando páginas de índice y sitemaps (proceso principal)...")
     with app.app_context(), app.test_client() as client:
         if not lang_arg and not char_key:
@@ -388,7 +462,10 @@ def _generate_main_process_pages(app, langs, out_dir, lang_arg, force_regen, cha
         for lang_code in langs:
             if not char_key:
                 if force_regen or not (out_dir / lang_code / "index.html").exists():
-                    _save_page_local(client, f"/{lang_code}/", out_dir / lang_code / "index.html", logger)
+                    _save_page_local(
+                        client, f"/{lang_code}/",
+                        out_dir / lang_code / "index.html", logger
+                    )
 
             sitemap_core_url = f"/sitemap_{lang_code}_core.xml"
             sitemap_core_path = out_dir / f"sitemap_{lang_code}_core.xml"
@@ -409,7 +486,8 @@ def _generate_main_process_pages(app, langs, out_dir, lang_arg, force_regen, cha
         if not lang_arg and not char_key:
             _save_page_local(client, "/sitemap.xml", out_dir / "sitemap.xml", logger)
 
-def _run_parallel_tasks(env_data, force_regen, char_key, logger): # noqa: C901
+
+def _run_parallel_tasks(env_data, force_regen, char_key, logger):  # noqa: C901
     num_procs = max(1, cpu_count() - 1 if cpu_count() > 1 else 1)
     logger.info(f"Usando {num_procs} procesos para generación paralela.")
     config_tasks = {
@@ -426,11 +504,15 @@ def _run_parallel_tasks(env_data, force_regen, char_key, logger): # noqa: C901
 
     detail_items = list(books_src)
     author_items = {b.get('author_slug') for b in books_src if b.get('author_slug')}
-    version_items = {(b.get('author_slug'), b.get('base_title_slug')) for b in books_src
-                     if b.get('author_slug') and b.get('base_title_slug')}
+    version_items = {
+        (b.get('author_slug'), b.get('base_title_slug')) for b in books_src
+        if b.get('author_slug') and b.get('base_title_slug')
+    }
 
     if char_key and env_data["languages_to_process"]:
-        logger.info(f"Filtrando tareas para char_key: '{char_key}' en {env_data['languages_to_process']}")
+        logger.info(
+            f"Filtrando tareas para char_key: '{char_key}' en {env_data['languages_to_process']}"
+        )
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug("--- DEBUG: Verificando grupos de autor para filtrado (primeros 10) ---")
             for i, book_debug in enumerate(books_src[:10]):
@@ -439,13 +521,26 @@ def _run_parallel_tasks(env_data, force_regen, char_key, logger): # noqa: C901
                 logger.debug(f"  Autor: '{auth_orig}', Grupo: '{group}'")
             logger.debug("--- FIN DEBUG ---")
 
-        detail_items = [b for b in books_src if get_sitemap_char_group_for_author(b.get('author_slug'), slugifier) == char_key]
-        author_items = {s for s in author_items if get_sitemap_char_group_for_author(s, slugifier) == char_key}
-        version_items = {(a, t) for a, t in version_items if get_sitemap_char_group_for_author(a, slugifier) == char_key}
+        detail_items = [
+            b for b in books_src
+            if get_sitemap_char_group_for_author(b.get('author_slug'), slugifier) == char_key
+        ]
+        author_items = {
+            s for s in author_items
+            if get_sitemap_char_group_for_author(s, slugifier) == char_key
+        }
+        version_items = {
+            (a, t) for a, t in version_items
+            if get_sitemap_char_group_for_author(a, slugifier) == char_key
+        }
 
-        logger.info(f"  Detalle: {len(detail_items)}, Autores: {len(author_items)}, Versiones: {len(version_items)} después de filtrar.")
+        logger.info(
+            f"  Detalle: {len(detail_items)}, Autores: {len(author_items)}, "
+            f"Versiones: {len(version_items)} después de filtrar."  # E501 Corregido
+        )
         if not any([detail_items, author_items, version_items]):
-            logger.warning(f"No se encontraron elementos para char_key '{char_key}'. Sin tareas paralelas."); return []
+            logger.warning(f"No se encontraron elementos para char_key '{char_key}'. Sin tareas paralelas.")
+            return []  # E701 Corregido
 
     task_definitions = [
         ("Detalle libros", generate_book_detail_pages_task, detail_items),
@@ -469,12 +564,15 @@ def _run_parallel_tasks(env_data, force_regen, char_key, logger): # noqa: C901
                 logger.info(f"No hay items para '{name}'. Saltando.")
     return all_new_entries
 
-def _finalize_generation(manifest, new_entries, out_dir, lang_arg, char_key, logger): # noqa: C901
+
+def _finalize_generation(manifest, new_entries, out_dir, lang_arg, char_key, logger):  # noqa: C901
     updated_manifest = False
     if new_entries:
         logger.info(f"Actualizando manifest con {len(new_entries)} entradas.")
         for entry in new_entries:
-            manifest[entry['path']] = {"signature": entry['signature'], "timestamp": entry['timestamp']}
+            manifest[entry['path']] = {
+                "signature": entry['signature'], "timestamp": entry['timestamp']
+            }
         updated_manifest = True
 
     is_full_run_or_forced = (not lang_arg and not char_key)
@@ -487,38 +585,52 @@ def _finalize_generation(manifest, new_entries, out_dir, lang_arg, char_key, log
         logger.info("Manifest no actualizado o no es ejecución completa/forzada. No se guardó.")
 
     log_msg = f"Sitio estático (o parte para idioma '{lang_arg or 'todos'}'"
-    if char_key: log_msg += f" y char_key '{char_key}'"
+    if char_key:
+        log_msg += f" y char_key '{char_key}'"  # W291 (trailing whitespace) - Revisado, parece bien
     log_msg += f") generado en: {out_dir}"
     logger.info(log_msg)
 
+
 # --- FUNCIÓN MAIN ---
-def main(): # noqa: C901
+def main():  # noqa: C901
     args = _parse_cli_args()
-    log_level_name_main = args.log_level if args.log_level else os.environ.get('SCRIPT_LOG_LEVEL', 'INFO').upper()
+    log_level_name_main = args.log_level if args.log_level else os.environ.get(
+        'SCRIPT_LOG_LEVEL', 'INFO'
+    ).upper()
     log_level_main = getattr(logging, log_level_name_main, logging.INFO)
     script_logger.setLevel(log_level_main)
     script_logger.info(f"Nivel de log para script principal establecido a: {log_level_name_main}")
     os.environ['SCRIPT_LOG_LEVEL'] = log_level_name_main
 
     if args.char_key and not args.language:
-        script_logger.error("--char-key requiere --language. Saliendo."); return
+        script_logger.error("--char-key requiere --language. Saliendo.")
+        return  # E701 Corregido
 
     env_data = _setup_environment_data(args, script_logger)
-    if env_data is None: return
+    if env_data is None:
+        return  # E701 Corregido
 
     app, out_dir = env_data["app"], env_data["output_dir_path"]
-    perform_cleanup = (not args.language and not args.char_key) or \
-                      (args.force_regenerate and not args.language and not args.char_key)
+    perform_cleanup = (
+        (not args.language and not args.char_key) or
+        (args.force_regenerate and not args.language and not args.char_key)
+    )  # E502 Corregido (eliminado backslash)
 
-    _prepare_output_directory(app, out_dir, args.language, perform_cleanup, args.char_key, script_logger)
+    _prepare_output_directory(
+        app, out_dir, args.language, perform_cleanup, args.char_key, script_logger
+    )
     _generate_main_process_pages(
         app, env_data["languages_to_process"], out_dir, args.language,
         args.force_regenerate, args.char_key, script_logger
     )
-    new_entries = _run_parallel_tasks(env_data, args.force_regenerate, args.char_key, script_logger)
-    _finalize_generation(
-        env_data["manifest"], new_entries, out_dir, args.language, args.char_key, script_logger
+    new_entries = _run_parallel_tasks(
+        env_data, args.force_regenerate, args.char_key, script_logger
     )
+    _finalize_generation(
+        env_data["manifest"], new_entries, out_dir,
+        args.language, args.char_key, script_logger
+    )
+
 
 if __name__ == '__main__':
     main()
