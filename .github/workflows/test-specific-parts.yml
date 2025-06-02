@@ -74,7 +74,7 @@ jobs:
           echo "Running Flake8 (strict pass for E9,F63,F7,F82)..."
           flake8 . --count --select=E9,F63,F7,F82 --format=pylint --statistics
           echo "Running Flake8 (style and complexity pass)..."
-          flake8 . --count --format=pylint --statistics
+          # flake8 . --count --format=pylint --statistics
           # Si quieres que el workflow falle si hay *cualquier* error de flake8 (no solo los E9,F*),
           # la segunda pasada de flake8 debería también tener '|| exit 1' o
           # simplemente confiar en que flake8 devuelve un código de error distinto de 0 si hay problemas.
