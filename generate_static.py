@@ -146,8 +146,9 @@ def worker_init():
     except ImportError: worker_logger.warning("Worker: slugify local.")
     worker_logger.info(f"Worker inicializado. Slug: {slugify_to_use_global_worker.__name__}. Log: {logging.getLevelName(worker_logger.level)}")
 
-def _generate_task_common(item_data, cfg_manifest_tuple, page_type): # noqa: C901
-    config_params, manifest_data_global = cfg_manifest_tuple
+def _generate_task_common(item_data, cfg_manifest_tuple, page_type):  # noqa: C901
+    # Desempaqueta solo los dos primeros elementos, ignora el resto
+    config_params, manifest_data_global, *_ = cfg_manifest_tuple
 
     LANGUAGES = config_params['LANGUAGES']
     DEFAULT_LANGUAGE = config_params['DEFAULT_LANGUAGE']
