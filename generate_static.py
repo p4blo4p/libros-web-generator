@@ -406,35 +406,56 @@ def _prepare_output_directory(app_instance, output_dir,  # noqa: C901
             (output_dir / current_lang).mkdir(parents=True, exist_ok=True)
         logger.info(f"Asegurando {output_dir} y subdirs (sin limpieza completa).")
 
-def _generate_main_process_pages(app, langs, out_dir, lang_arg, force_regen, char_key, logger): # noqa: C901
+def _generate_main_process_pages(app, langs_to_process, out_dir, lang_arg, force_regen, char_key_arg, logger): # noqa: C901
     logger.info("Generando páginas de índice y sitemaps (proceso principal)...")
     with app.app_context(), app.test_client() as client:
-        if not lang_arg and not char_key:
+        # --- Generación de Páginas de Índice (HTML) ---
+        # El index.html global solo se genera si no hay filtro de idioma NI de char_key
+        if not lang_arg and not char_key_arg:
             if force_regen or not (out_dir / "index.html").exists():
                 _save_page_local(client, "/", out_dir / "index.html", logger)
 
-        for lang_code in langs:
-            if not char_key:
+        # Los index.html de idioma solo se generan si no hay filtro de char_key
+        # (pero sí puede haber filtro de idioma, en cuyo caso langs_to_process tendrá un solo idioma)
+        if not char_key_arg:
+            for lang_code in langs_to_process: # Iterar sobre los idiomas a procesar
                 if force_regen or not (out_dir / lang_code / "index.html").exists():
                     _save_page_local(client, f"/{lang_code}/", out_dir / lang_code / "index.html", logger)
 
+        # --- Generación de Sitemaps (XML) ---
+        # Iterar sobre los idiomas a procesar (puede ser uno o todos)
+        for lang_code in langs_to_process:
             sitemap_core_url = f"/sitemap_{lang_code}_core.xml"
             sitemap_core_path = out_dir / f"sitemap_{lang_code}_core.xml"
-            if char_key:
-                if char_key == "core":
+
+            if char_key_arg:
+                # Si se especifica un char_key, SOLO generamos el sitemap para ese char_key (y lang_code).
+                # No se genera el sitemap_core a menos que char_key sea "core".
+                if char_key_arg == "core":
+                    logger.info(f"Modo char_key='core': Generando {sitemap_core_path}")
                     _save_page_local(client, sitemap_core_url, sitemap_core_path, logger)
-                elif char_key in ALPHABET or char_key == SPECIAL_CHARS_SITEMAP_KEY:
-                    s_url = f"/sitemap_{lang_code}_{char_key}.xml"
-                    s_path = out_dir / f"sitemap_{lang_code}_{char_key}.xml"
-                    _save_page_local(client, s_url, s_path, logger)
+                elif char_key_arg in ALPHABET or char_key_arg == SPECIAL_CHARS_SITEMAP_KEY:
+                    sitemap_url_char = f"/sitemap_{lang_code}_{char_key_arg}.xml"
+                    sitemap_path_char = out_dir / f"sitemap_{lang_code}_{char_key_arg}.xml"
+                    logger.info(f"Modo char_key='{char_key_arg}': Generando {sitemap_path_char}")
+                    _save_page_local(client, sitemap_url_char, sitemap_path_char, logger)
+                else:
+                    logger.warning(
+                        f"char_key '{char_key_arg}' inválido para sitemap específico. No se generará sitemap para esta clave."
+                    )
             else:
+                # Si NO se especifica char_key, generar todos los sitemaps para este lang_code:
+                # el _core.xml y todos los de letra/carácter.
+                logger.info(f"Modo NO char_key: Generando todos los sitemaps para idioma '{lang_code}'")
                 _save_page_local(client, sitemap_core_url, sitemap_core_path, logger)
                 for char_k_iter in list(ALPHABET) + [SPECIAL_CHARS_SITEMAP_KEY]:
-                    s_url = f"/sitemap_{lang_code}_{char_k_iter}.xml"
-                    s_path = out_dir / f"sitemap_{lang_code}_{char_k_iter}.xml"
-                    _save_page_local(client, s_url, s_path, logger)
+                    sitemap_url_ch = f"/sitemap_{lang_code}_{char_k_iter}.xml"
+                    sitemap_path_ch = out_dir / f"sitemap_{lang_code}_{char_k_iter}.xml"
+                    _save_page_local(client, sitemap_url_ch, sitemap_path_ch, logger)
 
-        if not lang_arg and not char_key:
+        # El sitemap_index.xml principal solo se genera si no hay filtro de idioma NI de char_key
+        if not lang_arg and not char_key_arg:
+            logger.info("Generando sitemap_index.xml principal...")
             _save_page_local(client, "/sitemap.xml", out_dir / "sitemap.xml", logger)
 
 def _run_parallel_tasks(env_data, force_regen, char_key, logger): # noqa: C901
