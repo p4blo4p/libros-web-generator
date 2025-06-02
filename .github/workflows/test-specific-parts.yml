@@ -15,14 +15,14 @@ on:
         default: '' # Default a vacío para indicar "todos los idiomas" si char_key también está vacío
         type: string
       test_char_key:
-        description: 'Clave de carácter para testear (ej. z, a, 0). Si se usa, test_language debe tener un valor (o se usará el default_char_key_lang).'
+        description: 'Clave de carácter para testear (ej. z, a, 0). Si se usa, test_language debe tener un valor.'
         required: false
-        default: '5' # Default a vacío (sin filtro de char_key)
+        default: '' # Default a vacío (sin filtro de char_key)
         type: string
       log_level:
         description: 'Nivel de log para generate_static.py y app (INFO, DEBUG)'
         required: false
-        default: 'DEBUG' # Default a INFO, cambiar a DEBUG para depurar
+        default: 'INFO' # Default a INFO, cambiar a DEBUG para depurar
         type: choice
         options:
           - INFO
@@ -30,11 +30,11 @@ on:
       deploy_test_slice:
         description: 'DESPLEGAR este slice a GitHub Pages (SOBREESCRIBIRÁ el sitio existente en la raíz)'
         required: false
-        default: 'true' # Por defecto, NO desplegar
+        default: 'false' # Por defecto, NO desplegar
         type: boolean
   push:
     branches:
-      - 'main' # O tu rama de desarrollo principal donde quieras el linting automático
+      - 'large-data-optimization' # O tu rama de desarrollo principal donde quieras el linting automático
       # - '!main' # Podrías excluir main si tu workflow principal ya lo cubre
 
 permissions:
@@ -74,34 +74,24 @@ jobs:
           echo "Running Flake8 (strict pass for E9,F63,F7,F82)..."
           flake8 . --count --select=E9,F63,F7,F82 --format=pylint --statistics
           echo "Running Flake8 (style and complexity pass)..."
-          # flake8 . --count --format=pylint --statistics
-          # Si quieres que el workflow falle si hay *cualquier* error de flake8 (no solo los E9,F*),
-          # la segunda pasada de flake8 debería también tener '|| exit 1' o
-          # simplemente confiar en que flake8 devuelve un código de error distinto de 0 si hay problemas.
-          # La configuración actual hará que el step falle si la primera pasada de flake8 falla.
+          flake8 . --count --format=pylint --statistics
+          # Si la primera pasada de flake8 encuentra errores, el step fallará y el job fallará.
 
   test_generate_specific_slice:
     name: Test Generate & Deploy (Manual) - Lang ${{ github.event.inputs.test_language || 'ALL' }} / Char ${{ github.event.inputs.test_char_key || 'ALL' }}
     if: github.event_name == 'workflow_dispatch' # Solo ejecutar en dispatch manual
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest # Puedes probar ubuntu-20.04 o ubuntu-22.04 si sospechas del runner
     needs: test_lint_setup_only # Opcional: Asegura que el linting pase primero
     
     env:
-      # --- VARIABLES DE ENTORNO PARA GITHUB PAGES ---
-      # Si se despliega a la raíz de usuario.github.io/repo_name/
       GITHUB_PAGES_REPO_NAME: ${{ github.event.repository.name }}
       GITHUB_PAGES_USERNAME: ${{ github.repository_owner }}
-      
-      # Variables para logging
       SCRIPT_LOG_LEVEL: ${{ github.event.inputs.log_level }}
-      
-      # Variables para el script generate_static.py
       FORCE_REGENERATE_FLAG_CMD: ${{ github.event.inputs.force_regenerate_test == 'true' && '--force-regenerate' || '' }}
       INPUT_LANG: ${{ github.event.inputs.test_language }}
       INPUT_CHAR_KEY: ${{ github.event.inputs.test_char_key }}
-      DEFAULT_LANG_FOR_CHAR_KEY_TEST: 'es' # Idioma por defecto si se provee char_key pero no language
-      # Directorio de salida para este job de testeo, diferente del OUTPUT_DIR del script principal
-      STATIC_SITE_OUTPUT_DIR_TEST_JOB: _test_site_slice 
+      DEFAULT_LANG_FOR_CHAR_KEY_TEST: 'es'
+      STATIC_SITE_OUTPUT_DIR_TEST_JOB: _test_site_slice # Directorio de salida para este job de testeo
 
     steps:
       - name: Checkout repository
@@ -143,48 +133,59 @@ jobs:
         
       - name: Generate static site for specific slice
         env:
-          # Sobrescribir STATIC_SITE_OUTPUT_DIR para que generate_static.py use el de testeo
           STATIC_SITE_OUTPUT_DIR: ${{ env.STATIC_SITE_OUTPUT_DIR_TEST_JOB }}
         run: |
-          set -e # Salir inmediatamente si un comando falla
-          
+          set -e
           COMMAND_ARGS=""
           EFFECTIVE_LANG="$INPUT_LANG"
           EFFECTIVE_CHAR_KEY="$INPUT_CHAR_KEY"
 
-          # Lógica para asegurar que --language se pasa si --char-key se usa
           if [[ -n "$EFFECTIVE_CHAR_KEY" && -z "$EFFECTIVE_LANG" ]]; then
             echo "Advertencia: Se proporcionó test_char_key ('$EFFECTIVE_CHAR_KEY') sin test_language. Usando idioma por defecto para test: '$DEFAULT_LANG_FOR_CHAR_KEY_TEST'."
             EFFECTIVE_LANG="$DEFAULT_LANG_FOR_CHAR_KEY_TEST"
           fi
 
-          # Construir los argumentos basados en los valores efectivos
           if [[ -n "$EFFECTIVE_LANG" ]]; then
             COMMAND_ARGS="--language $EFFECTIVE_LANG"
-            # Solo añadir --char-key si EFFECTIVE_CHAR_KEY también está presente (y EFFECTIVE_LANG lo está)
             if [[ -n "$EFFECTIVE_CHAR_KEY" ]]; then
               COMMAND_ARGS="$COMMAND_ARGS --char-key $EFFECTIVE_CHAR_KEY"
             fi
           else
-            echo "EFFECTIVE_LANG está vacío. El script generate_static.py se ejecutará para todos los idiomas (y sin filtro de char_key, ya que char_key requiere un idioma)."
+            echo "EFFECTIVE_LANG está vacío. El script generate_static.py se ejecutará para todos los idiomas."
           fi
           
+          echo "Output directory for script: $STATIC_SITE_OUTPUT_DIR"
           echo "Running: python generate_static.py $COMMAND_ARGS $FORCE_REGENERATE_FLAG_CMD --log-level ${{ env.SCRIPT_LOG_LEVEL }}"
           python generate_static.py $COMMAND_ARGS $FORCE_REGENERATE_FLAG_CMD --log-level ${{ env.SCRIPT_LOG_LEVEL }}
           
-          echo "Static site generation for specific slice finished. Output in ${{ env.STATIC_SITE_OUTPUT_DIR }}"
+          echo "Static site generation for specific slice finished. Output in $STATIC_SITE_OUTPUT_DIR"
+
+      # --- PASOS DE DEPURACIÓN ADICIONALES ---
+      - name: Debug Paths and Variables
+        if: always() # Ejecutar incluso si el paso de generación falla
+        run: |
+          echo "--- Debug Information ---"
+          echo "Runner OS: ${{ runner.os }}"
+          echo "GitHub Workspace: ${{ github.workspace }}"
+          echo "STATIC_SITE_OUTPUT_DIR_TEST_JOB (env var for job): ${{ env.STATIC_SITE_OUTPUT_DIR_TEST_JOB }}"
+          echo "Calculated path for artifact (relative to workspace): ${{ env.STATIC_SITE_OUTPUT_DIR_TEST_JOB }}"
+          echo "Full path of target for artifact: ${{ github.workspace }}/${{ env.STATIC_SITE_OUTPUT_DIR_TEST_JOB }}"
+          echo "Current working directory (pwd): $(pwd)"
+          echo "--- End Debug Information ---"
 
       - name: List generated files (for debugging)
-        if: always()
+        if: always() # Ejecutar incluso si el paso de generación falla
         run: |
-          echo "Contenido de ${{ env.STATIC_SITE_OUTPUT_DIR }}:"
-          ls -R ${{ env.STATIC_SITE_OUTPUT_DIR }} || echo "${{ env.STATIC_SITE_OUTPUT_DIR }} no existe o está vacío."
+          echo "Contenido detallado de ${{ github.workspace }}/${{ env.STATIC_SITE_OUTPUT_DIR_TEST_JOB }} (incluyendo permisos y enlaces):"
+          ls -Rahl ${{ github.workspace }}/${{ env.STATIC_SITE_OUTPUT_DIR_TEST_JOB }} || echo "El directorio ${{ env.STATIC_SITE_OUTPUT_DIR_TEST_JOB }} no existe o está vacío."
+          echo "--- Fin del listado detallado ---"
+      # --- FIN PASOS DE DEPURACIÓN ---
 
       - name: Upload specific slice artifact (for inspection)
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v4 # O prueba con actions/upload-artifact@v3
         with:
           name: test-site-slice-${{ env.INPUT_LANG || 'all_langs' }}-${{ env.INPUT_CHAR_KEY || 'all_chars' }}
-          path: ${{ env.STATIC_SITE_OUTPUT_DIR }}/
+          path: ${{ env.STATIC_SITE_OUTPUT_DIR_TEST_JOB }} # Path relativo al workspace
           if-no-files-found: error 
           retention-days: 1
 
@@ -193,14 +194,9 @@ jobs:
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ${{ env.STATIC_SITE_OUTPUT_DIR }} # Publicar desde _test_site_slice
-          keep_files: false # Limpia la rama de destino antes de pushear (para evitar acumulación)
+          publish_dir: ${{ env.STATIC_SITE_OUTPUT_DIR_TEST_JOB }}
+          keep_files: false
           allow_empty_commit: false
           user_name: 'github-actions[bot]'
           user_email: 'github-actions[bot]@users.noreply.github.com'
           commit_message: Deploy test slice for ${{ env.INPUT_LANG || 'ALL' }}/${{ env.INPUT_CHAR_KEY || 'ALL' }} (Run ID ${{ github.run_id }})
-          # Si quieres desplegar a una subcarpeta en la rama gh-pages:
-          # destination_dir: previews/${{ env.INPUT_LANG || 'all_langs' }}/${{ env.INPUT_CHAR_KEY || 'all_chars' }}/
-          # Para que destination_dir funcione bien, tu aplicación debe generar URLs relativas
-          # o ser consciente de la URL base. Para un simple "ver el slice", desplegar a la raíz
-          # (y sobreescribir) es más simple, pero DESTRUCTIVO para el sitio principal.
