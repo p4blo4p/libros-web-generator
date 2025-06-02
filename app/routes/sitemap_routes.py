@@ -165,7 +165,7 @@ def _add_author_page_to_sitemap(author_slug, lang_code, default_lang, supported_
             author_slug=author_slug
         )
         pages_list.append({
-            'loc': loc, 'lastmod': current_date_str,
+            'loc': loc, 'lastmod': current_date_str,  # O una fecha basada en la última actualización  # E261 Corregido
             'alternates': alts, 'changefreq': 'monthly', 'priority': '0.6'
         })
         processed_slugs_set.add(author_slug)
