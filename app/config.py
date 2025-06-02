@@ -10,7 +10,6 @@ class Config:
     # APPLICATION_ROOT = '/'
     # PREFERRED_URL_SCHEME = 'http' # O 'https' si se sirve bajo HTTPS
 
-
     # Rutas a archivos de datos  # E302 Corregido: Añadida línea en blanco arriba
     BOOKS_DATA_DIR = 'data/books_collection/'
     BESTSELLERS_JSON_PATH = 'social/amazon_bestsellers_es.json'
