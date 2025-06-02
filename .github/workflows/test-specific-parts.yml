@@ -10,19 +10,19 @@ on:
         default: 'false'
         type: boolean
       test_language:
-        description: 'Idioma para testear generación (ej. es, en). Dejar vacío para todos.'
+        description: 'Idioma para testear generación (ej. es, en). Dejar vacío para todos los idiomas configurados.'
         required: false
-        default: '' # Default a vacío para generar todos si no se especifica
+        default: '' # Default a vacío para indicar "todos los idiomas" si char_key también está vacío
         type: string
       test_char_key:
-        description: 'Clave de carácter para testear generación (ej. z, a, 0). Dejar vacío si test_language está vacío o para generar todos los caracteres para el idioma especificado.'
+        description: 'Clave de carácter para testear (ej. z, a, 0). Si se usa, test_language debe tener un valor (o se usará el default_char_key_lang).'
         required: false
-        default: '5' # Default a vacío
+        default: '' # Default a vacío (sin filtro de char_key)
         type: string
       log_level:
         description: 'Nivel de log para generate_static.py y app (INFO, DEBUG)'
         required: false
-        default: 'DEBUG'
+        default: 'INFO' # Default a INFO, cambiar a DEBUG para depurar
         type: choice
         options:
           - INFO
@@ -30,16 +30,17 @@ on:
       deploy_test_slice:
         description: 'DESPLEGAR este slice a GitHub Pages (SOBREESCRIBIRÁ el sitio existente en la raíz)'
         required: false
-        default: 'true'
+        default: 'false' # Por defecto, NO desplegar
         type: boolean
   push:
     branches:
-      - 'large-data-optimization' # O tu rama de desarrollo principal
+      - 'large-data-optimization' # O tu rama de desarrollo principal donde quieras el linting automático
+      # - '!main' # Podrías excluir main si tu workflow principal ya lo cubre
 
 permissions:
-  contents: write # Necesario para peaceiris/actions-gh-pages si pushea a una rama
-  pages: write    # Necesario si se despliega a través del artefacto de GitHub Pages (no usado aquí directamente para deploy)
-  id-token: write # A menudo necesario para acciones de despliegue seguras
+  contents: write # Necesario para peaceiris/actions-gh-pages y caché de manifest
+  pages: write    # Necesario para el despliegue de GitHub Pages
+  id-token: write # Necesario para autenticación segura en despliegues
 
 jobs:
   test_lint_setup_only:
@@ -48,10 +49,12 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.10" # Asegúrate que coincide con tu entorno
+          python-version: "3.10" # Asegúrate que coincida con tu entorno
+
       - name: Cache pip dependencies
         uses: actions/cache@v4
         with:
@@ -59,90 +62,46 @@ jobs:
           key: ${{ runner.os }}-pip-test-specific-${{ hashFiles('**/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-test-specific-
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install flake8
+
       - name: Lint with flake8
         run: |
           echo "Running Flake8 (strict pass for E9,F63,F7,F82)..."
           flake8 . --count --select=E9,F63,F7,F82 --format=pylint --statistics
           echo "Running Flake8 (style and complexity pass)..."
-          # flake8 . --count --format=pylint --statistics
+          flake8 . --count --format=pylint --statistics
+          # Si quieres que el workflow falle si hay *cualquier* error de flake8 (no solo los E9,F*),
+          # la segunda pasada de flake8 debería también tener '|| exit 1' o
+          # simplemente confiar en que flake8 devuelve un código de error distinto de 0 si hay problemas.
+          # La configuración actual hará que el step falle si la primera pasada de flake8 falla.
 
   test_generate_specific_slice:
     name: Test Generate & Deploy (Manual) - Lang ${{ github.event.inputs.test_language || 'ALL' }} / Char ${{ github.event.inputs.test_char_key || 'ALL' }}
     if: github.event_name == 'workflow_dispatch' # Solo ejecutar en dispatch manual
     runs-on: ubuntu-latest
-    needs: test_lint_setup_only
+    needs: test_lint_setup_only # Opcional: Asegura que el linting pase primero
     
     env:
+      # --- VARIABLES DE ENTORNO PARA GITHUB PAGES ---
+      # Si se despliega a la raíz de usuario.github.io/repo_name/
+      GITHUB_PAGES_REPO_NAME: ${{ github.event.repository.name }}
+      GITHUB_PAGES_USERNAME: ${{ github.repository_owner }}
+      
+      # Variables para logging
+      SCRIPT_LOG_LEVEL: ${{ github.event.inputs.log_level }}
+      
+      # Variables para el script generate_static.py
       FORCE_REGENERATE_FLAG_CMD: ${{ github.event.inputs.force_regenerate_test == 'true' && '--force-regenerate' || '' }}
       INPUT_LANG: ${{ github.event.inputs.test_language }}
       INPUT_CHAR_KEY: ${{ github.event.inputs.test_char_key }}
-      DEFAULT_TEST_LANG_IF_CHAR_KEY_PRESENT: 'es' # Idioma por defecto si se usa char_key sin lang
-      # ...
-    run: |
-      set -e
-      
-      COMMAND_ARGS=""
-      EFFECTIVE_LANG="$INPUT_LANG"
-      EFFECTIVE_CHAR_KEY="$INPUT_CHAR_KEY"
-
-      # Si se proporciona un char_key pero no un idioma, usar un idioma por defecto para el test.
-      if [[ -n "$EFFECTIVE_CHAR_KEY" && -z "$EFFECTIVE_LANG" ]]; then
-        echo "Advertencia: Se proporcionó test_char_key ('$EFFECTIVE_CHAR_KEY') sin test_language. Usando idioma por defecto para test: '$DEFAULT_TEST_LANG_IF_CHAR_KEY_PRESENT'."
-        EFFECTIVE_LANG="$DEFAULT_TEST_LANG_IF_CHAR_KEY_PRESENT"
-      fi
-
-      # Ahora construir los argumentos basados en los valores efectivos
-      if [[ -n "$EFFECTIVE_LANG" ]]; then
-        COMMAND_ARGS="$COMMAND_ARGS --language $EFFECTIVE_LANG"
-        # Solo añadir --char-key si EFFECTIVE_CHAR_KEY también está presente
-        if [[ -n "$EFFECTIVE_CHAR_KEY" ]]; then
-          COMMAND_ARGS="$COMMAND_ARGS --char-key $EFFECTIVE_CHAR_KEY"
-        fi
-      else
-        # Si EFFECTIVE_LANG sigue vacío, significa que ni INPUT_LANG ni un default por char_key se aplicaron.
-        # En este caso, no se pasa ni --language ni --char-key.
-        echo "EFFECTIVE_LANG está vacío. generate_static.py se ejecutará para todos los idiomas sin filtro de char_key."
-      fi
-      
-      echo "Running: python generate_static.py $COMMAND_ARGS $FORCE_REGENERATE_FLAG_CMD"
-      python generate_static.py $COMMAND_ARGS $FORCE_REGENERATE_FLAG_CMD
-      
-      echo "Static site generation for specific slice finished."
-    run: 
-      set -e
-      
-      COMMAND_ARGS=""
-      EFFECTIVE_LANG="$INPUT_LANG"
-      EFFECTIVE_CHAR_KEY="$INPUT_CHAR_KEY"
-
-      # Si se proporciona un char_key pero no un idioma, usar un idioma por defecto para el test.
-      if [[ -n "$EFFECTIVE_CHAR_KEY" && -z "$EFFECTIVE_LANG" ]]; then
-        echo "Advertencia: Se proporcionó test_char_key ('$EFFECTIVE_CHAR_KEY') sin test_language. Usando idioma por defecto para test: '$DEFAULT_TEST_LANG_IF_CHAR_KEY_PRESENT'."
-        EFFECTIVE_LANG="$DEFAULT_TEST_LANG_IF_CHAR_KEY_PRESENT"
-      fi
-
-      # Ahora construir los argumentos basados en los valores efectivos
-      if [[ -n "$EFFECTIVE_LANG" ]]; then
-        COMMAND_ARGS="$COMMAND_ARGS --language $EFFECTIVE_LANG"
-        # Solo añadir --char-key si EFFECTIVE_CHAR_KEY también está presente
-        if [[ -n "$EFFECTIVE_CHAR_KEY" ]]; then
-          COMMAND_ARGS="$COMMAND_ARGS --char-key $EFFECTIVE_CHAR_KEY"
-        fi
-      else
-        # Si EFFECTIVE_LANG sigue vacío, significa que ni INPUT_LANG ni un default por char_key se aplicaron.
-        # En este caso, no se pasa ni --language ni --char-key.
-        echo "EFFECTIVE_LANG está vacío. generate_static.py se ejecutará para todos los idiomas sin filtro de char_key."
-      fi
-      
-      echo "Running: python generate_static.py $COMMAND_ARGS $FORCE_REGENERATE_FLAG_CMD"
-      python generate_static.py $COMMAND_ARGS $FORCE_REGENERATE_FLAG_CMD
-      
-      echo "Static site generation for specific slice finished."
+      DEFAULT_LANG_FOR_CHAR_KEY_TEST: 'es' # Idioma por defecto si se provee char_key pero no language
+      # Directorio de salida para este job de testeo, diferente del OUTPUT_DIR del script principal
+      STATIC_SITE_OUTPUT_DIR_TEST_JOB: _test_site_slice 
 
     steps:
       - name: Checkout repository
@@ -171,10 +130,9 @@ jobs:
         uses: actions/cache@v4
         with:
           path: .cache/generation_manifest.json
-          # Clave de cache específica para este test para no interferir con el manifest de producción
-          key: ${{ runner.os }}-gen-manifest-test-slice-v2-${{ github.event.inputs.test_language }}-${{ github.event.inputs.test_char_key }}-${{ github.run_id }}
+          key: ${{ runner.os }}-gen-manifest-test-slice-v4-${{ github.event.inputs.test_language }}-${{ github.event.inputs.test_char_key }}-${{ github.run_id }}
           restore-keys: |
-            ${{ runner.os }}-gen-manifest-test-slice-v2-${{ github.event.inputs.test_language }}-${{ github.event.inputs.test_char_key }}-
+            ${{ runner.os }}-gen-manifest-test-slice-v4-${{ github.event.inputs.test_language }}-${{ github.event.inputs.test_char_key }}-
       
       - name: Initialize manifest if not restored by cache
         if: steps.manifest_cache.outputs.cache-hit != 'true'
@@ -184,29 +142,40 @@ jobs:
           echo "{}" > .cache/generation_manifest.json
         
       - name: Generate static site for specific slice
+        env:
+          # Sobrescribir STATIC_SITE_OUTPUT_DIR para que generate_static.py use el de testeo
+          STATIC_SITE_OUTPUT_DIR: ${{ env.STATIC_SITE_OUTPUT_DIR_TEST_JOB }}
         run: |
-          set -e
+          set -e # Salir inmediatamente si un comando falla
+          
           COMMAND_ARGS=""
-          if [[ -n "$TARGET_LANG_CMD" ]]; then
-            COMMAND_ARGS="$COMMAND_ARGS --language $TARGET_LANG_CMD"
-            # Solo añadir --char-key si TARGET_LANG_CMD también está presente
-            if [[ -n "$TARGET_CHAR_KEY_CMD" ]]; then
-              COMMAND_ARGS="$COMMAND_ARGS --char-key $TARGET_CHAR_KEY_CMD"
+          EFFECTIVE_LANG="$INPUT_LANG"
+          EFFECTIVE_CHAR_KEY="$INPUT_CHAR_KEY"
+
+          # Lógica para asegurar que --language se pasa si --char-key se usa
+          if [[ -n "$EFFECTIVE_CHAR_KEY" && -z "$EFFECTIVE_LANG" ]]; then
+            echo "Advertencia: Se proporcionó test_char_key ('$EFFECTIVE_CHAR_KEY') sin test_language. Usando idioma por defecto para test: '$DEFAULT_LANG_FOR_CHAR_KEY_TEST'."
+            EFFECTIVE_LANG="$DEFAULT_LANG_FOR_CHAR_KEY_TEST"
+          fi
+
+          # Construir los argumentos basados en los valores efectivos
+          if [[ -n "$EFFECTIVE_LANG" ]]; then
+            COMMAND_ARGS="--language $EFFECTIVE_LANG"
+            # Solo añadir --char-key si EFFECTIVE_CHAR_KEY también está presente (y EFFECTIVE_LANG lo está)
+            if [[ -n "$EFFECTIVE_CHAR_KEY" ]]; then
+              COMMAND_ARGS="$COMMAND_ARGS --char-key $EFFECTIVE_CHAR_KEY"
             fi
           else
-            # Si no hay TARGET_LANG_CMD, se asume generación completa (o lo que el script haga por defecto)
-            # No añadir --char-key si no hay --language
-            echo "TARGET_LANG_CMD está vacío. generate_static.py se ejecutará sin --language ni --char-key (generación completa)."
+            echo "EFFECTIVE_LANG está vacío. El script generate_static.py se ejecutará para todos los idiomas (y sin filtro de char_key, ya que char_key requiere un idioma)."
           fi
           
-          # Construir el comando final
-          # El script generate_static.py usará STATIC_SITE_OUTPUT_DIR del entorno para la salida.
-          echo "Running: python generate_static.py $COMMAND_ARGS $FORCE_REGENERATE_FLAG_CMD"
-          python generate_static.py $COMMAND_ARGS $FORCE_REGENERATE_FLAG_CMD
+          echo "Running: python generate_static.py $COMMAND_ARGS $FORCE_REGENERATE_FLAG_CMD --log-level ${{ env.SCRIPT_LOG_LEVEL }}"
+          python generate_static.py $COMMAND_ARGS $FORCE_REGENERATE_FLAG_CMD --log-level ${{ env.SCRIPT_LOG_LEVEL }}
+          
           echo "Static site generation for specific slice finished. Output in ${{ env.STATIC_SITE_OUTPUT_DIR }}"
 
       - name: List generated files (for debugging)
-        if: always() # Siempre ejecutar para ver qué se generó
+        if: always()
         run: |
           echo "Contenido de ${{ env.STATIC_SITE_OUTPUT_DIR }}:"
           ls -R ${{ env.STATIC_SITE_OUTPUT_DIR }} || echo "${{ env.STATIC_SITE_OUTPUT_DIR }} no existe o está vacío."
@@ -214,31 +183,24 @@ jobs:
       - name: Upload specific slice artifact (for inspection)
         uses: actions/upload-artifact@v4
         with:
-          name: test-site-slice-${{ github.event.inputs.test_language || 'all_langs' }}-${{ github.event.inputs.test_char_key || 'all_chars' }}
-          path: ${{ env.STATIC_SITE_OUTPUT_DIR }}/ # Subir el contenido de _test_site_slice
+          name: test-site-slice-${{ env.INPUT_LANG || 'all_langs' }}-${{ env.INPUT_CHAR_KEY || 'all_chars' }}
+          path: ${{ env.STATIC_SITE_OUTPUT_DIR }}/
           if-no-files-found: error 
           retention-days: 1
 
       - name: Deploy Test Slice to GitHub Pages (IF ENABLED)
-        # Solo se ejecuta si es workflow_dispatch Y el input deploy_test_slice es 'true'
         if: github.event_name == 'workflow_dispatch' && github.event.inputs.deploy_test_slice == 'true'
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ${{ env.STATIC_SITE_OUTPUT_DIR }} # Publicar el contenido de _test_site_slice
-          # ATENCIÓN: Esto sobreescribirá el contenido de tu rama gh-pages (o el despliegue de Actions)
-          # con el contenido de ./_test_site_slice de este testeo.
-          # Si GITHUB_PAGES_REPO_NAME está definido arriba, las URLs serán /repo_name/...
-          # lo que es correcto si esto se despliega a la raíz del sitio GH Pages (usuario.github.io/repo_name/).
-          # publish_branch: gh-pages # Descomentar si quieres pushear a una rama específica
-          # cname: test.yourdomain.com # Si tienes un subdominio para tests
-          # destination_dir:  # Si quieres desplegar a una subcarpeta, ej: previews/test-slice
-                            # PERO si haces esto, GITHUB_PAGES_REPO_NAME arriba causará problemas de URL base.
-                            # Para destination_dir, probablemente NO deberías definir GITHUB_PAGES_REPO_NAME.
-          keep_files: false # false para limpiar el directorio de destino (si no es la raíz) o la rama
+          publish_dir: ${{ env.STATIC_SITE_OUTPUT_DIR }} # Publicar desde _test_site_slice
+          keep_files: false # Limpia la rama de destino antes de pushear (para evitar acumulación)
           allow_empty_commit: false
           user_name: 'github-actions[bot]'
           user_email: 'github-actions[bot]@users.noreply.github.com'
-          commit_message: Deploy test slice for ${{ github.event.inputs.test_language || 'ALL' }}/${{ github.event.inputs.test_char_key || 'ALL' }}
-
-
+          commit_message: Deploy test slice for ${{ env.INPUT_LANG || 'ALL' }}/${{ env.INPUT_CHAR_KEY || 'ALL' }} (Run ID ${{ github.run_id }})
+          # Si quieres desplegar a una subcarpeta en la rama gh-pages:
+          # destination_dir: previews/${{ env.INPUT_LANG || 'all_langs' }}/${{ env.INPUT_CHAR_KEY || 'all_chars' }}/
+          # Para que destination_dir funcione bien, tu aplicación debe generar URLs relativas
+          # o ser consciente de la URL base. Para un simple "ver el slice", desplegar a la raíz
+          # (y sobreescribir) es más simple, pero DESTRUCTIVO para el sitio principal.
