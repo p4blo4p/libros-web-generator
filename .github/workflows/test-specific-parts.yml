@@ -10,24 +10,19 @@ on:
         default: 'false'
         type: boolean
       test_language:
-        description: 'Idioma para testear (ej. es, en). Dejar vacío para todos los idiomas.'
+        description: "Idioma (ej. es). Si char_key es letra/'0', se requiere idioma (o se usa default). Si char_key es dígito, se aplica a este idioma o a todos si está vacío."
         required: false
-        default: ''
+        default: 'es' # Default a 'es' para simplificar
         type: string
       test_char_key:
-        description: 'Clave de carácter de autor (ej. z, 0). Si se usa, test_language debe tener valor (o se usará default).'
+        description: "Clave de carácter (letra, '0' para especiales, o dígito 'N' para books_N.csv). Ver descripción del script."
         required: false
-        default: ''
-        type: string
-      test_data_file_key: # NUEVO INPUT
-        description: "Clave del archivo de datos CSV (ej. '5' para books_5.csv). Dejar vacío para todos los CSV."
-        required: false
-        default: '' # Default a vacío (procesar todos los archivos CSV)
+        default: '5' # Default a '5' para tu caso de prueba
         type: string
       log_level:
         description: 'Nivel de log para generate_static.py y app (INFO, DEBUG)'
         required: false
-        default: 'DEBUG' # Default a DEBUG para facilitar la depuración de los tests
+        default: 'DEBUG'
         type: choice
         options:
           - INFO
@@ -39,9 +34,7 @@ on:
         type: boolean
   push:
     branches:
-      - 'main' # Cambiado a 'main', ajusta a tu rama de desarrollo/principal
-      # - 'large-data-optimization' # Puedes tener múltiples ramas
-      # - '!main' # Si tu workflow principal ya cubre 'main' y no quieres duplicar el linting
+      - 'main'
 
 permissions:
   contents: write
@@ -50,17 +43,16 @@ permissions:
 
 jobs:
   test_lint_setup_only:
+    # ... (sin cambios) ...
     name: Setup, Cache & Lint (Test)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.10"
-
       - name: Cache pip dependencies
         uses: actions/cache@v4
         with:
@@ -68,23 +60,20 @@ jobs:
           key: ${{ runner.os }}-pip-test-specific-${{ hashFiles('**/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-test-specific-
-
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install flake8
-
       - name: Lint with flake8
         run: |
           echo "Running Flake8 (strict pass for E9,F63,F7,F82)..."
           flake8 . --count --select=E9,F63,F7,F82 --format=pylint --statistics
           echo "Running Flake8 (style and complexity pass)..."
           flake8 . --count --format=pylint --statistics
-          # El job fallará si flake8 devuelve un código de error.
 
   test_generate_specific_slice:
-    name: Test Generate & Deploy (Manual) - Lang ${{ github.event.inputs.test_language || 'ALL' }} / Char ${{ github.event.inputs.test_char_key || 'ALL' }} / DataFile ${{ github.event.inputs.test_data_file_key || 'ALL' }}
+    name: Test Generate - Lang ${{ github.event.inputs.test_language || 'ALL' }} / CharKey(FileOrAuthor) ${{ github.event.inputs.test_char_key || 'NONE' }}
     if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     needs: test_lint_setup_only
@@ -96,45 +85,43 @@ jobs:
       FORCE_REGENERATE_FLAG_CMD: ${{ github.event.inputs.force_regenerate_test == 'true' && '--force-regenerate' || '' }}
       INPUT_LANG: ${{ github.event.inputs.test_language }}
       INPUT_CHAR_KEY: ${{ github.event.inputs.test_char_key }}
-      INPUT_DATA_FILE_KEY: ${{ github.event.inputs.test_data_file_key }} # Variable para el nuevo input
-      DEFAULT_LANG_FOR_FILTERS: 'es' # Idioma por defecto si se usa char_key o data_file_key sin language
+      # DEFAULT_LANG_FOR_FILTERS no es tan necesario ahora, el script valida
       STATIC_SITE_OUTPUT_DIR_TEST_JOB: _test_site_slice
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.10"
-
       - name: Cache pip dependencies
+        # ... (sin cambios) ...
         uses: actions/cache@v4
         with:
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-test-specific-${{ hashFiles('**/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-test-specific-
-
       - name: Install dependencies
+        # ... (sin cambios) ...
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-
       - name: Restore/Initialize Manifest (for testing)
+        # ... (sin cambios, pero la clave podría simplificarse si ya no hay data_file_key separado) ...
         id: manifest_cache
         uses: actions/cache@v4
         with:
           path: .cache/generation_manifest.json
-          key: ${{ runner.os }}-gen-manifest-test-slice-v5-${{ github.event.inputs.test_language }}-${{ github.event.inputs.test_char_key }}-${{ github.event.inputs.test_data_file_key }}-${{ github.run_id }}
+          key: ${{ runner.os }}-gen-manifest-test-slice-v6-${{ github.event.inputs.test_language }}-${{ github.event.inputs.test_char_key }}-${{ github.run_id }}
           restore-keys: |
-            ${{ runner.os }}-gen-manifest-test-slice-v5-${{ github.event.inputs.test_language }}-${{ github.event.inputs.test_char_key }}-${{ github.event.inputs.test_data_file_key }}-
-      
+            ${{ runner.os }}-gen-manifest-test-slice-v6-${{ github.event.inputs.test_language }}-${{ github.event.inputs.test_char_key }}-
       - name: Initialize manifest if not restored by cache
+        # ... (sin cambios) ...
         if: steps.manifest_cache.outputs.cache-hit != 'true'
         run: |
-          echo "Test manifest not restored from cache, creating empty for this job."
+          echo "Test manifest not restored, creating empty."
           mkdir -p .cache
           echo "{}" > .cache/generation_manifest.json
         
@@ -143,68 +130,50 @@ jobs:
           STATIC_SITE_OUTPUT_DIR: ${{ env.STATIC_SITE_OUTPUT_DIR_TEST_JOB }}
         run: |
           set -e
-          
           COMMAND_ARGS=""
-          EFFECTIVE_LANG="$INPUT_LANG"
-          EFFECTIVE_CHAR_KEY="$INPUT_CHAR_KEY"
-          EFFECTIVE_DATA_FILE_KEY="$INPUT_DATA_FILE_KEY"
-
-          # Si se proporciona un char_key O un data_file_key pero no un idioma, usar un idioma por defecto.
-          if [[ ( -n "$EFFECTIVE_CHAR_KEY" || -n "$EFFECTIVE_DATA_FILE_KEY" ) && -z "$EFFECTIVE_LANG" ]]; then
-            echo "Advertencia: Se proporcionó char_key ('$EFFECTIVE_CHAR_KEY') o data_file_key ('$EFFECTIVE_DATA_FILE_KEY') sin test_language. Usando idioma por defecto para test: '$DEFAULT_LANG_FOR_FILTERS'."
-            EFFECTIVE_LANG="$DEFAULT_LANG_FOR_FILTERS"
-          fi
-
-          # Construir los argumentos basados en los valores efectivos
-          if [[ -n "$EFFECTIVE_LANG" ]]; then
-            COMMAND_ARGS="--language $EFFECTIVE_LANG"
-            # Solo añadir --char-key si EFFECTIVE_CHAR_KEY también está presente (y EFFECTIVE_LANG lo está)
-            if [[ -n "$EFFECTIVE_CHAR_KEY" ]]; then
-              COMMAND_ARGS="$COMMAND_ARGS --char-key $EFFECTIVE_CHAR_KEY"
-            fi
-          else
-            echo "EFFECTIVE_LANG está vacío. El script se ejecutará para todos los idiomas (y sin filtro de char_key, ya que requiere idioma)."
+          
+          # Pasar --language si INPUT_LANG tiene valor
+          if [[ -n "$INPUT_LANG" ]]; then
+            COMMAND_ARGS="$COMMAND_ARGS --language $INPUT_LANG"
           fi
           
-          # Añadir el argumento --data-file-key si está presente
-          if [[ -n "$EFFECTIVE_DATA_FILE_KEY" ]]; then
-            COMMAND_ARGS="$COMMAND_ARGS --data-file-key $EFFECTIVE_DATA_FILE_KEY"
+          # Pasar --char-key si INPUT_CHAR_KEY tiene valor
+          # El script ahora maneja si es dígito (para archivo) o letra/0 (para autor/sitemap)
+          if [[ -n "$INPUT_CHAR_KEY" ]]; then
+            COMMAND_ARGS="$COMMAND_ARGS --char-key $INPUT_CHAR_KEY"
           fi
           
           echo "Output directory for script: $STATIC_SITE_OUTPUT_DIR"
           echo "Running: python generate_static.py $COMMAND_ARGS $FORCE_REGENERATE_FLAG_CMD --log-level ${{ env.SCRIPT_LOG_LEVEL }}"
           python generate_static.py $COMMAND_ARGS $FORCE_REGENERATE_FLAG_CMD --log-level ${{ env.SCRIPT_LOG_LEVEL }}
-          
-          echo "Static site generation for specific slice finished. Output in $STATIC_SITE_OUTPUT_DIR"
+          echo "Static site generation finished. Output in $STATIC_SITE_OUTPUT_DIR"
 
       - name: Debug Paths and Variables
+        # ... (sin cambios) ...
         if: always()
         run: |
           echo "--- Debug Information ---"
-          echo "Runner OS: ${{ runner.os }}"
           echo "GitHub Workspace: ${{ github.workspace }}"
-          echo "STATIC_SITE_OUTPUT_DIR_TEST_JOB (env var for job): ${{ env.STATIC_SITE_OUTPUT_DIR_TEST_JOB }}"
-          echo "Calculated path for artifact (relative to workspace): ${{ env.STATIC_SITE_OUTPUT_DIR_TEST_JOB }}"
-          echo "Full path of target for artifact: ${{ github.workspace }}/${{ env.STATIC_SITE_OUTPUT_DIR_TEST_JOB }}"
-          echo "Current working directory (pwd): $(pwd)"
-          echo "--- End Debug Information ---"
-
+          echo "STATIC_SITE_OUTPUT_DIR_TEST_JOB: ${{ env.STATIC_SITE_OUTPUT_DIR_TEST_JOB }}"
+          echo "pwd: $(pwd)"
+          echo "--- End Debug ---"
       - name: List generated files (for debugging)
+        # ... (sin cambios) ...
         if: always()
         run: |
-          echo "Contenido detallado de ${{ github.workspace }}/${{ env.STATIC_SITE_OUTPUT_DIR_TEST_JOB }} (incluyendo permisos y enlaces):"
-          ls -Rahl ${{ github.workspace }}/${{ env.STATIC_SITE_OUTPUT_DIR_TEST_JOB }} || echo "El directorio ${{ env.STATIC_SITE_OUTPUT_DIR_TEST_JOB }} no existe o está vacío."
-          echo "--- Fin del listado detallado ---"
-
+          echo "Contenido de ${{ github.workspace }}/${{ env.STATIC_SITE_OUTPUT_DIR_TEST_JOB }}:"
+          ls -Rahl ${{ github.workspace }}/${{ env.STATIC_SITE_OUTPUT_DIR_TEST_JOB }} || echo "Dir no existe."
+          echo "--- Fin listado ---"
       - name: Upload specific slice artifact (for inspection)
+        # ... (nombre del artefacto ajustado para no tener data_file_key) ...
         uses: actions/upload-artifact@v4
         with:
-          name: test-site-slice-${{ env.INPUT_LANG || 'all_langs' }}-${{ env.INPUT_CHAR_KEY || 'all_chars' }}-${{ env.INPUT_DATA_FILE_KEY || 'all_data' }}
+          name: test-site-slice-${{ env.INPUT_LANG || 'all_langs' }}-${{ env.INPUT_CHAR_KEY || 'all_chars_and_data' }}
           path: ${{ env.STATIC_SITE_OUTPUT_DIR_TEST_JOB }}/
           if-no-files-found: error 
           retention-days: 1
-
       - name: Deploy Test Slice to GitHub Pages (IF ENABLED)
+        # ... (mensaje de commit ajustado) ...
         if: github.event_name == 'workflow_dispatch' && github.event.inputs.deploy_test_slice == 'true'
         uses: peaceiris/actions-gh-pages@v4
         with:
@@ -214,4 +183,4 @@ jobs:
           allow_empty_commit: false
           user_name: 'github-actions[bot]'
           user_email: 'github-actions[bot]@users.noreply.github.com'
-          commit_message: Deploy test slice for ${{ env.INPUT_LANG || 'ALL' }}/${{ env.INPUT_CHAR_KEY || 'ALL' }}/DataFile:${{ env.INPUT_DATA_FILE_KEY || 'ALL' }} (Run ID ${{ github.run_id }})
+          commit_message: Deploy test slice for Lang ${{ env.INPUT_LANG || 'ALL' }}/CharKey(FileOrAuthor) ${{ env.INPUT_CHAR_KEY || 'NONE' }} (Run ID ${{ github.run_id }})
