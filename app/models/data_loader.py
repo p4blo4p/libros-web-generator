@@ -8,8 +8,8 @@ from app.utils.helpers import slugify_ascii, load_json_file
 
 def _process_book_row(row_data):
     """Procesa una fila de datos de libro y añade campos slug."""
-    author = row_data.get('author', "") # Usar default si es None
-    title = row_data.get('title', "")   # Usar default si es None
+    author = row_data.get('author', "")  # Usar default si es None  # E261 Corregido
+    title = row_data.get('title', "")  # Usar default si es None
 
     row_data['author_slug'] = slugify_ascii(author)
     row_data['title_slug'] = slugify_ascii(title)
@@ -26,9 +26,12 @@ def _log_message(message, level="INFO"):
         if hasattr(logger, level.lower()):
             getattr(logger, level.lower())(message)
         else:
-            logger.info(f"({level}) {message}") # Fallback a info si el nivel no existe
+            logger.info(f"({level}) {message}")  # Fallback a info si el nivel no existe  # E261 Corregido
     else:
-        print(f"[{level}] {message}", file=sys.stderr if level in ["ERROR", "WARNING"] else sys.stdout)
+        print(
+            f"[{level}] {message}",
+            file=sys.stderr if level in ["ERROR", "WARNING"] else sys.stdout
+        )
 
 
 def load_processed_books(directory_path):  # noqa: C901
@@ -37,7 +40,7 @@ def load_processed_books(directory_path):  # noqa: C901
     y añade campos slug.
     """
     processed_books = []
-    directory_path_str = str(directory_path) # Asegurar que es string para os.path
+    directory_path_str = str(directory_path)  # Asegurar que es string para os.path  # E261 Corregido
 
     if not os.path.isdir(directory_path_str):
         _log_message(f"Directorio de libros no encontrado '{directory_path_str}'", "ERROR")
@@ -71,9 +74,9 @@ def load_processed_bestsellers(json_filepath):
     bestsellers_raw = load_json_file(json_filepath)
     processed_bestsellers = []
 
-    if bestsellers_raw and isinstance(bestsellers_raw, list): # Verificar que es una lista
+    if bestsellers_raw and isinstance(bestsellers_raw, list):  # Verificar que es una lista  # E261 Corregido
         for item in bestsellers_raw:
-            if not isinstance(item, dict): # Saltar si el item no es un diccionario
+            if not isinstance(item, dict):  # Saltar si el item no es un diccionario  # E261 Corregido
                 _log_message(f"Item no es un diccionario en bestsellers: {item}", "WARNING")
                 continue
 
