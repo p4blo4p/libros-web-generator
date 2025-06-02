@@ -22,7 +22,7 @@ on:
       log_level:
         description: 'Nivel de log para generate_static.py y app (INFO, DEBUG)'
         required: false
-        default: 'INFO'
+        default: 'DEBUG'
         type: choice
         options:
           - INFO
@@ -30,7 +30,7 @@ on:
       deploy_test_slice:
         description: 'DESPLEGAR este slice a GitHub Pages (SOBREESCRIBIRÁ el sitio existente en la raíz)'
         required: false
-        default: 'false'
+        default: 'true'
         type: boolean
   push:
     branches:
