@@ -9,8 +9,7 @@ from pathlib import Path
 # Asumiendo que estas utilidades son accesibles
 from app.utils.helpers import is_valid_isbn, is_valid_asin
 # Necesitarás una función slugify consistente y la función de grupo de sitemap
-from app.utils.helpers import slugify_ascii  # O la que uses
-from app.utils.sitemap_helpers import get_sitemap_char_group_for_author  # Deberás crear este helper
+from app.utils.helpers import get_sitemap_char_group_for_author, slugify_ascii
 # o mover el de generate_static.py
 # a un lugar común.
 
