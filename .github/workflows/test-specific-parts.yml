@@ -148,6 +148,38 @@ jobs:
           echo "STATIC_SITE_OUTPUT_DIR_TEST_JOB: ${{ env.STATIC_SITE_OUTPUT_DIR_TEST_JOB }}"
           echo "pwd: $(pwd)"
           echo "--- End Debug ---"
+
+      - name: Count generated files
+        if: always()
+        run: |
+          OUTPUT_DIR_PATH="${{ github.workspace }}/${{ env.STATIC_SITE_OUTPUT_DIR_TEST_JOB }}"
+          echo "--- Inicio reporte ---"
+
+          # 1. Contar archivos y carpetas TOTALES
+          echo "Contando archivos y carpetas TOTALES en ${OUTPUT_DIR_PATH}:"
+          if [ -d "${OUTPUT_DIR_PATH}" ]; then
+            TOTAL_FILES=$(find "${OUTPUT_DIR_PATH}" -type f | wc -l)
+            TOTAL_DIRS=$(find "${OUTPUT_DIR_PATH}" -type d | wc -l)
+            echo "Archivos totales: ${TOTAL_FILES}"
+            echo "Carpetas totales: ${TOTAL_DIRS}"
+          else
+            echo "Directorio ${OUTPUT_DIR_PATH} no existe."
+            echo "--- Fin reporte ---"
+            exit 0
+          fi
+
+          # 2. Contar archivos y carpetas por cada carpeta de primer nivel
+          echo ""
+          echo "Contando archivos y carpetas por carpeta de primer nivel:"
+          cd "${OUTPUT_DIR_PATH}"
+          for DIR in */; do
+            DIR_NAME="${DIR%/}"
+            echo "Carpeta: ${DIR_NAME}"
+            FILES=$(find "${DIR_NAME}" -type f | wc -l)
+            DIRS=$(find "${DIR_NAME}" -type d | wc -l)
+            echo "  Archivos: ${FILES}"
+            echo "  Carpetas: ${DIRS}"
+          done
       - name: List generated files (full tree view)
         if: always()
         run: |
