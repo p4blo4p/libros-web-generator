@@ -12,7 +12,7 @@ on:
       test_language:
         description: "Idioma (ej. es). Requerido si char_key es letra/'0'. Opcional si char_key es dígito (para archivo)."
         required: false
-        default: 'es' 
+        default: '' 
         type: string
       test_char_key:
         description: "Clave (letra, '0' para especiales, o dígito 'N' para books_N.csv)."
