@@ -530,8 +530,10 @@ def _run_parallel_tasks(env_data, force_regen, author_filter_char_key_for_tasks,
             return []
     
     task_defs=[("Detalle",generate_book_detail_pages_task, detail_items),
-               ("Autor",generate_author_pages_task, list(author_items_source)),
-               ("Versiones",generate_versions_pages_task, list(version_items_source))]
+               ("Autor",generate_author_pages_task, list(author_items_source))]
+    # ELIMINADO VERSIONES
+    # , ("Versiones",generate_versions_pages_task, list(version_items_source))
+               
 
     with Pool(processes=num_procs,initializer=worker_init) as pool:
         for name,func,items in task_defs:
