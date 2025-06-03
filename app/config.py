@@ -6,7 +6,7 @@ class Config:
     """Configuraciones base de la aplicación."""
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'una-clave-secreta-muy-dificil-de-adivinar'
     MINIFY_HTML = True  # Opcional: si usas alguna extensión para minificar HTML
-    # SERVER_NAME = 'https://p4blo4p.github.io/libros-web-generator/' # Descomentar y ajustar para url_for(_external=True) si es necesario localmente
+    SERVER_NAME = ''#'https://p4blo4p.github.io/libros-web-generator/' # Descomentar y ajustar para url_for(_external=True) si es necesario localmente
     # APPLICATION_ROOT = '/'
     PREFERRED_URL_SCHEME = 'https' # O 'https' si se sirve bajo HTTPS
 
