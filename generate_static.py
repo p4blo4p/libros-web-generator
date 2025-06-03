@@ -6,7 +6,7 @@ from unidecode import unidecode
 import logging
 import os
 from multiprocessing import Pool, cpu_count, current_process
-from functools import partial
+# from functools import partial # No se usa partial con starmap
 import argparse
 import json
 import hashlib
@@ -54,6 +54,13 @@ worker_app_instance, worker_logger, slugify_to_use_global_worker = None, None, N
 MANIFEST_DIR, MANIFEST_FILE = Path(".cache"), Path(".cache/generation_manifest.json")
 OUTPUT_DIR = Path(os.environ.get('STATIC_SITE_OUTPUT_DIR', '_site'))
 ALPHABET, SPECIAL_CHARS_SITEMAP_KEY = "abcdefghijklmnopqrstuvwxyz", "0"
+
+# Estos deberían idealmente venir de la configuración de la app Flask
+# o ser descubiertos dinámicamente.
+# Por ahora, los definimos aquí como ejemplo.
+# VALID_SITEMAP_CHAR_GROUPS_AUTHOR_FILTER = list(ALPHABET) + [SPECIAL_CHARS_SITEMAP_KEY]
+# VALID_SITEMAP_CHAR_GROUPS_DATA_FILES = [] # Se llenará en _generate_main_process_pages si es necesario o desde app.config
+
 
 def slugify_ascii_local(text):
     if text is None: return ""
@@ -133,7 +140,8 @@ def _save_page_local(client,url,path_obj,log):
 
 def worker_init():
     global worker_app_instance, worker_logger, slugify_to_use_global_worker
-    from app import create_app
+    # Asegurarse de que create_app sea importable
+    from app import create_app # Suponiendo que app está en el PYTHONPATH o es un módulo instalable
     os.environ['IS_STATIC_GENERATION_WORKER']='1'; proc_name=current_process().name; worker_app_instance=create_app()
     worker_logger=logging.getLogger(f'gsw.{proc_name.split("-")[-1]}')
     if worker_logger.hasHandlers():worker_logger.handlers.clear()
@@ -147,15 +155,13 @@ def worker_init():
     worker_logger.info(f"Worker inicializado. Slug: {slugify_to_use_global_worker.__name__}. Log: {logging.getLevelName(worker_logger.level)}")
 
 def _generate_task_common(item_data, cfg_manifest_tuple, page_type):  # noqa: C901
-    # Desempaqueta solo los dos primeros elementos, ignora el resto
     config_params, manifest_data_global, *_ = cfg_manifest_tuple
-
     LANGUAGES = config_params['LANGUAGES']
     DEFAULT_LANGUAGE = config_params['DEFAULT_LANGUAGE']
     URL_SEGMENT_TRANSLATIONS = config_params['URL_SEGMENT_TRANSLATIONS']
     OUTPUT_DIR_BASE = Path(config_params['OUTPUT_DIR'])
     FORCE_REGENERATE = config_params.get('FORCE_REGENERATE_ALL', False)
-    ALL_BOOKS = config_params['ALL_BOOKS_DATA']
+    ALL_BOOKS = config_params['ALL_BOOKS_DATA'] # Este es el conjunto de datos ya filtrado por _setup_environment_data si --char-key era dígito
 
     log_target = worker_logger
     current_slugifier = slugify_to_use_global_worker
@@ -177,6 +183,7 @@ def _generate_task_common(item_data, cfg_manifest_tuple, page_type):  # noqa: C9
     elif page_type == "author":
         author_orig = item_data
         author_s = current_slugifier(author_orig)
+        # ALL_BOOKS aquí es el conjunto de datos relevante (todos o de un archivo específico)
         related_books = [b for b in ALL_BOOKS if current_slugifier(b.get('author_slug')) == author_s]
         if not related_books:
             log_target.debug(f"No hay libros para autor '{author_s}' (original '{author_orig}').")
@@ -185,7 +192,7 @@ def _generate_task_common(item_data, cfg_manifest_tuple, page_type):  # noqa: C9
         current_page_signature = calculate_signature({"book_ids": ids, "author_slug": author_orig})
         segment_key_for_url, dynamic_url_parts = 'author', [author_s]
     elif page_type == "versions":
-        author_orig, base_title_orig = item_data # item_data es una tupla aquí
+        author_orig, base_title_orig = item_data
         author_s, base_title_s = current_slugifier(author_orig), current_slugifier(base_title_orig)
         related_books = [
             b for b in ALL_BOOKS
@@ -242,17 +249,24 @@ def _parse_cli_args():
     parser.add_argument("--force-regenerate", action="store_true", help="Forzar regeneración.")
     parser.add_argument(
         "--char-key", type=str,
-        help="Clave de carácter. Si es dígito (ej. '5'), carga 'books_5.csv' Y el filtro de autores se desactiva. "
-             "Si es letra (ej. 'a') o '0', carga todos los CSVs Y filtra autores por esa letra/'0'. "
-             "Requiere --language si es letra/'0' para filtrado de autor."
+        help=(
+            "Clave de carácter. "
+            "Si es dígito (ej. '5'), carga 'books_5.csv', el filtro de autores se desactiva para tareas paralelas, "
+            "y se genera 'sitemap_<lang>_5.xml'. "
+            "Si es letra (ej. 'a') o '0', carga todos los CSVs, filtra autores/tareas paralelas por esa clave, "
+            "y se genera 'sitemap_<lang>_<letra/0>.xml'. Requiere --language. "
+            "Si es 'core', genera solo 'sitemap_<lang>_core.xml' (como índice) y todos los sitemaps de carácter de ese idioma."
+        )
     )
     parser.add_argument("--log-level", type=str, default=os.environ.get('SCRIPT_LOG_LEVEL','INFO').upper(),
                         choices=['DEBUG','INFO','WARNING','ERROR','CRITICAL'], help="Nivel de log.")
     return parser.parse_args()
 
 def _setup_environment_data(args, logger): # noqa: C901
-    from app import create_app
-    from app.models.data_loader import load_processed_books as app_load_books
+    # Asegurarse de que create_app sea importable
+    from app import create_app # Suponiendo que app está en el PYTHONPATH o es un módulo instalable
+    from app.models.data_loader import load_processed_books as app_load_books # Suponiendo importable
+
     logger.info(f"Args: {args}")
     if args.force_regenerate: logger.info("FORZANDO REGENERACIÓN.")
     manifest = load_manifest(); logger.info(f"Manifest: {len(manifest)} entradas.")
@@ -262,25 +276,36 @@ def _setup_environment_data(args, logger): # noqa: C901
     logger.info(f"App Flask creada. APP_ROOT:'{app.config.get('APPLICATION_ROOT')}', SERVER_NAME:'{app.config.get('SERVER_NAME')}'")
 
     filename_key_for_data = None
-    actual_char_key_for_author_filter = args.char_key
+    actual_char_key_for_author_filter = args.char_key # Por defecto, usamos char_key para filtrar autores
 
-    if args.char_key and args.char_key.isdigit():
-        filename_key_for_data = args.char_key
+    # Si char_key es 'core', no se filtra por archivo ni por autor en las tareas paralelas.
+    # Se usa para controlar la generación de sitemaps.
+    if args.char_key == "core":
         actual_char_key_for_author_filter = None
+        logger.info("char_key es 'core'. Se generarán sitemaps de índice y de caracteres. Sin filtro de archivo ni autor para tareas paralelas.")
+    elif args.char_key and args.char_key.isdigit():
+        filename_key_for_data = args.char_key
+        actual_char_key_for_author_filter = None # Si es dígito, es para nombre de archivo, no filtro de autor
         logger.info(f"char_key ('{args.char_key}') es dígito. Se usará para cargar 'books_{filename_key_for_data}.csv'.")
-        logger.info("El filtro de carácter de autor se desactivará (se procesarán todos los autores del archivo cargado).")
-    elif args.char_key and (args.char_key in ALPHABET or args.char_key == SPECIAL_CHARS_SITEMAP_KEY) and not args.language:
-        logger.error(f"--char-key '{args.char_key}' (letra o '0') requiere --language. Saliendo.")
-        return None
-
-    if filename_key_for_data:
+        logger.info("El filtro de carácter de autor para tareas paralelas se desactivará.")
+    elif args.char_key and (args.char_key in ALPHABET or args.char_key == SPECIAL_CHARS_SITEMAP_KEY):
+        if not args.language:
+            logger.error(f"--char-key '{args.char_key}' (letra o '0') requiere --language. Saliendo.")
+            return None
+        # actual_char_key_for_author_filter ya es args.char_key, lo cual es correcto.
+        logger.info(f"char_key '{args.char_key}' (letra o '0'). Se usará para filtrar autores en tareas paralelas.")
+    
+    if filename_key_for_data: # Cargar solo un archivo específico
         books_dir = app.config.get('BOOKS_DATA_DIR')
         if books_dir:
             logger.info(f"Recargando datos de libros SOLO desde 'books_{filename_key_for_data}.csv'")
+            # Guardamos el conjunto completo por si acaso, aunque no debería ser necesario si la lógica es correcta.
+            # app.all_books_data_unfiltered = app_load_books(books_dir) 
             app.books_data = app_load_books(books_dir, filename_filter_key=filename_key_for_data)
             logger.info(f"Libros después de filtro de archivo: {len(app.books_data)}")
             if not app.books_data: logger.warning(f"No se cargaron libros de 'books_{filename_key_for_data}.csv'.")
         else: logger.error("BOOKS_DATA_DIR no configurado.")
+    # else: si no hay filename_key_for_data, app.books_data (cargado por create_app) ya tiene todos los libros.
     
     all_cfg_langs = app.config.get('SUPPORTED_LANGUAGES',['en'])
     langs_proc = [args.language] if args.language and args.language in all_cfg_langs else all_cfg_langs
@@ -288,17 +313,19 @@ def _setup_environment_data(args, logger): # noqa: C901
         logger.error(f"Idioma '{args.language}' no soportado."); return None
     logger.info(f"Idiomas a procesar: {langs_proc}")
 
-    books_final = app.books_data
-    if not books_final and not filename_key_for_data :
-        logger.critical("Datos de libros no cargados y no se filtró por archivo."); return None
-    logger.info(f"{len(books_final)} libros fuente (después de filtros).")
+    books_final_for_tasks = app.books_data # Este es el conjunto de datos que usarán las tareas paralelas.
+                                      # Ya está filtrado si filename_key_for_data se usó.
+    if not books_final_for_tasks : # No filename_key_for_data implica que app.books_data debería tener todos los libros.
+        logger.critical("Datos de libros no cargados y no se especificó un archivo de datos individual."); return None
+    logger.info(f"{len(books_final_for_tasks)} libros fuente para tareas paralelas (después de filtro de archivo si aplica).")
 
     return {"app":app, "manifest":manifest, "languages_to_process":langs_proc,
             "default_language":app.config.get('DEFAULT_LANGUAGE','en'),
             "url_segment_translations":app.config.get('URL_SEGMENT_TRANSLATIONS',{}),
-            "books_data":books_final, "output_dir_path":OUTPUT_DIR,
-            "char_key_for_author_filter": actual_char_key_for_author_filter,
-            "char_key_for_sitemap_gen": args.char_key
+            "books_data_for_tasks":books_final_for_tasks, # Usar este para las tareas paralelas
+            "output_dir_path":OUTPUT_DIR,
+            "char_key_for_author_filter": actual_char_key_for_author_filter, # Para filtrar tareas
+            "char_key_for_sitemap_gen_cli": args.char_key # El valor original del CLI para lógica de sitemaps
             }
 
 def _prepare_output_directory(app,out_dir,lang,cleanup,sitemap_char_key_original,logger): # noqa: C901
@@ -331,103 +358,204 @@ def _prepare_output_directory(app,out_dir,lang,cleanup,sitemap_char_key_original
         if lang: (out_dir/lang).mkdir(parents=True,exist_ok=True)
         logger.info(f"Asegurando {out_dir} y subdirs (sin limpieza completa o filtro activo).")
 
-def _generate_main_process_pages(app, langs, out_dir, lang_arg, force_regen, sitemap_char_key_original, logger): # noqa: C901
-    logger.info(f"Gen main pages: lang_arg='{lang_arg}', sitemap_char_key='{sitemap_char_key_original}', langs={langs}")
+def get_all_defined_sitemap_char_keys(app):
+    """
+    Obtiene todos los char_keys definidos para los que se pueden generar sitemaps.
+    Esto debería venir de la configuración de la app Flask.
+    """
+    # Sitemaps basados en filtro de autor
+    author_filter_keys = list(ALPHABET) + [SPECIAL_CHARS_SITEMAP_KEY]
+    
+    # Sitemaps basados en archivos de datos (ej., books_1.csv, books_5.csv)
+    data_file_keys = []
+    books_data_dir_str = app.config.get('BOOKS_DATA_DIR')
+    if books_data_dir_str:
+        books_data_dir = Path(books_data_dir_str)
+        if books_data_dir.is_dir():
+            for i in range(100): # Asume un máximo de books_0.csv a books_99.csv
+                if (books_data_dir / f"books_{i}.csv").exists():
+                    # No añadir SPECIAL_CHARS_SITEMAP_KEY ('0') si ya está en author_filter_keys
+                    # y si el archivo books_0.csv no representa algo diferente al filtro de autor por '0'.
+                    # Por simplicidad, si books_0.csv existe, se tratará como un sitemap de datos.
+                    # La lógica de la app Flask para /sitemap_<lang>_0.xml deberá ser clara.
+                    if str(i) != SPECIAL_CHARS_SITEMAP_KEY or str(i) not in author_filter_keys:
+                         data_file_keys.append(str(i))
+                    elif str(i) == SPECIAL_CHARS_SITEMAP_KEY and (books_data_dir / f"books_{SPECIAL_CHARS_SITEMAP_KEY}.csv").exists():
+                         # Si books_0.csv existe y queremos un sitemap de datos para él, además del de filtro de autor '0'
+                         # podríamos necesitar una convención, ej. data_0.xml. Por ahora, se solapa.
+                         # Para evitar duplicados si '0' está en ambos:
+                         if str(i) not in author_filter_keys:
+                            data_file_keys.append(str(i))
+                         else: # Si '0' está en author_filter_keys, y books_0.csv existe, se prioriza filtro de autor.
+                               # A menos que explícitamente se quiera que '0' como char-key de datos sea distinto.
+                               script_logger.debug(f"Archivo books_{str(i)}.csv existe, pero '{str(i)}' ya es un char_key de filtro de autor.")
+
+
+    # Eliminar duplicados si '0' proviene de ambas fuentes y representa lo mismo.
+    # Por ahora, simplemente los combinamos. La app Flask debe resolver la ambigüedad.
+    combined_keys = list(set(author_filter_keys + data_file_keys))
+    script_logger.debug(f"Todos los char_keys definidos para sitemaps: {sorted(combined_keys)}")
+    return sorted(combined_keys)
+
+
+def _generate_main_process_pages(app, langs_to_process, out_dir, lang_arg_cli, force_regen, sitemap_char_key_cli, logger): # noqa: C901
+    logger.info(
+        f"Gen main pages: lang_arg_cli='{lang_arg_cli}', sitemap_char_key_cli='{sitemap_char_key_cli}', "
+        f"langs_to_process={langs_to_process}"
+    )
+
     with app.app_context(), app.test_client() as client:
-        is_fully_unfiltered_run = not lang_arg and not sitemap_char_key_original
+        is_fully_unfiltered_run = not lang_arg_cli and not sitemap_char_key_cli
         
+        # 1. Generar /index.html (raíz del sitio)
         if is_fully_unfiltered_run:
-            if force_regen or not (out_dir/"index.html").exists():
-                _save_page_local(client,"/",out_dir/"index.html",logger)
+            if force_regen or not (out_dir / "index.html").exists():
+                _save_page_local(client, "/", out_dir / "index.html", logger)
         
-        generate_lang_indexes = not sitemap_char_key_original
+        # 2. Generar /<lang>/index.html (índices de idioma)
+        # Se generan si no se está filtrando por un char_key específico para sitemaps,
+        # o si el char_key es 'core' (que implica generar todo para un idioma).
+        generate_lang_indexes = not sitemap_char_key_cli or sitemap_char_key_cli == "core"
         if generate_lang_indexes:
-            for lang_c in langs:
-                if force_regen or not(out_dir/lang_c/"index.html").exists():
-                    _save_page_local(client,f"/{lang_c}/",out_dir/lang_c/"index.html",logger)
+            for lang_c in langs_to_process:
+                if force_regen or not (out_dir / lang_c / "index.html").exists():
+                    _save_page_local(client, f"/{lang_c}/", out_dir / lang_c / "index.html", logger)
 
-        for lang_c in langs:
-            s_core_url,s_core_path=f"/sitemap_{lang_c}_core.xml",out_dir/f"sitemap_{lang_c}_core.xml"
-            key_to_gen = sitemap_char_key_original
+        # 3. Lógica de generación de Sitemaps
+        for lang_c in langs_to_process:
+            # Endpoint Flask para sitemap índice de idioma: /sitemap_<lang>_core.xml
+            # Este DEBE generar un sitemap index XML listando sitemap_<lang>_<char>.xml
+            sitemap_lang_core_url = f"/sitemap_{lang_c}_core.xml"
+            sitemap_lang_core_path = out_dir / f"sitemap_{lang_c}_core.xml"
+
+            # Endpoint Flask para sitemaps de carácter específico: /sitemap_<lang>_<char>.xml
+            # Este DEBE generar un sitemap XML con URLs de contenido.
             
-            if key_to_gen:
-                if key_to_gen.isdigit() and key_to_gen != SPECIAL_CHARS_SITEMAP_KEY:
-                    logger.info(f"char_key '{key_to_gen}' es dígito (filtro de archivo): Generando solo {s_core_path}")
-                    _save_page_local(client,s_core_url,s_core_path,logger)
-                elif key_to_gen == "core":
-                    _save_page_local(client,s_core_url,s_core_path,logger)
-                elif key_to_gen in ALPHABET or key_to_gen == SPECIAL_CHARS_SITEMAP_KEY:
-                    s_url,s_path=f"/sitemap_{lang_c}_{key_to_gen}.xml",out_dir/f"sitemap_{lang_c}_{key_to_gen}.xml"
-                    _save_page_local(client,s_url,s_path,logger)
-                    logger.info(f"char_key '{key_to_gen}' (letra/0): Generando solo {s_path}")
-            else:
-                logger.info(f"Generando todos sitemaps para '{lang_c}'.")
-                _save_page_local(client,s_core_url,s_core_path,logger)
-                for char_k in list(ALPHABET)+[SPECIAL_CHARS_SITEMAP_KEY]:
-                    s_url,s_path=f"/sitemap_{lang_c}_{char_k}.xml",out_dir/f"sitemap_{lang_c}_{char_k}.xml"
-                    _save_page_local(client,s_url,s_path,logger)
-        
-        if is_fully_unfiltered_run:
-            _save_page_local(client,"/sitemap.xml",out_dir/"sitemap.xml",logger)
+            # Obtener todos los char_keys para los que se pueden generar sitemaps individuales.
+            # Esto es crucial para que sitemap_<lang>_core.xml sepa a qué sitemaps enlazar.
+            # Y para saber qué sitemaps individuales generar en una ejecución completa.
+            all_individual_sitemap_keys = get_all_defined_sitemap_char_keys(app)
 
-def _run_parallel_tasks(env_data, force_regen, author_filter_char_key, logger): # noqa: C901
+
+            if sitemap_char_key_cli:
+                if sitemap_char_key_cli == "core":
+                    # --char-key core: generar sitemap índice del idioma y todos los sitemaps de carácter de ese idioma.
+                    logger.info(f"Modo --char-key core: Generando sitemap índice y todos los de carácter para '{lang_c}'.")
+                    # a. Generar sitemap índice del idioma (sitemap_<lang>_core.xml)
+                    _save_page_local(client, sitemap_lang_core_url, sitemap_lang_core_path, logger)
+                    # b. Generar todos los sitemaps de carácter para este idioma
+                    for char_k in all_individual_sitemap_keys:
+                        s_char_url = f"/sitemap_{lang_c}_{char_k}.xml"
+                        s_char_path = out_dir / f"sitemap_{lang_c}_{char_k}.xml"
+                        _save_page_local(client, s_char_url, s_char_path, logger)
+                else:
+                    # --char-key <char>: generar solo el sitemap de carácter específico sitemap_<lang>_<char>.xml
+                    # (donde <char> es sitemap_char_key_cli)
+                    # No se genera el sitemap_lang_core.xml en este caso.
+                    # Asegurarse de que el char_key_cli sea uno de los definidos, si no, advertir.
+                    if sitemap_char_key_cli not in all_individual_sitemap_keys:
+                        logger.warning(
+                            f"El char_key '{sitemap_char_key_cli}' no está en la lista de sitemaps de carácter definidos "
+                            f"({all_individual_sitemap_keys}). Se intentará generar de todas formas."
+                        )
+                    
+                    s_char_url = f"/sitemap_{lang_c}_{sitemap_char_key_cli}.xml"
+                    s_char_path = out_dir / f"sitemap_{lang_c}_{sitemap_char_key_cli}.xml"
+                    logger.info(f"Modo --char-key '{sitemap_char_key_cli}': Generando solo sitemap de carácter específico: {s_char_path}")
+                    _save_page_local(client, s_char_url, s_char_path, logger)
+            else:
+                # Sin --char-key (ejecución completa o solo --language):
+                # Generar sitemap índice del idioma y todos los sitemaps de carácter de ese idioma.
+                logger.info(f"Modo ejecución completa para idioma '{lang_c}': Generando sitemap índice y todos los de carácter.")
+                # a. Generar sitemap índice del idioma (sitemap_<lang>_core.xml)
+                _save_page_local(client, sitemap_lang_core_url, sitemap_lang_core_path, logger)
+                # b. Generar todos los sitemaps de carácter para este idioma
+                for char_k in all_individual_sitemap_keys:
+                    s_char_url = f"/sitemap_{lang_c}_{char_k}.xml"
+                    s_char_path = out_dir / f"sitemap_{lang_c}_{char_k}.xml"
+                    # Aquí, el endpoint Flask para /sitemap_<lang>_<char_k>.xml necesita ser inteligente:
+                    # - Si char_k es letra/0, usa app.books_data (que tiene todo) y filtra por autor.
+                    # - Si char_k es dígito N, DEBE cargar books_N.csv (Opción Flask A).
+                    _save_page_local(client, s_char_url, s_char_path, logger)
+
+        # 4. Generar sitemap.xml (índice principal de sitemaps de idioma)
+        # Solo en ejecución completa, sin filtros de idioma CLI ni char_key CLI.
+        if is_fully_unfiltered_run:
+            sitemap_main_url = "/sitemap.xml" # Flask debe generar un índice de sitemap_<lang>_core.xml
+            sitemap_main_path = out_dir / "sitemap.xml"
+            logger.info(f"Generando sitemap ÍNDICE principal: {sitemap_main_path}")
+            _save_page_local(client, sitemap_main_url, sitemap_main_path, logger)
+
+
+def _run_parallel_tasks(env_data, force_regen, author_filter_char_key_for_tasks, logger): # noqa: C901
     num_procs=max(1,cpu_count()-1 if cpu_count()>1 else 1); logger.info(f"Pool: {num_procs} procesos.")
+    
+    # books_data_for_tasks ya está pre-filtrado si --char-key era un dígito (para un archivo específico)
+    # o contiene todos los libros si --char-key era letra/'0'/'core' o no se especificó.
+    books_src = env_data["books_data_for_tasks"]
+
     cfg_tasks={'LANGUAGES':env_data["languages_to_process"],'DEFAULT_LANGUAGE':env_data["default_language"],
                'URL_SEGMENT_TRANSLATIONS':env_data["url_segment_translations"],'OUTPUT_DIR':str(env_data["output_dir_path"]),
-               'FORCE_REGENERATE_ALL':force_regen,'ALL_BOOKS_DATA':env_data["books_data"]}
+               'FORCE_REGENERATE_ALL':force_regen,
+               'ALL_BOOKS_DATA': books_src # Pasar el conjunto de datos (potencialmente pre-filtrado por archivo)
+               }
     task_args=(cfg_tasks,env_data["manifest"].copy()); new_entries=[]
-    books_src,slugifier_main=env_data["books_data"],slugify_to_use_global_main
+    slugifier_main=slugify_to_use_global_main # Usado para el filtro de autor si aplica
 
-    detail_items,author_items,version_items = list(books_src),{b.get('author_slug')for b in books_src if b.get('author_slug')}, \
-                                             {(b.get('author_slug'),b.get('base_title_slug'))for b in books_src if b.get('author_slug')and b.get('base_title_slug')}
+    # Preparar los items para las tareas. Estos se basan en books_src.
+    detail_items = list(books_src)
+    author_items_source = {b.get('author_slug') for b in books_src if b.get('author_slug')}
+    version_items_source = {
+        (b.get('author_slug'), b.get('base_title_slug'))
+        for b in books_src if b.get('author_slug') and b.get('base_title_slug')
+    }
 
-    if author_filter_char_key and env_data["languages_to_process"]:
-        logger.info(f"Filtrando contenido por char_key de autor: '{author_filter_char_key}' en {env_data['languages_to_process']}")
-        if logger.isEnabledFor(logging.DEBUG):
-            logger.debug("--- DEBUG: Verificando grupos de autor para filtro de contenido (primeros ~10 distintos) ---")
-            checked_authors_debug = set()
-            count_debug = 0
-            for book_debug in books_src:
-                auth_orig = book_debug.get('author_slug')
-                if auth_orig and auth_orig not in checked_authors_debug:
-                    group = get_sitemap_char_group_for_author(auth_orig, slugifier_main)
-                    logger.debug(f"  Autor: '{auth_orig}' (slugificado da {slugifier_main(auth_orig)}) -> Grupo: '{group}'")
-                    checked_authors_debug.add(auth_orig)
-                    count_debug +=1
-                    if count_debug >=10:
-                        break
-            logger.debug("--- FIN DEBUG ---")
-
-        detail_items=[b for b in books_src if get_sitemap_char_group_for_author(b.get('author_slug'),slugifier_main)==author_filter_char_key]
-        author_items={s for s in author_items if get_sitemap_char_group_for_author(s,slugifier_main)==author_filter_char_key}
-        version_items={(a,t)for a,t in version_items if get_sitemap_char_group_for_author(a,slugifier_main)==author_filter_char_key}
-        logger.info(f"  Después de filtro autor: Detalle:{len(detail_items)},Autores:{len(author_items)},Versiones:{len(version_items)}")
-        if not any([detail_items,author_items,version_items]):
-            logger.warning(f"No hay elementos para char_key autor '{author_filter_char_key}'.")
-            return[]
+    # Aplicar filtro de autor si char_key_for_author_filter está activo (letra o '0')
+    # No se aplica si char_key_for_author_filter es None (ej., --char-key <dígito> o --char-key core o sin --char-key)
+    if author_filter_char_key_for_tasks and env_data["languages_to_process"]:
+        logger.info(f"Filtrando contenido de tareas paralelas por char_key de autor: '{author_filter_char_key_for_tasks}'")
+        
+        # Filtrar detail_items (libros)
+        detail_items = [
+            b for b in detail_items 
+            if get_sitemap_char_group_for_author(b.get('author_slug'), slugifier_main) == author_filter_char_key_for_tasks
+        ]
+        # Filtrar author_items
+        author_items_source = {
+            s for s in author_items_source 
+            if get_sitemap_char_group_for_author(s, slugifier_main) == author_filter_char_key_for_tasks
+        }
+        # Filtrar version_items
+        version_items_source = {
+            (a, t) for a, t in version_items_source 
+            if get_sitemap_char_group_for_author(a, slugifier_main) == author_filter_char_key_for_tasks
+        }
+        logger.info(
+            f"  Después de filtro de autor para tareas: "
+            f"Detalle:{len(detail_items)}, Autores:{len(author_items_source)}, Versiones:{len(version_items_source)}"
+        )
+        if not any([detail_items, author_items_source, version_items_source]):
+            logger.warning(f"No hay elementos para tareas paralelas con char_key de autor '{author_filter_char_key_for_tasks}'.")
+            return []
     
-    task_defs=[("Detalle",generate_book_detail_pages_task,detail_items),
-               ("Autor",generate_author_pages_task,list(author_items)),
-               ("Versiones",generate_versions_pages_task,list(version_items))]
+    task_defs=[("Detalle",generate_book_detail_pages_task, detail_items),
+               ("Autor",generate_author_pages_task, list(author_items_source)),
+               ("Versiones",generate_versions_pages_task, list(version_items_source))]
+
     with Pool(processes=num_procs,initializer=worker_init) as pool:
         for name,func,items in task_defs:
             if items:
                 logger.info(f"Paralelo {name}({len(items)})...")
-                
-                # Prepare an iterable of argument tuples for starmap
-                # Each element will be (item_from_items, task_args)
-                # 'func' will be called by workers as func(item_from_items, task_args)
                 starmap_iterable = [(item, task_args) for item in items]
                 results = pool.starmap(func, starmap_iterable)
-                
                 count=0
-                for res in results:
-                    if res and isinstance(res,list):
-                        new_entries.extend(res)
-                        count+=len(res)
-                logger.info(f"  {name}: {count} (re)generadas.")
+                for res_list in results: # results es una lista de listas (generated_pages_info)
+                    if res_list and isinstance(res_list,list):
+                        new_entries.extend(res_list)
+                        count+=len(res_list) # Contar páginas realmente generadas/actualizadas por el worker
+                logger.info(f"  {name}: {count} entradas de manifest actualizadas/añadidas desde workers.")
             else:
-                logger.info(f"No items para '{name}'.")
+                logger.info(f"No items para tareas paralelas '{name}'.")
     return new_entries
 
 def _finalize_generation(manifest,new_entries,out_dir,lang_arg,orig_char_key_cli,logger): # noqa: C901
@@ -435,16 +563,16 @@ def _finalize_generation(manifest,new_entries,out_dir,lang_arg,orig_char_key_cli
     if new_entries:
         logger.info(f"Actualizando manifest: {len(new_entries)} entradas.")
         updated=True
-        for e in new_entries:
+        for e in new_entries: # e es un dict {"path": ..., "signature": ..., "timestamp": ...}
             manifest[e['path']]={"signature":e['signature'],"timestamp":e['timestamp']}
     
     full_run_no_filters = (not lang_arg and not orig_char_key_cli)
-    if updated or full_run_no_filters:
+    if updated or full_run_no_filters: # Guardar siempre si es una ejecución completa
         save_manifest(manifest)
         if not updated and full_run_no_filters:
-            logger.info("Ejecución completa sin nuevas entradas, manifest guardado.")
+            logger.info("Ejecución completa sin nuevas entradas de tareas paralelas, manifest guardado (puede haber cambios de sitemaps).")
     elif not updated:
-        logger.info("Manifest no actualizado y no es ejecución completa/parcial con cambios. No se guardó.")
+        logger.info("Manifest no actualizado (sin cambios de tareas paralelas) y no es ejecución completa. No se guardó.")
 
     msg=f"Sitio (o parte para idioma '{lang_arg or 'todos'}'"
     if orig_char_key_cli:
@@ -458,30 +586,45 @@ def main(): # noqa: C901
     lvl=getattr(logging,lvl_name,logging.INFO)
     script_logger.setLevel(lvl)
     script_logger.info(f"Nivel log principal: {lvl_name}")
-    os.environ['SCRIPT_LOG_LEVEL']=lvl_name
-
-    if args.char_key and (args.char_key in ALPHABET or args.char_key == SPECIAL_CHARS_SITEMAP_KEY) and not args.language:
-        script_logger.error(f"--char-key '{args.char_key}' (letra o '0') requiere --language."); return
+    os.environ['SCRIPT_LOG_LEVEL']=lvl_name # Para que los workers lo hereden
     
     env_data=_setup_environment_data(args,script_logger)
     if env_data is None: return
 
-    app,out_dir=env_data["app"],env_data["output_dir_path"]
-    author_filter_char_key_from_setup = env_data["char_key_for_author_filter"]
-    sitemap_char_key_from_setup = env_data["char_key_for_sitemap_gen"]
+    app = env_data["app"]
+    out_dir = env_data["output_dir_path"]
+    
+    # char_key_for_author_filter: para filtrar las TAREAS PARALELAS (libros, autores, versiones).
+    # Es None si --char-key es dígito, 'core', o no se pasa. Es la letra/'0' si se pasa como tal.
+    author_filter_char_key_for_tasks = env_data["char_key_for_author_filter"]
+    
+    # char_key_for_sitemap_gen_cli: el valor original del CLI --char-key.
+    # Se usa para controlar QUÉ SITEMAPS se generan en _generate_main_process_pages.
+    sitemap_char_key_from_cli = env_data["char_key_for_sitemap_gen_cli"]
 
+    # Determinar si se debe limpiar el directorio de salida.
+    # Limpiar solo en una ejecución completamente sin filtros (--language, --char-key)
+    # O si se fuerza la regeneración Y es una ejecución sin filtros.
+    is_fully_unfiltered_cli_run = not args.language and not args.char_key
+    perform_cleanup = is_fully_unfiltered_cli_run or (args.force_regenerate and is_fully_unfiltered_cli_run)
 
-    cleanup_condition_no_filters = not args.language and not args.char_key
-    cleanup_if_forced_and_no_filters = args.force_regenerate and cleanup_condition_no_filters
-    perform_cleanup = cleanup_condition_no_filters or cleanup_if_forced_and_no_filters
-
-    _prepare_output_directory(app,out_dir,args.language,perform_cleanup,args.char_key,script_logger)
+    _prepare_output_directory(app,out_dir,args.language,perform_cleanup,sitemap_char_key_from_cli,script_logger)
+    
+    # La generación de sitemaps ahora usa sitemap_char_key_from_cli para decidir qué generar.
+    # Los datos que usa (app.books_data) ya están filtrados por _setup_environment_data si --char-key es un dígito.
+    # Si --char-key no es dígito, app.books_data tiene todos los libros, y los endpoints Flask de sitemap deben filtrar.
     _generate_main_process_pages(
-        app,env_data["languages_to_process"],out_dir,args.language,
-        args.force_regenerate,sitemap_char_key_from_setup,script_logger
+        app, env_data["languages_to_process"], out_dir, args.language,
+        args.force_regenerate, sitemap_char_key_from_cli, script_logger
     )
-    new=_run_parallel_tasks(env_data,args.force_regenerate,author_filter_char_key_from_setup,script_logger)
-    _finalize_generation(env_data["manifest"],new,out_dir,args.language,args.char_key,script_logger)
+    
+    new_manifest_entries=_run_parallel_tasks(
+        env_data, args.force_regenerate, author_filter_char_key_for_tasks, script_logger
+    )
+    
+    _finalize_generation(
+        env_data["manifest"], new_manifest_entries, out_dir, args.language, args.char_key, script_logger
+    )
 
 if __name__=='__main__':
     main()
