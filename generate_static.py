@@ -413,9 +413,10 @@ def _run_parallel_tasks(env_data, force_regen, author_filter_char_key, logger): 
         for name,func,items in task_defs:
             if items:
                 logger.info(f"Paralelo {name}({len(items)})...")
-                # CORRECCIÓN AQUÍ: Pasar task_args como segundo argumento posicional
-                task_p=partial(func, task_args)
-                results=pool.map(task_p,items)
+                # func expects (item_from_map, task_args). pool.map provides item_from_map as the first argument.
+                # We use a lambda to correctly pass task_args as the second argument to func.
+                task_p_lambda = lambda current_item: func(current_item, task_args)
+                results=pool.map(task_p_lambda,items)
                 count=0
                 for res in results:
                     if res and isinstance(res,list):
