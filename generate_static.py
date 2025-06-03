@@ -413,10 +413,13 @@ def _run_parallel_tasks(env_data, force_regen, author_filter_char_key, logger): 
         for name,func,items in task_defs:
             if items:
                 logger.info(f"Paralelo {name}({len(items)})...")
-                # func expects (item_from_map, task_args). pool.map provides item_from_map as the first argument.
-                # We use a lambda to correctly pass task_args as the second argument to func.
-                task_p_lambda = lambda current_item: func(current_item, task_args)
-                results=pool.map(task_p_lambda,items)
+                
+                # Prepare an iterable of argument tuples for starmap
+                # Each element will be (item_from_items, task_args)
+                # 'func' will be called by workers as func(item_from_items, task_args)
+                starmap_iterable = [(item, task_args) for item in items]
+                results = pool.starmap(func, starmap_iterable)
+                
                 count=0
                 for res in results:
                     if res and isinstance(res,list):
