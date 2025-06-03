@@ -154,6 +154,26 @@ jobs:
           echo "Contenido de ${{ github.workspace }}/${{ env.STATIC_SITE_OUTPUT_DIR_TEST_JOB }}:"
           ls -Rahl ${{ github.workspace }}/${{ env.STATIC_SITE_OUTPUT_DIR_TEST_JOB }} || echo "Dir no existe."
           echo "--- Fin listado ---"
+      - name: List generated files (tree view)
+        if: always()
+        run: |
+          OUTPUT_DIR_PATH="${{ github.workspace }}/${{ env.STATIC_SITE_OUTPUT_DIR_TEST_JOB }}"
+          echo "Listando contenido de ${OUTPUT_DIR_PATH} (formato árbol):"
+          
+          if command -v tree &> /dev/null
+          then
+              echo "Comando 'tree' encontrado."
+          else
+              echo "Comando 'tree' no encontrado. Intentando instalar..."
+              sudo apt-get update && sudo apt-get install -y tree
+          fi
+          
+          if [ -d "${OUTPUT_DIR_PATH}" ]; then
+            tree -L 3 -a -h --du "${OUTPUT_DIR_PATH}" || echo "Falló 'tree' o directorio no accesible tras intento."
+          else
+            echo "Directorio ${OUTPUT_DIR_PATH} no existe."
+          fi
+          echo "--- Fin listado ---"
       - name: Upload specific slice artifact (for inspection)
         uses: actions/upload-artifact@v4
         with:
