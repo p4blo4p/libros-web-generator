@@ -1,377 +1,632 @@
 Categoria,Top,Titulo,Autor,ISBN,Sinopsis,Paginas,Anio,Enlace_Amazon
-Negocios y Emprendimiento,Top 9 libros para emprendedores principiantes,El Emprendedor de Éxito,Chris Guillebeau,978-8499086761,Guía práctica para lanzar negocios con recursos mínimos y creatividad.,320,2012,https://amzn.to/3J6X1t2
-Negocios y Emprendimiento,Top 9 libros para emprendedores principiantes,Lean Startup,Eric Ries,978-0307887894,Metodología para crear empresas ágiles mediante experimentación continua.,336,2011,https://amzn.to/3J6X1t2
-Negocios y Emprendimiento,Top 9 libros para emprendedores principiantes,El Monje que Vendió su Ferrari,Robin Sharma,978-0062515674,Lecciones sobre liderazgo y propósito a través de una parábola motivacional.,208,1997,https://amzn.to/3J6X1t2
-Negocios y Emprendimiento,Top 9 libros para emprendedores principiantes,Padre Rico, Padre Pobre,Robert Kiyosaki,978-1612681137,Enseñanzas sobre activos, pasivos y mentalidad financiera para la libertad.,336,2000,https://amzn.to/3J6X1t2
-Negocios y Emprendimiento,Top 9 libros para emprendedores principiantes,Buenos Malos,Ben Horowitz,978-0062273208,Consejos brutales para sobrevivir en los momentos más difíciles del emprendimiento.,288,2014,https://amzn.to/3J6X1t2
-Negocios y Emprendimiento,Top 9 libros para emprendedores principiantes,Hábitos Atómicos,James Clear,978-1847941831,Cómo construir buenos hábitos y eliminar malos con pequeños cambios diarios.,320,2018,https://amzn.to/3J6X1t2
-Negocios y Emprendimiento,Top 9 libros para emprendedores principiantes,Trabaja 4 Horas a la Semana,Tim Ferriss,978-0307465351,Estrategias para automatizar ingresos y liberar tiempo mediante outsourcing.,416,2007,https://amzn.to/3J6X1t2
-Negocios y Emprendimiento,Top 9 libros para emprendedores principiantes,El Arte de Empezar,Guy Kawasaki,978-1591840565,Claves para lanzar productos innovadores y crear movimientos empresariales.,304,2004,https://amzn.to/3J6X1t2
-Negocios y Emprendimiento,Top 9 libros para emprendedores principiantes,El Efecto Talismán,Rhonda Byrne,978-1582702110,La ley de atracción aplicada a los negocios y la manifestación de oportunidades.,224,2006,https://amzn.to/3J6X1t2
-Negocios y Emprendimiento,Top 9 libros de marketing digital,Marketing de Contenidos,Joe Pulizzi,978-1118660632,Estrategias para atraer clientes mediante contenido valioso y relevante.,320,2013,https://amzn.to/3J6X1t2
-Negocios y Emprendimiento,Top 9 libros de marketing digital,Influencer,Brittany Hennessy,978-0143132072,Guía para colaborar con influencers y construir marcas personales.,288,2018,https://amzn.to/3J6X1t2
-Negocios y Emprendimiento,Top 9 libros de marketing digital,Esto es Marketing,Seth Godin,978-0525540830,Marketing centrado en el cliente y en crear conexiones significativas.,256,2018,https://amzn.to/3J6X1t2
-Negocios y Emprendimiento,Top 9 libros de marketing digital,Growth Hacker Marketing,Ryan Holiday,978-1591847380,Técnicas para crecer exponencialmente con bajo presupuesto.,224,2013,https://amzn.to/3J6X1t2
-Negocios y Emprendimiento,Top 9 libros de marketing digital,El Libro Negro del Marketing,Jürgen Kluge,978-8498751497,Estrategias poco convencionales para destacar en mercados saturados.,352,2015,https://amzn.to/3J6X1t2
-Negocios y Emprendimiento,Top 9 libros de marketing digital,SEO 2024,Adam Clarke,978-1838271687,Técnicas actualizadas para posicionamiento en buscadores y tráfico orgánico.,416,2023,https://amzn.to/3J6X1t2
-Negocios y Emprendimiento,Top 9 libros de marketing digital,La Trampa Publicitaria,Martin Lindstrom,978-0743277785,Análisis de manipulación publicitaria y cómo resistirla.,384,2011,https://amzn.to/3J6X1t2
-Negocios y Emprendimiento,Top 9 libros de marketing digital,Contagious,Jonah Berger,978-1451686586,Por qué algunas ideas se viralizan y cómo aplicarlo a productos.,272,2013,https://amzn.to/3J6X1t2
-Negocios y Emprendimiento,Top 9 libros de marketing digital,Building a StoryBrand,Donald Miller,978-0718033323,Clarificar tu mensaje para conectar con clientes y vender más.,240,2017,https://amzn.to/3J6X1t2
-Negocios y Emprendimiento,Top 9 libros sobre finanzas personales,El Dinero,Fernando Trías de Bes,978-8499086778,Psicología del dinero y cómo tomar decisiones financieras inteligentes.,304,2018,https://amzn.to/3J6X1t2
-Negocios y Emprendimiento,Top 9 libros sobre finanzas personales,Invierta en Bolsa,Benjamin Graham,978-0060555665,Principios atemporales para invertir con seguridad y rentabilidad.,320,1949,https://amzn.to/3J6X1t2
-Negocios y Emprendimiento,Top 9 libros sobre finanzas personales,El Secreto,Rhonda Byrne,978-1582701707,La ley de atracción aplicada a la abundancia y prosperidad.,224,2006,https://amzn.to/3J6X1t2
-Negocios y Emprendimiento,Top 9 libros sobre finanzas personales,El Hombre Más Rico de Babilonia,George S. Clason,978-0451205360,Parábolas sobre ahorro, inversión y manejo del dinero a través de la historia.,144,1926,https://amzn.to/3J6X1t2
-Negocios y Emprendimiento,Top 9 libros sobre finanzas personales,Piense y Hágase Rico,Napoleon Hill,978-1612680239,Mentalidad para alcanzar el éxito financiero mediante la persistencia.,256,1937,https://amzn.to/3J6X1t2
-Negocios y Emprendimiento,Top 9 libros sobre finanzas personales,El Duelo,Arturo Pérez-Reverte,978-8423357986,Novela sobre ambición, poder y corrupción en el mundo financiero.,448,2020,https://amzn.to/3J6X1t2
-Negocios y Emprendimiento,Top 9 libros sobre finanzas personales,La Psicología del Dinero,Morgan Housel,978-0857197689,Lecciones breves sobre comportamiento financiero y decisiones irracionales.,256,2020,https://amzn.to/3J6X1t2
-Negocios y Emprendimiento,Top 9 libros sobre finanzas personales,El Inversor Inteligente,Benjamin Graham,978-0060555665,Defensiva y especulación en mercados volátiles.,640,1949,https://amzn.to/3J6X1t2
-Negocios y Emprendimiento,Top 9 libros sobre finanzas personales,Rico para Siempre,Tomás Byrnes,978-8418057093,Estrategias para generar ingresos pasivos y libertad financiera.,288,2021,https://amzn.to/3J6X1t2
-Desarrollo Personal,Top 9 libros para superar la procrastinación,Comezón de Moverse,Mel Robbins,978-1473661238,Técnica de los 5 segundos para vencer la indecisión y actuar.,288,2017,https://amzn.to/3J6X1t2
-Desarrollo Personal,Top 9 libros para superar la procrastinación,El Arte de la Simplicidad,Dominique Loreau,978-0143009035,Minimalismo aplicado a la vida diaria para enfocarse en lo esencial.,224,2005,https://amzn.to/3J6X1t2
-Desarrollo Personal,Top 9 libros para superar la procrastinación,Hábitos Atómicos,James Clear,978-1847941831,Cómo construir buenos hábitos y eliminar malos con pequeños cambios diarios.,320,2018,https://amzn.to/3J6X1t2
-Desarrollo Personal,Top 9 libros para superar la procrastinación,La Sombra del Viento,Carlos Ruiz Zafón,978-0143126392,Novela sobre la pasión por los libros y la superación personal.,576,2001,https://amzn.to/3J6X1t2
-Desarrollo Personal,Top 9 libros para superar la procrastinación,El Poder del Ahora,Eckhart Tolle,978-1577314806,Vivir en el presente para liberarse de ansiedades y miedos.,224,1997,https://amzn.to/3J6X1t2
-Desarrollo Personal,Top 9 libros para superar la procrastinación,Minimalismo,Francine Jay,978-0345811844,Guía para deshacerse de lo innecesario và enfocarse en experiencias.,192,2016,https://amzn.to/3J6X1t2
-Desarrollo Personal,Top 9 libros para superar la procrastinación,Despierta el Gigante que Dormita,Anthony Robbins,978-0743409391,Técnicas para liberar potencial interior y tomar control de la vida.,560,1991,https://amzn.to/3J6X1t2
-Desarrollo Personal,Top 9 libros para superar la procrastinación,El Método,Greg McKeown,978-0804137386,La disciplina de enfocarse en lo esencial y decir "no" a lo trivial.,272,2014,https://amzn.to/3J6X1t2
-Desarrollo Personal,Top 9 libros para superar la procrastinación,La Magia del Orden,Marie Kondo,978-1607747307,Método KonMari para organizar el espacio y la mente.,224,2011,https://amzn.to/3J6X1t2
-Desarrollo Personal,Top 9 libros de psicología positiva,Fluir,Mihaly Csikszentmihalyi,978-0061339202,La psicología de la experiencia óptima y la felicidad.,320,1990,https://amzn.to/3J6X1t2
-Desarrollo Personal,Top 9 libros de psicología positiva,Felicidad,Ed Diener,978-0071458193,Ciencia de la felicidad y cómo cultivarla en la vida diaria.,288,2008,https://amzn.to/3J6X1t2
-Desarrollo Personal,Top 9 libros de psicología positiva,El Cerebro del Niño,Daniel J. Siegel,978-0553386691,Desarrollo infantil y cómo fomentar bienestar emocional.,336,2011,https://amzn.to/3J6X1t2
-Desarrollo Personal,Top 9 libros de psicología positiva,Resiliente,Rick Hanson,978-0451498848,Construir fortaleza mental para superar adversidades.,320,2018,https://amzn.to/3J6X1t2
-Desarrollo Personal,Top 9 libros de psicología positiva,La Felicidad es un Camino,Boris Cyrulnik,978-8499423183,Resiliencia y cómo encontrar sentido en el sufrimiento.,256,2014,https://amzn.to/3J6X1t2
-Desarrollo Personal,Top 9 libros de psicología positiva,El Proyecto Happiness,Gretchen Rubin,978-0061583261,Un año de experimentos para aumentar la felicidad.,304,2009,https://amzn.to/3J6X1t2
-Desarrollo Personal,Top 9 libros de psicología positiva,Optimismo,Martin Seligman,978-0671019112,Cómo cambiar el pensamiento pesimista por uno optimista.,320,1990,https://amzn.to/3J6X1t2
-Desarrollo Personal,Top 9 libros de psicología positiva,La Vida Secreta del Cerebro,David Eagleman,978-0307377333,Neurociencia de las emociones y la toma de decisiones.,288,2011,https://amzn.to/3J6X1t2
-Desarrollo Personal,Top 9 libros de psicología positiva,El Poder de los Hábitos,Charles Duhigg,978-0812981605,Cómo los hábitos moldean nuestras vidas y cómo cambiarlos.,400,2012,https://amzn.to/3J6X1t2
-Tecnología y Futuro,Top 9 libros sobre inteligencia artificial,Superinteligencia,Nick Bostrom,978-0199678112,Riesgos y oportunidades de la IA superhumana.,352,2014,https://amzn.to/3J6X1t2
-Tecnología y Futuro,Top 9 libros sobre inteligencia artificial,Vida 3.0,Max Tegmark,978-1101970317,Futuro de la IA y su impacto en la humanidad.,384,2017,https://amzn.to/3J6X1t2
-Tecnología y Futuro,Top 9 libros sobre inteligencia artificial,El Fin del Empleo,Ricardo Vargas,978-8423426303,Automatización y el futuro del trabajo en la era de la IA.,304,2018,https://amzn.to/3J6X1t2
-Tecnología y Futuro,Top 9 libros sobre inteligencia artificial,Homo Deus,Yuval Noah Harari,978-0062464316,El futuro de la humanidad con biotecnología e IA.,464,2015,https://amzn.to/3J6X1t2
-Tecnología y Futuro,Top 9 libros sobre inteligencia artificial,AI Superpowers,Kai-Fu Lee,978-1328546395,Carrera global por el dominio de la IA entre China y EE.UU.,288,2018,https://amzn.to/3J6X1t2
-Tecnología y Futuro,Top 9 libros sobre inteligencia artificial,La Cuarta Revolución Industrial,Klaus Schwab,978-1947866174,Fusión de tecnologías que transforman la economía y sociedad.,320,2016,https://amzn.to/3J6X1t2
-Tecnología y Futuro,Top 9 libros sobre inteligencia artificial,Arquitectura de Sistemas,Luis Joyanes,978-6073226098,Fundamentos de diseño de sistemas complejos.,512,2019,https://amzn.to/3J6X1t2
-Tecnología y Futuro,Top 9 libros sobre inteligencia artificial,Deep Learning,Ian Goodfellow,978-0262035613,Introducción a redes neuronales y aprendizaje profundo.,800,2016,https://amzn.to/3J6X1t2
-Tecnología y Futuro,Top 9 libros sobre inteligencia artificial,El Futuro de la Humanidad,Michio Kaku,978-0385542760,Predicciones sobre colonización espacial y tecnología.,352,2018,https://amzn.to/3J6X1t2
-Tecnología y Futuro,Top 9 libros de ciencia ficción distópica,1984,George Orwell,978-0451524935,Sociedad totalitaria bajo vigilancia constante.,328,1949,https://amzn.to/3J6X1t2
-Tecnología y Futuro,Top 9 libros de ciencia ficción distópica,Un Mundo Feliz,Aldous Huxley,978-0060850524,Sociedad controlada por ingeniería genética y drogas.,288,1932,https://amzn.to/3J6X1t2
-Tecnología y Futuro,Top 9 libros de ciencia ficción distópica,Fahrenheit 451,Ray Bradbury,978-1451673319,Sociedad donde los libros están prohibidos.,192,1953,https://amzn.to/3J6X1t2
-Tecnología y Futuro,Top 9 libros de ciencia ficción distópica,El Juego de Ender,Orson Scott Card,978-0812550702,Niños entrenados para salvar a la humanidad de alienígenas.,352,1985,https://amzn.to/3J6X1t2
-Tecnología y Futuro,Top 9 libros de ciencia ficción distópica,Neuromante,William Gibson,978-0441569595,Ciberespacio y realidad virtual en un futuro decadente.,320,1984,https://amzn.to/3J6X1t2
-Tecnología y Futuro,Top 9 libros de ciencia ficción distópica,La Trilogía de los Mundos,Cixin Liu,978-0765377067,Contacto con civilizaciones alienígenas y sus consecuencias.,400,2008,https://amzn.to/3J6X1t2
-Tecnología y Futuro,Top 9 libros de ciencia ficción distópica,Parque Jurásico,Michael Crichton,978-0345538987,Dinosaurios recreados mediante ingeniería genética.,448,1990,https://amzn.to/3J6X1t2
-Tecnología y Futuro,Top 9 libros de ciencia ficción distópica,El Hombre en el Castillo,Philip K. Dick,978-0547572482,Mundo alternativo donde las potencias del Eje ganaron la II Guerra Mundial.,256,1962,https://amzn.to/3J6X1t2
-Tecnología y Futuro,Top 9 libros de ciencia ficción distópica,Los Juegos del Hambre,Suzanne Collins,978-0439023528,Juvenes luchando en un reality show mortal.,384,2008,https://amzn.to/3J6X1t2
-Historia y Política,Top 9 libros sobre la Segunda Guerra Mundial,La Segunda Guerra Mundial,Antony Beevor,978-0316023740,Análisis exhaustivo de conflictos y estrategias bélicas.,864,2012,https://amzn.to/3J6X1t2
-Historia y Política,Top 9 libros sobre la Segunda Guerra Mundial,El Diario de Ana Frank,Ana Frank,978-0553296983,Vida de una adolescente escondida durante el Holocausto.,352,1947,https://amzn.to/3J6X1t2
-Historia y Política,Top 9 libros sobre la Segunda Guerra Mundial,Los Hijos de la Libertad,Ken Follett,978-0451235284,Espías y resistencia en la Europa ocupada.,640,2020,https://amzn.to/3J6X1t2
-Historia y Política,Top 9 libros sobre la Segunda Guerra Mundial,El Alba de la Tercera Edad,Winston Churchill,978-0395410565,Memoires de Churchill durante la guerra.,752,1948,https://amzn.to/3J6X1t2
-Historia y Política,Top 9 libros sobre la Segunda Guerra Mundial,La Noche Más Oscura,Mark Bowden,978-1594203476,Operación para capturar a Osama bin Laden.,448,2012,https://amzn.to/3J6X1t2
-Historia y Política,Top 9 libros sobre la Segunda Guerra Mundial,Día D,Stephen Ambrose,978-0743492533,Desembarco de Normandía y sus consecuencias.,656,1994,https://amzn.to/3J6X1t2
-Historia y Política,Top 9 libros sobre la Segunda Guerra Mundial,El Código Da Vinci,Dan Brown,978-0307474278,Misterios históricos y sociedades secretas.,512,2003,https://amzn.to/3J6X1t2
-Historia y Política,Top 9 libros sobre la Segunda Guerra Mundial,Sapiens,Yuval Noah Harari,978-0062316097,Breve historia de la humanidad y sus conflictos.,464,2011,https://amzn.to/3J6X1t2
-Historia y Política,Top 9 libros sobre la Segunda Guerra Mundial,El Puente de los Espías,Giles Whittell,978-0340991579,Intercambio de espías entre EE.UU. y URSS en la Guerra Fría.,320,2010,https://amzn.to/3J6X1t2
-Historia y Política,Top 9 libros de filosofía para principiantes,El Mundo de Sofía,Jostein Gaarder,978-0374530716,Introducción a la filosofía a través de una historia misteriosa.,544,1991,https://amzn.to/3J6X1t2
-Historia y Política,Top 9 libros de filosofía para principiantes,Así Habló Zaratustra,Friedrich Nietzsche,978-0486411181,Parábolas sobre el superhombre y la voluntad de poder.,352,1885,https://amzn.to/3J6X1t2
-Historia y Política,Top 9 libros de filosofía para principiantes,El Príncipe,Maquiavelo,978-0486272740,Manual para gobernar y mantener el poder.,240,1513,https://amzn.to/3J6X1t2
-Historia y Política,Top 9 libros de filosofía para principiantes,Fedón,Platón,978-0872206333,Diálogo sobre el alma y la inmortalidad.,128,380 a.C.,https://amzn.to/3J6X1t2
-Historia y Política,Top 9 libros de filosofía para principiantes,El Existencialismo es un Humanismo,Jean-Paul Sartre,978-0300115468,Defensa del existencialismo y su relación con el marxismo.,144,1946,https://amzn.to/3J6X1t2
-Historia y Política,Top 9 libros de filosofía para principiantes,Meditaciones,Marco Aurelio,978-0812968255,Reflexiones personal sobre ética y estoicismo.,256,180 d.C.,https://amzn.to/3J6X1t2
-Historia y Política,Top 9 libros de filosofía para principiantes,El Contrato Social,Rousseau,978-0486426921,Origen del poder político y bases de la democracia.,192,1762,https://amzn.to/3J6X1t2
-Historia y Política,Top 9 libros de filosofía para principiantes,La República,Platón,978-0872201363,Diálogo sobre justicia y el Estado ideal.,416,380 a.C.,https://amzn.to/3J6X1t2
-Historia y Política,Top 9 libros de filosofía para principiantes,Ética a Nicómaco,Aristóteles,978-0199213610,Teoría sobre la virtud y la felicidad humana.,368,350 a.C.,https://amzn.to/3J6X1t2
-Salud y Bienestar,Top 9 libros de nutrición saludable,Come, Reza, Ama,Elizabeth Gilbert,978-0143038417,Viaje de autodescubrimiento a través de la comida y espiritualidad.,352,2006,https://amzn.to/3J6X1t2
-Salud y Bienestar,Top 9 libros de nutrición saludable,El Plan Renal,Cristina Muñoz,978-8417277234,Dieta para proteger riñones y salud renal.,288,2019,https://amzn.to/3J6X1t2
-Salud y Bienestar,Top 9 libros de nutrición saludable,La Dieta de la Luna,Sergi Torres,978-8491111448,Ayunar según ciclos lunares para detoxificar.,224,2018,https://amzn.to/3J6X1t2
-Salud y Bienestar,Top 9 libros de nutrición saludable,El Libro de la Cocina Saludable,Jamie Oliver,978-0718193544,Recetas nutritivas y fáciles para el día a día.,320,2017,https://amzn.to/3J6X1t2
-Salud y Bienestar,Top 9 libros de nutrición saludable,El Método Kousmine,Catherine Kousmine,978-8472453720,Dieta basada en aceite de linaza y alimentos integrales.,256,1987,https://amzn.to/3J6X1t2
-Salud y Bienestar,Top 9 libros de nutrición saludable,Ayuno Intermitente,Jason Fung,978-1771641258,Cómo ayunar para perder peso y mejorar salud.,288,2016,https://amzn.to/3J6X1t2
-Salud y Bienestar,Top 9 libros de nutrición saludable,La Dieta de la Zona,Barry Sears,978-0060391902,Equilibrio hormonal mediante proporción de nutrientes.,320,1995,https://amzn.to/3J6X1t2
-Salud y Bienestar,Top 9 libros de nutrición saludable,El Poder del Metabolismo,Frank Suarez,978-1466267876,Acelerar metabolismo para quemar grasa.,304,20110,https://amzn.to/3J6X1t2
-Salud y Bienestar,Top 9 libros de nutrición saludable,Nutrición Deportiva,Anita Bean,978-1472976723,Alimentación para rendimiento deportivo.,352,2017,https://amzn.to/3J6X1t2
-Literatura Clásica,Top 9 novelas rusas imprescindibles,Guerra y Paz,León Tolstói,978-0140447934,Épica sobre invasión napoleónica y vidas de aristócratas.,1232,1869,https://amzn.to/3J6X1t2
-Literatura Clásica,Top 9 novelas rusas imprescindibles,Crimen y Castigo,Fiódor Dostoievski,978-0140449136,Asesinato, culpa y redención en San Petersburgo.,672,1866,https://amzn.to/3J6X1t2
-Literatura Clásica,Top 9 novelas rusas imprescindibles,Anna Karenina,León Tolstói,978-0143035008,Tragedia de una adúltera en la sociedad rusa del siglo XIX.,864,1877,https://amzn.to/3J6X1t2
-Literatura Clásica,Top 9 novelas rusas imprescindibles,Los Hermanos Karamázov,Fiódor Dostoievski,978-0374528379,Conflicto entre fe, razón y pasión en una familia.,960,1880,https://amzn.to/3J6X1t2
-Literatura Clásica,Top 9 novelas rusas imprescindibles,El Maestro y Margarita,Mijaíl Bulgákov,978-0679760801,Sátira sobre la sociedad soviética con elementos fantásticos.,480,1967,https://amzn.to/3J6X1t2
-Literatura Clásica,Top 9 novelas rusas imprescindibles,Un Hombre Feliz,Iván Turguénev,978-0140444254,Relatos sobre la vida rural rusa y sus contradicciones.,320,1856,https://amzn.to/3J6X1t2
-Literatura Clásica,Top 9 novelas rusas imprescindibles,Padres e Hijos,Iván Turguénev,978-0199536073,Conflicto generacional entre nihilistas y conservadores.,256,1862,https://amzn.to/3J6X1t2
-Literatura Clásica,Top 9 novelas rusas imprescindibles,El Idiota,Fiódor Dostoievski,978-0140447927,Inocencia y bondad en un mundo corrupto.,672,1869,https://amzn.to/3J6X1t2
-Literatura Clásica,Top 9 novelas rusas imprescindibles,Resurrección,León Tolstói,978-0199536189,Redención moral a través del amor y la justicia.,512,1899,https://amzn.to/3J6X1t2
-Viajes y Aventura,Top 9 libros de viajes por Latinoamérica,La Casa de los Espíritus,Isabel Allende,978-1501117016,Saga familiar en Chile con elementos mágicos.,464,1982,https://amzn.to/3J6X1t2
-Viajes y Aventura,Top 9 libros de viajes por Latinoamérica,Diario de Motocicleta,Che Guevara,978-0007172060,Viaje juvenil por Sudamérica que moldeó su ideología.,192,1993,https://amzn.to/3J6X1t2
-Viajes y Aventura,Top 9 libros de viajes por Latinoamérica,Cien Años de Soledad,Gabriel García Márquez,978-0060883287,Historia mítica de Macondo y la familia Buendía.,448,1967,https://amzn.to/3J6X1t2
-Viajes y Aventura,Top 9 libros de viajes por Latinoamérica,El Alquimista,Paulo Coelho,978-0062315007,Búsqueda del tesoro personal a través del desierto.,208,1988,https://amzn.to/3J6X1t2
-Viajes y Aventura,Top 9 libros de viajes por Latinoamérica,La Ciudad y los Perros,Mario Vargas Llosa,978-0060584705,Vida en un colegio militar peruano y corrupción.,320,1963,https://amzn.to/3J6X1t2
-Viajes y Aventura,Top 9 libros de viajes por Latinoamérica,El Huevo de la Serpiente,Carlos Fuentes,978-0374532208,México a través de la historia y sus mitos.,416,1962,https://amzn.to/3J6X1t2
-Viajes y Aventura,Top 9 libros de viajes por Latinoamérica,La Tía Julia y el Escribidor,Mario Vargas Llosa,978-0571225842,Comedia romántica y crítica social en Lima.,352,1977,https://amzn.to/3J6X1t2
-Viajes y Aventura,Top 9 libros de viajes por Latinoamérica,El Viejo y el Mar,Ernest Hemingway,978-0684801223,Pescador cubano lucha contra un pez espada en el Caribe.,128,1952,https://amzn.to/3J6X1t2
-Viajes y Aventura,Top 9 libros de viajes por Latinoamérica,Los Detectives Salvajes,Roberton Bolaño,978-0312427481,Búsqueda de poetas desaparecidos por México y el mundo.,656,1998,https://amzn.to/3J6X1t2
-Arte y Creatividad,Top 9 libros sobre historia del arte,Historia del Arte,E.H. Gombrich,978-0714832470,Introducción completa a la historia del arte occidental.,688,1950,https://amzn.to/3J6X1t2
-Arte y Creatividad,Top 9 libros sobre historia del arte,Los Secretos del Arte,Daniel Arasse,978-2080107403,Análisis de obras maestras y sus significados ocultos.,384,2006,https://amzn.to/3J6X1t2
-Arte y Creatividad,Top 9 libros sobre historia del arte,El Arte como Experiencia,John Dewey,978-0399531972,Teoría sobre el arte como interacción entre obra y espectador.,368,1934,https://amzn.to/3J6X1t2
-Arte y Creatividad,Top 9 libros sobre historia del arte,La Vida de los Artistas,Giorgio Vasari,978-0140445008,Biografías de artistas del Renacimiento italiano.,512,1550,https://amzn.to/3J6X1t2
-Arte y Creatividad,Top 9 libros sobre historia del arte,El Guernica,Gijs van Hensbergen,978-0060539378,Historia del cuadro más famoso de Picasso y su contexto.,320,2004,https://amzn.to/3J6X1t2
-Arte y Creatividad,Top 9 libros sobre historia del arte,Arte Moderno,Norbert Lynton,978-0500203957,Del impresionismo al arte contemporáneo.,448,1980,https://amzn.to/3J6X1t2
-Arte y Creatividad,Top 9 libros sobre historia del arte,La Historia del Arte,Frederick Hartt,978-0810914472,Arte occidental desde la prehistoria hasta el siglo XX.,1024,1976,https://amzn.to/3J6X1t2
-Arte y Creatividad,Top 9 libros sobre historia del arte,El Expresionismo,Shulamith Behr,978-0521786559,Movimiento artístico alemán y sus exponentes.,224,1999,https://amzn.to/3J6X1t2
-Arte y Creatividad,Top 9 libros sobre historia del arte,Arte Contemporáneo,Brandon Taylor,978-0500203933,Tendencias y artistas desde 1945 hasta hoy.,352,2004,https://amzn.to/3J6X1t2
-Ciencia y Naturaleza,Top 9 libros de divulgación científica,Breve Historia del Tiempo,Stephen Hawking,978-0553380163,Origen del universo, agujeros negros y viaje en el tiempo.,256,1988,https://amzn.to/3J6X1t2
-Ciencia y Naturaleza,Top 9 libros de divulgación científica,Cosmos,Carl Sagan,978-0345539434,Viaje por el universo y la evolución de la science.,384,1980,https://amzn.to/3J6X1t2
-Ciencia y Naturaleza,Top 9 libros de divulgación científica,El Origen de las Especies,Charles Darwin,978-0451529060,Teoría de la evolución por selección natural.,544,1859,https://amzn.to/3J6X1t2
-Ciencia y Naturaleza,Top 9 libros de divulgación científica,La Estructura de las Revoluciones Científicas,Thomas Kuhn,978-0226458120,Cómo la ciencia avanza mediante cambios de paradigma.,320,1962,https://amzn.to/3J6X1t2
-Ciencia y Naturaleza,Top 9 libros de divulgación científica,El Gen Egoísta,Richard Dawkins,978-0192860927,Evolución desde la perspectiva de los genes.,360,1976,https://amzn.to/3J6X1t2
-Ciencia y Naturaleza,Top 9 libros de divulgación científica,La Mente de Dios,Paul Davies,978-0671797183,Física y metafísica en la búsqueda del origen.,320,1992,https://amzn.to/3J6X1t2
-Ciencia y Naturaleza,Top 9 libros de divulgación científica,Sapiens,Yuval Noah Harari,978-0062316097,Breve historia de la humanidad y su dominio del planeta.,464,2011,https://amzn.to/3J6X1t2
-Ciencia y Naturaleza,Top 9 libros de divulgación científica,El Universo Elegante,Brian Greene,978-0375708114,Teoría de cuerdas y unificación de la física.,512,1999,https://amzn.to/3J6X1t2
-Ciencia y Naturaleza,Top 9 libros de divulgación científica,El Cerebro de Broca,Carl Sagan,978-0345336897,Reflexiones sobre ciencia, religión y evolución.,352,1979,https://amzn.to/3J6X1t2
-Misterio y Thriller,Top 9 thrillers psicológicos,La Chica del Tren,Paula Hawkins,978-1594634024,Mujer observa desde el tren un crimen que nadie más vio.,336,2015,https://amzn.to/3J6X1t2
-Misterio y Thriller,Top 9 thrillers psicológicos,El Silencio de los Inocentes,Thomas Harris,978-0312924584,Agente FBI persigue a un asesino en serie con ayuda de otro.,368,1988,https://amzn.to/3J6X1t2
-Misterio y Thriller,Top 9 thrillers psicológicos,Gone Girl,Gillian Flynn,978-0307588371,Matrimonio perfecto se desmorona tras desaparición de la esposa.,448,2012,https://amzn.to/3J6X1t2
-Misterio y Thriller,Top 9 thrillers psicológicos,El Psicópata de al Lado,M.J. Arlidge,978-0451471535,Detective persigue a un asesino que elige víctimas al azar.,384,2014,https://amzn.to/3J6X1t2
-Misterio y Thriller,Top 9 thrillers psicológicos,La Casa de al Lado,Shari Lapena,978-0735221086,Pareja descubre secretos oscuros de sus vecinos.,320,2016,https://amzn.to/3J6X1t2
-Misterio y Thriller,Top 9 thrillers psicológicos,El Código Da Vinci,Dan Brown,978-0307474278,Símbolos religiosos y conspiraciones en un asesinato.,512,2003,https://amzn.to/3J6X1t2
-Misterio y Thriller,Top 9 thrillers psicológicos,La Sombra del Viento,Carlos Ruiz Zafón,978-0143126392,Misterio en torno a un libro prohibido en la Barcelona posguerra.,576,2001,https://amzn.to/3J6X1t2
-Misterio y Thriller,Top 9 thrillers psicológicos,Requiem por un Sueño,Hubert Selby Jr.,978-1573225127,Adicciones y sus consecuencias destructivas.,224,1978,https://amzn.to/3J6X1t2
-Misterio y Thriller,Top 9 thrillers psicológicos,El Secreto,Ken Follett,978-0525955188,Conspiración para robar un manuscrito medieval.,512,2020,https://amzn.to/3J6X1t2
-Relaciones y Familia,Top 9 libros sobre crianza positiva,Disciplina sin Lágrimas,Daniel Siegel,978-0553386691,Criar hijos con empatía y conexión emocional.,336,2014,https://amzn.to/3J6X1t2
-Relaciones y Familia,Top 9 libros sobre crianza positiva,Cómo Hablar para que sus Hijos le Escuchen,Adele Faber,978-1451663884,Técnicas de comunicación efectiva con niños.,304,1980,https://amzn.to/3J6X1t2
-Relaciones y Familia,Top 9 libros sobre crianza positiva,El Cerebro del Niño,Daniel J. Siegel,978-0553386691,Desarrollo cerebral infantil y cómo estimularlo.,336,2011,https://amzn.to/3J6X1t2
-Relaciones y Familia,Top 9 libros sobre crianza positiva,Educar sin Lágrimas,Rosa Jové,978-8499086785,Crianza respetuosa y límites amorosos.,288,2003,https://amzn.to/3J6X1t2
-Relaciones y Familia,Top 9 libros sobre crianza positiva,Padres Presentes, Hijos Felices,Rafael Guerrero,978-8433029478,Importancia de la paternidad activa.,256,2017,https://amzn.to/3J6X1t2
-Relaciones y Familia,Top 9 libros sobre crianza positiva,La Disciplina Positiva,Jane Nelsen,978-0761524212,Educar con respeto y firmeza al mismo tiempo.,320,2006,https://amzn.to/3J6X1t2
-Relaciones y Familia,Top 9 libros sobre crianza positiva,El Misterio del Niño,Janusz Korczak,978-3868390726,Derechos del niño y su dignidad.,224,1920,https://amzn.to/3J6X1t2
-Relaciones y Familia,Top 9 libros sobre crianza positiva,Criar Bien a un Hijo,Carlos González,978-8499086792,Lactancia materna y crianza natural.,416,2003,https://amzn.to/3J6X1t2
-Relaciones y Familia,Top 9 libros sobre crianza positiva,Educar en el Asombro,Catherine L'Ecuyer,978-8423428642,Fomentar curiosidad y aprendizaje significativo.,304,2015,https://amzn.to/3J6X1t2
-Espiritualidad,Top 9 libros de mindfulness y meditación,El Poder del Ahora,Eckhart Tolle,978-1577314806,Vivir en el presente para liberarse de ansiedades.,224,1997,https://amzn.to/3J6X1t2
-Espiritualidad,Top 9 libros de mindfulness y meditación,Mindfulness,Mark Williams,978-1462510427,Terapia cognitiva basada en mindfulness para depresión.,288,2007,https://amzn.to/3J6X1t2
-Espiritualidad,Top 9 libros de mindfulness y meditación,El Camino del Artista,Julia Cameron,978-1585421466,Recuperar creatividad y superar bloqueos.,240,1992,https://amzn.to/3J6X1t2
-Espiritualidad,Top 9 libros de mindfulness y meditación,La Práctica de la Atención Plena,Jon Kabat-Zinn,978-0345836994,Reducción del estrés mediante meditación.,432,1990,https://amzn.to/3J6X1t2
-Espiritualidad,Top 9 libros de mindfulness y meditación,El Monje que Vendió su Ferrari,Robin Sharma,978-0062515674,Parábola sobre encontrar propósito y equilibrio.,208,1997,https://amzn.to/3J6X1t2
-Espiritualidad,Top 9 libros de mindfulness y meditación,Un Curso de Milagros,Helen Schucman,978-1883360267,Enseñanzas espirituales para paz interior.,672,1976,https://amzn.to/3J6X1t2
-Espiritualidad,Top 9 libros de mindfulness y meditación,El Libro Tibetano de la Vida y la Muerte,Sogyal Rimpoché,978-0062508348,Muerte y morir desde la perspectiva budista.,512,1992,https://amzn.to/3J6X1t2
-Espiritualidad,Top 9 libros de mindfulness y meditación,La Paz Interior,Thich Nhat Hanh,978-1888375929,Encontrar serenidad en un mundo caótico.,192,1991,https://amzn.to/3J6X1t2
-Espiritualidad,Top 9 libros de mindfulness y meditación,Meditación,Osho,978-0312187194,Técnicas para experimentar estados meditativos.,320,1988,https://amzn.to/3J6X1t2
-Economía y Sociedad,Top 9 libros sobre desigualdad económica,Capital en el Siglo XXI,Thomas Piketty,978-0674430006,Análisis de concentración de riqueza y sus soluciones.,976,2013,https://amzn.to/3J6X1t2
-Economía y Sociedad,Top 9 libros sobre desigualdad económica,El Capitalismo del Siglo XXI,Joseph Stiglitz,978-0393352240,Crítica al sistema económico actual y propuestas de cambio.,448,2015,https://amzn.to/3J6X1t2
-Economía y Sociedad,Top 9 libros sobre desigualdad económica,La Globalización y sus Descontentos,Joseph Stiglitz,978-0393324391,Efectos negativos de la globalización en países pobres.,304,2002,https://amzn.to/3J6X1t2
-Economía y Sociedad,Top 9 libros sobre desigualdad económica,23 Cosas que no te Cuentan sobre el Capitalismo,Ha-Joon Chang,978-1608191667,Mitos económicos desmentidos con datos históricos.,304,2010,https://amzn.to/3J6X1t2
-Economía y Sociedad,Top 9 libros sobre desigualdad económica,El Choque de Civilizaciones,Samuel Huntington,978-0684844411,Conflictos futuros entre culturas como eje de la política.,384,1996,https://amzn.to/3J6X1t2
-Economía y Sociedad,Top 9 libros sobre desigualdad económica,La Riqueza de las Naciones,Adam Smith,978-0553585975,Fundamentos del capitalismo y división del trabajo.,1152,1776,https://amzn.to/3J6X1t2
-Economía y Sociedad,Top 9 libros sobre desigualdad económica,El Fin de la Pobreza,Jeffrey Sachs,978-0143036586,Plan para erradicar pobreza extrema para 2025.,432,2005,https://amzn.to/3J6X1t2
-Economía y Sociedad,Top 9 libros sobre desigualdad económica,Economía para No Economistas,John Kenneth Galbraith,978-0395358585,Conceptos económicos explicados de forma sencilla.,336,1978,https://amzn.to/3J6X1t2
-Economía y Sociedad,Top 9 libros sobre desigualdad económica,El Mundo es Plano,Thomas Friedman,978-0374292882,Globalización y sus efectos en la economía mundial.,512,2005,https://amzn.to/3J6X1t2
-Deportes,Top 9 libros de fútbol,Fútbol Contra el Enemigo,Simon Kuper,978-1568584813,Cómo el fútbol refleja política y sociedad.,448,2006,https://amzn.to/3J6X1t2
-Deportes,Top 9 libros de fútbol,El Origen,Dan Brown,978-0385511213,Orígenes históricos del fútbol y sus reglas.,384,2017,https://amzn.to/3J6X1t2
-Deportes,Top 9 libros de fútbol,Soccernomics,Simon Kuper,978-1568584257,Estadísticas y economía aplicadas al fútbol.,432,2009,https://amzn.to/3J6X1t2
-Deportes,Top 9 libros de fútbol,Maradona: La Historia Oficial,Ariel Scher,978-9504915723,Biografía completa de Diego Armando Maradona.,576,2005,https://amzn.to/3J6X1t2
-Deportes,Top 9 libros de fútbol,El Clásico,Sid Lowe,978-1409131040,Rivalidad entre Real Madrid y Barcelona.,352,2013,https://amzn.to/3J6X1t2
-Deportes,Top 9 libros de fútbol,Fútbol Total,David Winner,978-1568584615,Filosofía del fútbol holandés y su influencia.,320,2000,https://amzn.to/3J6X1t2
-Deportes,Top 9 libros de fútbol,Invertir en Fútbol,Rodrigo Hernández,978-8423428659,Finanzas y negocios en el mundo del fútbol.,288,2018,https://amzn.to/3J6X1t2
-Deportes,Top 9 libros de fútbol,El Día Menos Pensado,Jorge Valdano,978-8466337608,Reflexiones sobre el fútbol y su trascendencia.,256,2015,https://amzn.to/3J6X1t2
-Deportes,Top 9 libros de fútbol,La Piel del Toro,Javier Cárdenas,978-8408224185,Cultura taurina y su relación con la identidad española.,304,2019,https://amzn.to/3J6X1t2
-Cocina,Top 9 libros de cocina vegana,Thug Kitchen,Thug Kitchen,978-1623363581,Recetas veganas con lenguaje irreverente.,288,2014,https://amzn.to/3J6X1t2
-Cocina,Top 9 libros de cocina vegana,Veganomicon,Isa Chandra Moskowitz,978-0761149716,Clásicos veganos reinventados.,320,2007,https://amzn.to/3J6X1t2
-Cocina,Top 9 libros de cocina vegana,La Cocina Vegana,Alicia García,978-8491111455,Recetas españolas adaptadas a la dieta vegana.,256,2016,https://amzn.to/3J6X1t2
-Cocina,Top 9 libros de cocina vegana,Vegan para Siempre,Lucía Martínez,978-8425357782,Nutrición vegana basada en evidencia científica.,384,2018,https://amzn.to/3J6X1t2
-Cocina,Top 9 libros de cocina vegana,El Libro de la Cocina Vegana,Jamie Oliver,978-0718188731,Recetas sencillas y deliciosas sin productos animales.,320,2017,https://amzn.to/3J6X1t2
-Cocina,Top 9 libros de cocina vegana,Recetas para Ser Feliz,Laura Barrado,978-8417277241,Postres veganos saludables.,224,2019,https://amzn.to/3J6X1t2
-Cocina,Top 9 libros de cocina vegana,Vegan México,Jason Wyrick,978-1592335978,Cocina mexicana tradicional en versión vegana.,288,2014,https://amzn.to/3J6X1t2
-Cocina,Top 9 libros de cocina vegana,Despensa Vegana,Celia Rodríguez,978-8418057109,Guía para organizar una cocina vegana.,192,2020,https://amzn.to/3J6X1t2
-Cocina,Top 9 libros de cocina vegana,Cocina Vegana Fácil,Bettina Campolucci,978-1784882496,Recetas rápidas con ingredientes accesibles.,256,2018,https://amzn.to/3J6X1t2
-Medio Ambiente,Top 9 libros sobre cambio climático,La Tierra en Peligro,Al Gore,978-1594201223,Evidencias científicas del calentamiento global y soluciones.,448,2006,https://amzn.to/3J6X1t2
-Medio Ambiente,Top 9 libros sobre cambio climático,Nuestra Final,Naomi Klein,978-1451697391,Cómo el cambio climático transforma la economía y política.,528,2014,https://amzn.to/3J6X1t2
-Medio Ambiente,Top 9 libros sobre cambio climático,El Futuro de la Tierra,James Lovelock,978-0465071816,Predicciones sobre el futuro del planeta y la humanidad.,304,2006,https://amzn.to/3J6X1t2
-Medio Ambiente,Top 9 libros sobre cambio climático,Colapso,Jared Diamond,978-0143036555,Cómo sociedades eligen fracasar o tener éxito.,608,2005,https://amzn.to/3J6X1t2
-Medio Ambiente,Top 9 libros sobre cambio climático,La Sexta Extinción,Elizabeth Kolbert,978-0805092998,Extinción masiva actual y sus causas.,352,2014,https://amzn.to/3J6X1t2
-Medio Ambiente,Top 9 libros sobre cambio climático,Cómo Evitar un Desastre Climático,Bill Gates,978-0385546133,Plan para reducir emisiones de CO2 a cero.,288,2021,https://amzn.to/3J6X1t2
-Medio Ambiente,Top 9 libros sobre cambio climático,El Efecto Sombra,Tim Flannery,978-0802144086,Impacto humano en el clima y la biodiversidad.,384,2005,https://amzn.to/3J6X1t2
-Medio Ambiente,Top 9 libros sobre cambio climático,Tierra,David Brin,978-0553573330,Futuro ecológico y soluciones sostenibles.,416,1990,https://amzn.to/3J6X1t2
-Medio Ambiente,Top 9 libros sobre cambio climático,La Vía Láctea,Isaac Asimov,978-0380011439,Exploración del universo y su relación con la Tierra.,320,1977,https://amzn.to/3J6X1t2
-Psicología,Top 9 libros sobre inteligencia emocional,Inteligencia Emocional,Daniel Goleman,978-0553383713,Importancia de las emociones en el éxito personal y profesional.,384,1995,https://amzn.to/3J6X1t2
-Psicología,Top 9 libros sobre inteligencia emocional,El Cerebro Emocional,Joseph LeDoux,978-0684836591,Biología de las emociones y su control.,384,1996,https://amzn.to/3J6X1t2
-Psicología,Top 9 libros sobre inteligencia emocional,La Inteligencia Emocional en la Práctica,Daniel Goleman,978-0553378580,Ejercicios para desarrollar inteligencia emocional.,320,1998,https://amzn.to/3J6X1t2
-Psicología,Top 9 libros sobre inteligencia emocional,Darse Cuenta,John Bradshaw,978-0553352603,Sanar heridas emocionales de la infancia.,352,1988,https://amzn.to/3J6X1t2
-Psicología,Top 9 libros sobre inteligencia emocional,El Arte de Amar,Erich Fromm,978-0061129738,Amor como arte que requiere conocimiento y esfuerzo.,160,1956,https://amzn.to/3J6X1t2
-Psicología,Top 9 libros sobre inteligencia emocional,El Hombre en Busca de Sentido,Viktor Frankl,978-0807014295,Encontrar propósito incluso en el sufrimiento.,192,1946,https://amzn.to/3J6X1t2
-Psicología,Top 9 libros sobre inteligencia emocional,El Lenguaje del Cuerpo,Allan Pease,978-0553349092,Señales no verbales y su interpretación.,320,1981,https://amzn.to/3J6X1t2
-Psicología,Top 9 libros sobre inteligencia emocional,Cómo Ganar Amigos,Dale Carnegie,978-0671027032,Técnicas para influir en personas y ganar amigos.,288,1936,https://amzn.to/3J6X1t2
-Psicología,Top 9 libros sobre inteligencia emocional,La Ansiedad,Scott Stossel,978-0307396044,Exploración personal de la ansiedad y sus tratamientos.,448,2014,https://amzn.to/3J6X1t2
-Feminismo,Top 9 libros feministas contemporáneos,Nosotras,Cristina Sánchez-Andrade,978-8423357979,Reflexiones feministas desde la literatura gallega.,256,2020,https://amzn.to/3J6X1t2
-Feminismo,Top 9 libros feministas contemporáneos,El Segundo Sexo,Simone de Beauvoir,978-0307277787,Análisis de la condición femenina en la sociedad.,752,1949,https://amzn.to/3J6X1t2
-Feminismo,Top 9 libros feministas contemporáneos,Cien Años de Soledad,Gabriel García Márquez,978-0060883287,Representación de mujeres en la literatura latinoamericana.,448,1967,https://amzn.to/3J6X1t2
-Feminismo,Top 9 libros feministas contemporáneos,Teoría King Kong,Virginie Despentes,978-1939293228,Manifiesto feminista radical contra la cultura patriarcal.,288,2006,https://amzn.to/3J6X1t2
-Feminismo,Top 9 libros feministas contemporáneos,La Tiranía de la Belleza,Naomi Wolf,978-0385423627,Cómo la industria de la belleza oprime a las mujeres.,368,1991,https://amzn.to/3J6X1t2
-Feminismo,Top 9 libros feministas contemporáneos,El Mito de la Belleza,Naomi Wolf,978-0060512187,Impacto psicológico de los estándares de belleza femeninos.,320,1991,https://amzn.to/3J6X1t2
-Feminismo,Top 9 libros feministas contemporáneos,Feminismo para Principiantes,Nuria Varela,978-8496859969,Introducción al feminismo con lenguaje accesible.,416,2005,https://amzn.to/3J6X1t2
-Feminismo,Top 9 libros feministas contemporáneos,Las Mujeres que No Amaban a los Hombres,Sandra Cisneros,978-0679738565,Relatos sobre mujeres que desafían roles tradicionales.,224,2018,https://amzn.to/3J6X1t2
-Feminismo,Top 9 libros feministas contemporáneos,La Casa de los Espíritus,Isabel Allende,978-1501117016,Mujeres fuertes en una sociedad machista.,464,1982,https://amzn.to/3J6X1t2
-Terror,Top 9 libros de terror clásico,Drácula,Bram Stoker,978-0486411095,Vampiro en la Inglaterra victoriana.,448,1897,https://amzn.to/3J6X1t2
-Terror,Top 9 libros de terror clásico,Frankenstein,Mary Shelley,978-0486282114,Científico crea monstruo y su búsqueda de redención.,288,1818,https://amzn.to/3J6X1t2
-Terror,Top 9 libros de terror clásico,El Extraño Caso del Dr. Jekyll y Mr. Hyde,Robert Louis Stevenson,978-0486266886,Doble personalidad y su manifestación monstruosa.,128,1886,https://amzn.to/3J6X1t2
-Terror,Top 9 libros de terror clásico,El Gato Negro,Edgar Allan Poe,978-0486277868,Relato sobre locura y venganza de un gato.,64,1843,https://amzn.to/3J6X1t2
-Terror,Top 9 libros de terror clásico,El Resplandor,Stephen King,978-0307743657,Hotel embrujado y posesión en familia.,512,1977,https://amzn.to/3J6X1t2
-Terror,Top 9 libros de terror clásico,El Exorcista,William Peter Blatty,978-0062094361,Posesión demoníaca y exorcismo.,400,1971,https://amzn.to/3J6X1t2
-Terror,Top 9 libros de terror clásico,La Llamada de Cthulhu,H.P. Lovecraft,978-0486284414,Horror cósmico y dioses ancestrales.,128,1928,https://amzn.to/3J6X1t2
-Terror,Top 9 libros de terror clásico,El Cementerio,Stephen King,978-1501144241,Niño resucitado con consecuencias terroríficas.,416,1983,https://amzn.to/3J6X1t2
-Terror,Top 9 libros de terror clásico,Otra Vuelta de Tuerca,Henry James,978-0486266886,Apariciones en una mansión y su interpretación.,192,1898,https://amzn.to/3J6X1t2
-Autoayuda,Top 9 libros para superar una ruptura,Cómo Superar una Ruptura,Susan J. Elliott,978-0738213190,Guía paso a paso para sanar corazón roto.,288,2009,https://amzn.to/3J6X1t2
-Autoayuda,Top 9 libros para superar una ruptura,El Arte de Amar,Erich Fromm,978-0061129738,Comprender el amor para construir relaciones sanas.,160,1956,https://amzn.to/3J6X1t2
-Autoayuda,Top 9 libros para superar una ruptura,Después de Ti,Jojo Moyes,978-0718181770,Nueva vida tras pérdida del ser amado.,384,2015,https://amzn.to/3J6X1t2
-Autoayuda,Top 9 libros para superar una ruptura,El Poder del Ahora,Eckhart Tolle,978-1577314806,Vivir el presente para superar dolor pasado.,224,1997,https://amzn.to/3J6X1t2
-Autoayuda,Top 9 libros para superar una ruptura,Vivir Después de Vivir,Pim van Lommel,978-1846042396,Experiencias cercanas a la muerte y su significado.,352,2007,https://amzn.to/3J6X1t2
-Autoayuda,Top 9 libros para superar una ruptura,La Travesía,John Boyne,978-0857524701,Viaje emocional tras una pérdida.,320,2017,https://amzn.to/3J6X1t2
-Autoayuda,Top 9 libros para superar una ruptura,El Alquimista,Paulo Coelho,978-0062315007,Búsqueda personal tras una decepción amorosa.,208,1988,https://amzn.to/3J6X1t2
-Autoayuda,Top 9 libros para superar una ruptura,La Sombra del Viento,Carlos Ruiz Zafón,978-0143126392,Superar duelos a través de la literatura.,576,2001,https://amzn.to/3J6X1t2
-Autoayuda,Top 9 libros para superar una ruptura,El Hombre en Busca de Sentido,Viktor Frankl,978-0807014295,Encontrar propósito tras el sufrimiento.,192,1946,https://amzn.to/3J6X1t2
-Biografías,Top 9 biografías de mujeres inspiradoras,Malala,Malala Yousafzai,978-0316322409,Lucha por educación femenina y premio Nobel de la Paz.,288,2013,https://amzn.to/3J6X1t2
-Biografías,Top 9 biografías de mujeres inspiradoras,Yo, Malala,Christina Lamb,978-0316322423,Detalles de la vida y activismo de Malala.,320,2013,https://amzn.to/3J6X1t2
-Biografías,Top 9 biografías de mujeres inspiradoras,La Historia de mi Vida,Helen Keller,978-0451531568,Mujer sordociega que se convirtió en símbolo de superación.,256,1903,https://amzn.to/3J6X1t2
-Biografías,Top 9 biografías de mujeres inspiradoras,Frida,Hayden Herrera,978-0060085896,Vida y arte de Frida Kahlo.,512,1983,https://amzn.to/3J6X1t2
-Biografías,Top 9 biografías de mujeres inspiradoras,Eleanor Roosevelt,Blanche Wiesen Cook,978-0140178944,Primera dama defensora de derechos humanos.,768,1992,https://amzn.to/3J6X1t2
-Biografías,Top 9 biografías de mujeres inspiradoras,Marie Curie,Eve Curie,978-0306810381,Vida de la primera mujer en ganar dos premios Nobel.,448,1937,https://amzn.to/3J6X1t2
-Biografías,Top 9 biografías de mujeres inspiradoras,Jane Goodall,Dale Peterson,978-0547336954,Pionera en estudio de chimpancés y conservación.,384,2006,https://amzn.to/3J6X1t2
-Biografías,Top 9 biografías de mujeres inspiradoras,La Vida Secreta de Beatrix Potter,Margaret Lane,978-0805063783,Escritora y naturalista detrás de Peter Rabbit.,224,1946,https://amzn.to/3J6X1t2
-Biografías,Top 9 biografías de mujeres inspiradoras,Coco Chanel,Justine Picardie,978-0061963858,Diseñadora que revolucionó la moda femenina.,448,2010,https://amzn.to/3J6X1t2
-Juventud,Top 9 libros para adolescentes rebeldes,El Guardián entre el Centeno,J.D. Salinger,978-0316769488,Adolescencia, alienación y búsqueda de identidad.,277,1951,https://amzn.to/3J6X1t2
-Juventud,Top 9 libros para adolescentes rebeldes,Juegos de Hambre,Suzanne Collins,978-0439023528,Juvenes en lucha contra un sistema opresor.,384,2008,https://amzn.to/3J6X1t2
-Juventud,Top 9 libros para adolescentes rebeldes,El Diario de Ana Frank,Ana Frank,978-0553296983,Vida de una adolescente durante el Holocausto.,352,1947,https://amzn.to/3J6X1t2
-Juventud,Top 9 libros para adolescentes rebeldes,Harry Potter,J.K. Rowling,978-0439708180,Mago joven descubre su identidad y lucha contra el mal.,320,1997,https://amzn.to/3J6X1t2
-Juventud,Top 9 libros para adolescentes rebeldes,Percy Jackson,Rick Riordan,978-0786838653,Adolescente descubre que es semidios griego.,384,2005,https://amzn.to/3J6X1t2
-Juventud,Top 9 libros para adolescentes rebeldes,Divergente,Veronica Roth,978-0062024039,Sociedad dividida por facciones y una joven que desafía normas.,512,2011,https://amzn.to/3J6X1t2
-Juventud,Top 9 libros para adolescentes rebeldes,Bajo la Misma Estrella,John Green,978-0525478812,Amor entre adolescentes con enfermedades terminales.,336,2012,https://amzn.to/3J6X1t2
-Juventud,Top 9 libros para adolescentes rebeldes,La Ladrona de Libros,Markus Zusak,978-0375842207,Niña roba libros en la Alemania nazi.,592,2005,https://amzn.to/3J6X1t2
-Juventud,Top 9 libros para adolescentes rebeldes,Cazadores de Sombras,Cassandra Clare,978-1416914280,Mundo oculto de demonios y cazadores en Nueva York.,512,2007,https://amzn.to/3J6X1t2
-Política,Top 9 libros sobre pensamiento político moderno,El Fin de la Historia,Francis Fukuyama,978-0743284554,Democracia liberal como sistema definitivo.,352,1992,https://amzn.to/3J6X1t2
-Política,Top 9 libros sobre pensamiento político moderno,El Choque de Civilizaciones,Samuel Huntington,978-0684844411,Conflictos futuros entre culturas.,384,1996,https://amzn.to/3J6X1t2
-Política,Top 9 libros sobre pensamiento político moderno,Sapiens,Yuval Noah Harari,978-0062316097,Historia humana y su organización política.,464,2011,https://amzn.to/3J6X1t2
-Política,Top 9 libros sobre pensamiento político moderno,El Príncipe,Maquiavelo,978-0486272740,Manual para gobernar y mantener el poder.,240,1513,https://amzn.to/3J6X1t2
-Política,Top 9 libros sobre pensamiento político moderno,El Contrato Social,Rousseau,978-0486426921
-Política,Top 9 libros sobre pensamiento político moderno,El Contrato Social,Rousseau,978-0486426921,Origen del poder político y bases de la democracia.,192,1762,https://amzn.to/3J6X1t2
-Política,Top 9 libros sobre pensamiento político moderno,La República,Platón,978-0872201363,Diálogo sobre justicia y el Estado ideal.,416,380 a.C.,https://amzn.to/3J6X1t2
-Política,Top 9 libros sobre pensamiento político moderno,El Manifiesto Comunista,Marx y Engels,978-0140447576,Llamado a la revolución proletaria.,96,1848,https://amzn.to/3J6X1t2
-Política,Top 9 libros sobre pensamiento político moderno,Libertad,Jonathan Franzen,978-0312600846,Crítica a la sociedad estadounidense contemporánea.,608,2010,https://amzn.to/3J6X1t2
-Política,Top 9 libros sobre pensamiento político moderno,El Liberalismo Político,John Rawls,978-0231130899,Teoría de justicia como equidad.,560,1993,https://amzn.to/3J6X1t2
-Ficción Histórica,Top 9 novelas ambientadas en el Antiguo Egipto,El Hombre que Quería Ser Rey,Paulo Coelho,978-0061122418,Búsqueda de poder y sabiduría en el antiguo Egipto.,208,2008,https://amzn.to/3J6X1t2
-Ficción Histórica,Top 9 novelas ambientadas en el Antiguo Egipto,La Reina del Nilo,Margaret George,978-0312366797,Vida de Cleopatra VII y su relación con Roma.,976,2001,https://amzn.to/3J6X1t2
-Ficción Histórica,Top 9 novelas ambientadas en el Antiguo Egipto,El Hijo de Ramsés,Christian Jacq,978-0747246099,Misterios en la corte de Ramsés II.,384,1995,https://amzn.to/3J6X1t2
-Ficción Histórica,Top 9 novelas ambientadas en el Antiguo Egipto,El Nilo,Wilbur Smith,978-0330344957,Aventuras en el antiguo Egipto y sus dioses.,512,1993,https://amzn.to/3J6X1t2
-Ficción Histórica,Top 9 novelas ambientadas en el Antiguo Egipto,Cleopatra,Margaret George,978-0312366797,Última faraona de Egipto y sus amores.,976,2001,https://amzn.to/3J6X1t2
-Ficción Histórica,Top 9 novelas ambientadas en el Antiguo Egipto,La Pirámide Asesina,Agatha Christie,978-0002314572,Asesinato en una expedición arqueológica.,288,1945,https://amzn.to/3J6X1t2
-Ficción Histórica,Top 9 novelas ambientadas en el Antiguo Egipto,El Secreto del Nilo,Tasha Alexander,978-0060825462,Misterios en el antiguo Egipto.,352,2010,https://amzn.to/3J6X1t2
-Ficción Histórica,Top 9 novelas ambientadas en el Antiguo Egipto,El Hijo de la Luna,Luisa Isabel Álvarez,978-8408067027,Vida de Akhenatón y su revolución religiosa.,448,2006,https://amzn.to/3J6X1t2
-Ficción Histórica,Top 9 novelas ambientadas en el Antiguo Egipto,La Tumba Perdida,Tom Harper,978-0552154567,Búsqueda de la tumba de Alejandro Magno.,384,2015,https://amzn.to/3J6X1t2
-Poesía,Top 9 libros de poesía contemporánea en español,Veinte Poemas de Amor,Pablo Neruda,978-0143039969,Poesía sobre amor y desamor.,64,1924,https://amzn.to/3J6X1t2
-Poesía,Top 9 libros de poesía contemporánea en español,Cien Años de Soledad,Gabriel García Márquez,978-0060883287,Prosa poética sobre Macondo y su mitología.,448,1967,https://amzn.to/3J6X1t2
-Poesía,Top 9 libros de poesía contemporánea en español,La Casa de los Espíritus,Isabel Allende,978-1501117016,Lenguaje lírico en saga familiar chilena.,464,1982,https://amzn.to/3J6X1t2
-Poesía,Top 9 libros de poesía contemporánea en español,El Otro Lado del Paraíso,Mario Benedetti,978-8426415846,Poesía sobre exilio y nostalgia.,192,1979,https://amzn.to/3J6X1t2
-Poesía,Top 9 libros de poesía contemporánea en español,Antología Poética,Federico García Lorca,978-0141183993,Selección de poemas del autor granadino.,352,1940,https://amzn.to/3J6X1t2
-Poesía,Top 9 libros de poesía contemporánea en español,El Libro de las Preguntas,Pablo Neruda,978-0143424696,Preguntas poéticas sobre el universo.,96,1974,https://amzn.to/3J6X1t2
-Poesía,Top 9 libros de poesía contemporánea en español,Poemas Humanos,César Vallejo,978-0811217069,Poesía sobre dolor y esperanza humana.,256,1923,https://amzn.to/3J6X1t2
-Poesía,Top 9 libros de poesía contemporánea en español,La Vida Nueva,Octavio Paz,978-0156001940,Poesía sobre amor y trascendencia.,224,1949,https://amzn.to/3J6X1t2
-Poesía,Top 9 libros de poesía contemporánea en español,Elogio de la Sombra,Jorge Luis Borges,978-0141183849,Poesía sobre ceguera y memoria.,192,1969,https://amzn.to/3J6X1t2
-Humor,Top 9 libros de humor negro,El Alquimista,Paulo Coelho,978-0062315007,Parodia de la búsqueda espiritual.,208,1988,https://amzn.to/3J6X1t2
-Humor,Top 9 libros de humor negro,La Sombra del Viento,Carlos Ruiz Zafón,978-0143126392,Misterios literarios con toques de ironía.,576,2001,https://amzn.to/3J6X1t2
-Humor,Top 9 libros de humor negro,El Código Da Vinci,Dan Brown,978-0307474278,Sátira sobre conspiraciones religiosas.,512,2003,https://amzn.to/3J6X1t2
-Humor,Top 9 libros de humor negro,El Nombre de la Rosa,Umberto Eco,978-0544176560,Monjes medievales con humor negro.,512,1980,https://amzn.to/3J6X1t2
-Humor,Top 9 libros de humor negro,El Club de la Lucha,Chuck Palahniuk,978-0393327342,Satira sobre masculinidad y violencia.,256,1996,https://amzn.to/3J6X1t2
-Humor,Top 9 libros de humor negro,American Psycho,Bret Easton Ellis,978-0679735779,Humor ácido sobre consumismo y psicopatía.,416,1991,https://amzn.to/3J6X1t2
-Humor,Top 9 libros de humor negro,La Historia Interminable,Michael Ende,978-0140317934,Fantasía con crítica social.,448,1979,https://amzn.to/3J6X1t2
-Humor,Top 9 libros de humor negro,El Perfume,Patrick Süskind,978-0140120837,Asesino con obsesión por olores.,256,1985,https://amzn.to/3J6X1t2
-Humor,Top 9 libros de humor negro,El Tunnel,Ernesto Sabato,978-0141189377,Existencialismo con toques de humor negro.,256,1948,https://amzn.to/3J6X1t2
-Crónica Real,Top 9 libros de crónica periodística,A Sangre Fría,Truman Capote,978-0679745587,Asesinato en Kansas y su impacto social.,368,1966,https://amzn.to/3J6X1t2
-Crónica Real,Top 9 libros de crónica periodística,Los Niños de la Colonia,Jorge Gallego,978-8425358832,Abusos en instituciones para menores.,448,2018,https://amzn.to/3J6X1t2
-Crónica Real,Top 9 libros de crónica periodística,El Libro Negro de la Justicia Española,Gumersindo Lafuente,978-8499423183,Errores judiciales y corrupción.,512,2015,https://amzn.to/3J6X1t2
-Crónica Real,Top 9 libros de crónica periodística,El Silencio de los Inocentes,Thomas Harris,978-0312924584,Perfil de asesinos en serie desde el FBI.,368,1988,https://amzn.to/3J6X1t2
-Crónica Real,Top 9 libros de crónica periodística,El Caso Savolta,Eduardo Mendoza,978-8432216915,Anarquismo y espionaje en la Barcelona de 1917.,320,1975,https://amzn.to/3J6X1t2
-Crónica Real,Top 9 libros de crónica periodística,La Ladrona de Libros,Markus Zusak,978-0375842207,Niña que roba libros en la Alemania nazi.,592,2005,https://amzn.to/3J6X1t2
-Crónica Real,Top 9 libros de crónica periodística,El Arte de la Guerra,Sun Tzu,978-1590302255,Estrategia militar aplicada a negocios.,128,500 a.C.,https://amzn.to/3J6X1t2
-Crónica Real,Top 9 libros de crónica periodística,La Sombra del Viento,Carlos Ruiz Zafón,978-0143126392,Misterio literario en la Barcelona posguerra.,576,2001,https://amzn.to/3J6X1t2
-Crónica Real,Top 9 libros de crónica periodística,El Día Menos Pensado,Jorge Valdano,978-8466337608,Reflexiones sobre fútbol y sociedad.,256,2015,https://amzn.to/3J6X1t2
-Ensayo,Top 9 ensayos filosóficos cortos,El Mito de Sísifo,Albert Camus,978-0679733737,El absurdo y la rebelión.,192,1942,https://amzn.to/3J6X1t2
-Ensayo,Top 9 ensayos filosóficos cortos,El Existencialismo es un Humanismo,Jean-Paul Sartre,978-0300115468,Defensa del existencialismo.,144,1946,https://amzn.to/3J6X1t2
-Ensayo,Top 9 ensayos filosóficos cortos,Meditaciones,Marco Aurelio,978-0812968255,Reflexiones estoicas del emperador romano.,256,180 d.C.,https://amzn.to/3J6X1t2
-Ensayo,Top 9 ensayos filosóficos cortos,El Príncipe,Maquiavelo,978-0486272740,Manual para gobernar.,240,1513,https://amzn.to/3J6X1t2
-Ensayo,Top 9 ensayos filosóficos cortos,La República,Platón,978-0872201363,Diálogo sobre justicia y Estado.,416,380 a.C.,https://amzn.to/3J6X1t2
-Ensayo,Top 9 ensayos filosóficos cortos,Así Habló Zaratustra,Friedrich Nietzsche,978-0486411181,Parábolas sobre el superhombre.,352,1885,https://amzn.to/3J6X1t2
-Ensayo,Top 9 ensayos filosóficos cortos,El Contrato Social,Rousseau,978-0486426921,Origen del poder político.,192,1762,https://amzn.to/3J6X1t2
-Ensayo,Top 9 ensayos filosóficos cortos,Discurso del Método,René Descartes,978-0872204218,Duda y certeza en el conocimiento.,128,1637,https://amzn.to/3J6X1t2
-Ensayo,Top 9 ensayos filosóficos cortos,El Manifiesto Comunista,Marx y Engels,978-0140447576,Llamado a la revolución.,96,1848,https://amzn.to/3J6X1t2
-Drama,Top 9 obras de teatro clásicas,La Casa de Bernarda Alba,Federico García Lorca,978-0141180992,Represión y libertad en una familia andaluza.,128,1936,https://amzn.to/3J6X1t2
-Drama,Top 9 obras de teatro clásicas,Hamlet,William Shakespeare,978-0743477123,Venganza y locura en la corte danesa.,160,1603,https://amzn.to/3J6X1t2
-Drama,Top 9 obras de teatro clásicas,La Vida es Sueño,Pedro Calderón de la Barca,978-0140443714,Realidad versus ilusión.,192,1635,https://amzn.to/3J6X1t2
-Drama,Top 9 obras de teatro clásicas,El Rey Lear,William Shakespeare,978-0743482769,Locura y traición en una familia real.,160,1606,https://amzn.to/3J6X1t2
-Drama,Top 9 obras de teatro clásicas,Fausto,Johann Wolfgang von Goethe,978-0140449013,Pacto con el diablo y búsqueda de conocimiento.,464,1808,https://amzn.to/3J6X1t2
-Drama,Top 9 obras de teatro clásicas,La Celestina,Fernando de Rojas,978-8420416336,Amor y codicia en la España medieval.,320,1499,https://amzn.to/3J6X1t2
-Drama,Top 9 obras de teatro clásicas,Bodas de Sangre,Federico García Lorca,978-0141180992,Tragedia amorosa en un pueblo andaluz.,96,1933,https://amzn.to/3J6X1t2
-Drama,Top 9 obras de teatro clásicas,El Avaro,Molière,978-0486272702,Avaricia y sus consecuencias.,160,1668,https://amzn.to/3J6X1t2
-Drama,Top 9 obras de teatro clásicas,Tartufo,Molière,978-0486411150,Hipocresía religiosa y engaño.,128,1664,https://amzn.to/3J6X1t2
-Erotismo,Top 9 libros de erotismo literario,El Amante,Marguerite Duras,978-0060973209,Relato de una pasión prohibida en la Indochina colonial.,128,1984,https://amzn.to/3J6X1t2
-Erotismo,Top 9 libros de erotismo literario,Cincuenta Sombras de Grey,E.L. James,978-0345803481,Relación BDSM entre una estudiante y un empresario.,528,2011,https://amzn.to/3J6X1t2
-Erotismo,Top 9 libros de erotismo literario,La Historia de O,Pauline Réage,978-0345803412,Sumisión erótica extrema en un mundo de secretos.,192,1954,https://amzn.to/3J6X1t2
-Erotismo,Top 9 libros de erotismo literario,El Amante de Lady Chatterley,D.H. Lawrence,978-0141441499,Aventura extramatrimonial entre una aristócrata y su guardabosques.,384,1928,https://amzn.to/3J6X1t2
-Erotismo,Top 9 libros de erotismo literario,Venus en las Pieles,Leopold von Sacher-Masoch,978-0140447811,Contrato de sumisión entre un hombre y una mujer.,160,1870,https://amzn.to/3J6X1t2
-Erotismo,Top 9 libros de erotismo literario,Justine,Marqués de Sade,978-0199538884,Perversiones y castigos en la Francia del siglo XVIII.,512,1791,https://amzn.to/3J6X1t2
-Erotismo,Top 9 libros de erotismo literario,El Jardín de los Perfumes,Ana María Matute,978-8432216915,Sensaciones olfativas y deseos reprimidos.,224,1976,https://amzn.to/3J6X1t2
-Erotismo,Top 9 libros de erotismo literario,La Tía Julia y el Escribidor,Mario Vargas Llosa,978-0571225842,Relación entre un joven escritor y su divorciada tía.,352,1977,https://amzn.to/3J6X1t2
-Erotismo,Top 9 libros de erotismo literario,El Amante Inglés,Margaret Atwood,978-0385543780,Juego de poder y seducción en la Inglaterra victoriana.,416,2016,https://amzn.to/3J6X1t2
-Infantil,Top 9 libros para niños de 3-5 años,El Monstruo de Colores,Anna Llenas,978-8493987749,Identificar emociones a través de colores.,40,2012,https://amzn.to/3J6X1t2
-Infantil,Top 9 libros para niños de 3-5 años,El Pequeño Vampiro,Angela Sommer-Bodenburg,978-0140317934,Amistad entre un niño y un vampiro.,144,1979,https://amzn.to/3J6X1t2
-Infantil,Top 9 libros para niños de 3-5 años,Donde Viven los Monstruos,Maurice Sendak,978-0060254926,Aventuras de Max en la tierra de los monstruos.,48,1963,https://amzn.to/3J6X1t2
-Infantil,Top 9 libros para niños de 3-5 años,El Principito,Antoine de Saint-Exupéry,978-0156012194,Lecciones sobre vida y amistad desde un asteroide.,96,1943,https://amzn.to/3J6X1t2
-Infantil,Top 9 libros para niños de 3-5 años,El Gato Encerrado,Dr. Seuss,978-0394800012,Desorden creativo causado por a gato travieso.,72,1957,https://amzn.to/3J6X1t2
-Infantil,Top 9 libros para niños de 3-5 años,La Oruga Muy Hambrienta,Eric Carle,978-0399226908,Transformación de una oruga a través de la comida.,32,1969,https://amzn.to/3J6X1t2
-Infantil,Top 9 libros para niños de 3-5 años,Jorge el Curioso,H.A. Rey,978-0395150238,Travesuras de un mono en la ciudad.,64,1941,https://amzn.to/3J6X1t2
-Infantil,Top 9 libros para niños de 3-5 años,Harry Potter,J.K. Rowling,978-0439708180,Descubrimiento de la magia en un mundo oculto.,320,1997,https://amzn.to/3J6X1t2
-Infantil,Top 9 libros para niños de 3-5 años,Peter Pan,James Matthew Barrie,978-0451528810,Aventuras en el País de Nunca Jamás.,192,1911,https://amzn.to/3J6X1t2
-Aventura,Top 9 libros de aventuras en la selva,El Señor de los Anillos,J.R.R. Tolkien,978-0544003415,Épica para destruir un anillo maligno.,1216,1954,https://amzn.to/3J6X1t2
-Aventura,Top 9 libros de aventuras en la selva,El Libro de la Selva,Rudyard Kipling,978-0062389503,Niño criado por lobos en la India.,192,1894,https://amzn.to/3J6X1t2
-Aventura,Top 9 libros de aventuras en la selva,Las Aventuras de Tom Sawyer,Mark Twain,978-0486400778,Travesuras de un niño en el Mississippi.,288,1876,https://amzn.to/3J6X1t2
-Aventura,Top 9 libros de aventuras en la selva,Robinson Crusoe,Daniel Defoe,978-0141439822,Sobrevivencia en una isla desierta.,320,1719,https://amzn.to/3J6X1t2
-Aventura,Top 9 libros de aventuras en la selva,La Isla Misteriosa,Julio Verne,978-0140447361,Colonos escapados en una isla secreta.,624,1874,https://amzn.to/3J6X1t2
-Aventura,Top 9 libros de aventuras en la selva,El Tesoro de la Sierra Madre,B. Traven,978-0802143188,Búsqueda de oro en la selva mexicana.,320,1927,https://amzn.to/3J6X1t2
-Aventura,Top 9 libros de aventuras en la selva,El Coronel No Tiene Quien le Escriba,Gabriel García Márquez,978-0060883287,Vida de un coronel en un pueblo olvidado.,192,1961,https://amzn.to/3J6X1t2
-Aventura,Top 9 libros de aventuras en la selva,La Aventura de los Vampiros,Bram Stoker,978-0486411095,Caza de vampiros en Transilvania.,448,1897,https://amzn.to/3J6X1t2
-Aventura,Top 9 libros de aventuras en la selva,El Hombre que Calculaba,Malba Tahan,978-8479028319,Resolución de enigmas matemáticos en viajes.,256,1949,https://amzn.to/3J6X1t2
-Misterio,Top 9 novelas policíacas clásicas,El Padrino,Mario Puzo,978-0451205766,Familia mafiosa y su lucha por el poder.,448,1969,https://amzn.to/3J6X1t2
-Misterio,Top 9 novelas policíacas clásicas,El Caso del Cliente de las Ocho,Agatha Christie,978-0002314572,Hércules Poirot resuelve 9 crímenes.,256,1934,https://amzn.to/3J6X1t2
-Misterio,Top 9 novelas policíacas clásicas,El Perro de los Baskerville,Arthur Conan Doyle,978-0140437867,Holmes investiga una maldición familiar.,256,1902,https://amzn.to/3J6X1t2
-Misterio,Top 9 novelas policíacas clásicas,El Nombre de la Rosa,Umberto Eco,978-0544176560,Asesinatos en un monasterio medieval.,512,1980,https://amzn.to/3J6X1t2
-Misterio,Top 9 novelas policíacas clásicas,Rebecca,Daphne du Maurier,978-0380730407,Misterio en torno a la primera esposa de Maxim.,384,1938,https://amzn.to/3J6X1t2
-Misterio,Top 9 novelas policíacas clásicas,El Gato Negro,Edgar Allan Poe,978-0486277868,Locura y venganza de un gato.,64,1843,https://amzn.to/3J6X1t2
-Misterio,Top 9 novelas policíacas clásicas,La Sombra del Viento,Carlos Ruiz Zafón,978-0143126392,Misterio literario en la Barcelona posguerra.,576,2001,https://amzn.to/3J6X1t2
-Misterio,Top 9 novelas policíacas clásicas,El Código Da Vinci,Dan Brown,978-0307474278,Símbolos religiosos y un asesinato.,512,2003,https://amzn.to/3J6X1t2
-Misterio,Top 9 novelas policíacas clásicas,El Secreto de la Modelo,Agatha Christie,978-0002314572,Asesinato en un desfile de moda.,288,1929,https://amzn.to/3J6X1t2
-Ciencia Ficción,Top 9 libros de ciencia ficción cortos,Yo, Robot,Isaac Asimov,978-0553294385,Relatos sobre las tres leyes de la robótica.,256,1950,https://amzn.to/3J6X1t2
-Ciencia Ficción,Top 9 libros de ciencia ficción cortos,Fundación,Isaac Asimov,978-0553293357,Decadencia y resurgimiento de un imperio galáctico.,256,1951,https://amzn.to/3J6X1t2
-Ciencia Ficción,Top 9 libros de ciencia ficción cortos,Dune,Frank Herbert,978-0441172719,Lucha por el control del planeta Arrakis.,688,1965,https://amzn.to/3J6X1t2
-Ciencia Ficción,Top 9 libros de ciencia ficción cortos,El Juego de Ender,Orson Scott Card,978-0812550702,Niños entrenados para salvar a la humanidad.,352,1985,https://amzn.to/3J6X1t2
-Ciencia Ficción,Top 9 libros de ciencia ficción cortos,Neuromante,William Gibson,978-0441569595,Ciberespacio y realidad virtual.,320,1984,https://amzn.to/3J6X1t2
-Ciencia Ficción,Top 9 libros de ciencia ficción cortos,Fahrenheit 451,Ray Bradbury,978-1451673319,Sociedad donde los libros están prohibidos.,192,1953,https://amzn.to/3J6X1t2
-Ciencia Ficción,Top 9 libros de ciencia ficción cortos,Un Mundo Feliz,Aldous Huxley,978-0060850524,Sociedad controlada por ingeniería genética.,288,1932,https://amzn.to/3J6X1t2
-Ciencia Ficción,Top 9 libros de ciencia ficción cortos,La Guerra de los Mundos,H.G. Wells,978-0451530653,Invasión marciana a la Tierra.,192,1898,https://amzn.to/3J6X1t2
-Ciencia Ficción,Top 9 libros de ciencia ficción cortos,El Hombre Ilustrado,Ray Bradbury,978-1451673319,Relatos sobre fantasías y pesadillas.,192,1951,https://amzn.to/3J6X1t2
-Fantasía,Top 9 sagas de fantasía épica,El Señor de los Anillos,J.R.R. Tolkien,978-0544003415,Guerra por el Anillo Único en la Tierra Media.,1216,1954,https://amzn.to/3J6X1t2
-Fantasía,Top 9 sagas de fantasía épica,Canción de Hielo y Fuego,George R.R. Martin,978-0553582017,Lucha por el Trono de Hierro en Poniente.,832,1996,https://amzn.to/3J6X1t2
-Fantasía,Top 9 sagas de fantasía épica,La Rueda del Tiempo,Robert Jordan,978-0812511819,Profecías y batallas en un mundo mágico.,832,1990,https://amzn.to/3J6X1t2
-Fantasía,Top 9 sagas de fantasía épica,Crónicas de Narnia,C.S. Lewis,978-0064471190,Aventuras en un mundo mágico a través de un armario.,784,1950,https://amzn.to/3J6X1t2
-Fantasía,Top 9 sagas de fantasía épica,Harry Potter,J.K. Rowling,978-0439708180,Magia y hechicería en Hogwarts.,320,1997,https://amzn.to/3J6X1t2
-Fantasía,Top 9 sagas de fantasía épica,El Legado,Christopher Paolini,978-0375826702,Jinete y su dragón en un mundo de magia.,768,2003,https://amzn.to/3J6X1t2
-Fantasía,Top 9 sagas de fantasía épica,Mistborn,Brandon Sanderson,978-0765311788,Sistema de magia basado en metales.,704,2006,https://amzn.to/3J6X1t2
-Fantasía,Top 9 sagas de fantasía épica,La Tierra Media,J.R.R. Tolkien,978-0544003415,Mitología y historia de la Tierra Media.,1216,1977,https://amzn.to/3J6X1t2
-Fantasía,Top 9 sagas de fantasía épica,La Torre Oscura,Stephen King,978-1501143519,Pistolero en un mundo que mezcla fantasía y western.,448,1982,https://amzn.to/3J6X1t2
-Novela Romántica,Top 9 novelas románticas históricas,Orgullo y Prejuicio,Jane Austen,978-0141439518,Amor y malentendidos en la Inglaterra georgiana.,432,1813,https://amzn.to/3J6X1t2
-Novela Romántica,Top 9 novelas románticas históricas,Jane Eyre,Charlotte Brontë,978-0141441146,Gobernanta y su misterioso empleador.,544,1847,https://amzn.to/3J6X1t2
-Novela Romántica,Top 9 novelas románticas históricas,Lo que el Viento se Llevó,Margaret Mitchell,978-1416548942,Amor y guerra en la Atlanta de la Guerra Civil.,1056,1936,https://amzn.to/3J6X1t2
-Novela Romántica,Top 9 novelas románticas históricas,La Dama de las Camelias,Alexandre Dumas,978-0140447163,Amor prohibido entre una cortesana y un joven.,192,1848,https://amzn.to/3J6X1t2
-Novela Romántica,Top 9 novelas románticas históricas,Anna Karenina,León Tolstói,978-0143035008,Adulterio y consecuencias en la Rusia zarista.,864,1877,https://amzn.to/3J6X1t2
-Novela Romántica,Top 9 novelas románticas históricas,Cumbres Borrascosas,Emily Brontë,978-0141439556,Pasión destructiva en los páramos ingleses.,448,1847,https://amzn.to/3J6X1t2
-Novela Romántica,Top 9 novelas románticas históricas,El Gran Gatsby,F. Scott Fitzgerald,978-0743273565,American Dream y amor imposible en los años 20.,192,1925,https://amzn.to/3J6X1t2
-Novela Romántica,Top 9 novelas románticas históricas,La Casa de los Espíritus,Isabel Allende,978-1501117016,Saga familiar en el Chile del siglo XX.,464,1982,https://amzn.to/3J6X1t2
-Novela Romántica,Top 9 novelas románticas históricas,El Amante,Marguerite Duras,978-0060973209,Pasión juvenil en la Indochina colonial.,128,1984,https://amzn.to/3J6X1t2
-No Ficción,Top 9 libros de no ficción impactantes,Sapiens,Yuval Noah Harari,978-0062316097,Breve historia de la humanidad.,464,2011,https://amzn.to/3J6X1t2
-No Ficción,Top 9 libros de no ficción impactantes,Homo Deus,Yuval Noah Harari,978-0062464316,Futuro de la humanidad con tecnología.,464,2015,https://amzn.to/3J6X1t2
-No Ficción,Top 9 libros de no ficción impactantes,21 Lecciones para el Siglo XXI,Yuval Noah Harari,978-0525512172,Desafíos actuales de la humanidad.,432,2018,https://amzn.to/3J6X1t2
-No Ficción,Top 9 libros de no ficción impactantes,El Cerebro de Broca,Carl Sagan,978-0345336897,Reflexiones sobre ciencia y evolución.,352,1979,https://amzn.to/3J6X1t2
-No Ficción,Top 9 libros de no ficción impactantes,Cosmos,Carl Sagan,978-0345539434,Viaje por el universo y sus misterios.,384,1980,https://amzn.to/3J6X1t2
-No Ficción,Top 9 libros de no ficción
+Negocios y Emprendimiento,Top 9 libros para emprendedores principiantes,El Emprendedor de Éxito,Chris Guillebeau,978-8499086761,Guía práctica para lanzar negocios con recursos mínimos y creatividad.,320,2012
+Negocios y Emprendimiento,Top 9 libros para emprendedores principiantes,Lean Startup,Eric Ries,978-0307887894,Metodología para crear empresas ágiles mediante experimentación continua.,336,2011
+Negocios y Emprendimiento,Top 9 libros para emprendedores principiantes,El Monje que Vendió su Ferrari,Robin Sharma,978-0062515674,Lecciones sobre liderazgo y propósito a través de una parábola motivacional.,208,1997
+Negocios y Emprendimiento,Top 9 libros para emprendedores principiantes,Padre Rico, Padre Pobre,Robert Kiyosaki,978-1612681137,Enseñanzas sobre activos, pasivos y mentalidad financiera para la libertad.,336,2000
+Negocios y Emprendimiento,Top 9 libros para emprendedores principiantes,Buenos Malos,Ben Horowitz,978-0062273208,Consejos brutales para sobrevivir en los momentos más difíciles del emprendimiento.,288,2014
+Negocios y Emprendimiento,Top 9 libros para emprendedores principiantes,Hábitos Atómicos,James Clear,978-1847941831,Cómo construir buenos hábitos y eliminar malos con pequeños cambios diarios.,320,2018
+Negocios y Emprendimiento,Top 9 libros para emprendedores principiantes,Trabaja 4 Horas a la Semana,Tim Ferriss,978-0307465351,Estrategias para automatizar ingresos y liberar tiempo mediante outsourcing.,416,2007
+Negocios y Emprendimiento,Top 9 libros para emprendedores principiantes,El Arte de Empezar,Guy Kawasaki,978-1591840565,Claves para lanzar productos innovadores y crear movimientos empresariales.,304,2004
+Negocios y Emprendimiento,Top 9 libros para emprendedores principiantes,El Efecto Talismán,Rhonda Byrne,978-1582702110,La ley de atracción aplicada a los negocios y la manifestación de oportunidades.,224,2006
+Negocios y Emprendimiento,Top 9 libros de marketing digital,Marketing de Contenidos,Joe Pulizzi,978-1118660632,Estrategias para atraer clientes mediante contenido valioso y relevante.,320,2013
+Negocios y Emprendimiento,Top 9 libros de marketing digital,Influencer,Brittany Hennessy,978-0143132072,Guía para colaborar con influencers y construir marcas personales.,288,2018
+Negocios y Emprendimiento,Top 9 libros de marketing digital,Esto es Marketing,Seth Godin,978-0525540830,Marketing centrado en el cliente y en crear conexiones significativas.,256,2018
+Negocios y Emprendimiento,Top 9 libros de marketing digital,Growth Hacker Marketing,Ryan Holiday,978-1591847380,Técnicas para crecer exponencialmente con bajo presupuesto.,224,2013
+Negocios y Emprendimiento,Top 9 libros de marketing digital,El Libro Negro del Marketing,Jürgen Kluge,978-8498751497,Estrategias poco convencionales para destacar en mercados saturados.,352,2015
+Negocios y Emprendimiento,Top 9 libros de marketing digital,SEO 2024,Adam Clarke,978-1838271687,Técnicas actualizadas para posicionamiento en buscadores y tráfico orgánico.,416,2023
+Negocios y Emprendimiento,Top 9 libros de marketing digital,La Trampa Publicitaria,Martin Lindstrom,978-0743277785,Análisis de manipulación publicitaria y cómo resistirla.,384,2011
+Negocios y Emprendimiento,Top 9 libros de marketing digital,Contagious,Jonah Berger,978-1451686586,Por qué algunas ideas se viralizan y cómo aplicarlo a productos.,272,2013
+Negocios y Emprendimiento,Top 9 libros de marketing digital,Building a StoryBrand,Donald Miller,978-0718033323,Clarificar tu mensaje para conectar con clientes y vender más.,240,2017
+Negocios y Emprendimiento,Top 9 libros sobre finanzas personales,El Dinero,Fernando Trías de Bes,978-8499086778,Psicología del dinero y cómo tomar decisiones financieras inteligentes.,304,2018
+Negocios y Emprendimiento,Top 9 libros sobre finanzas personales,Invierta en Bolsa,Benjamin Graham,978-0060555665,Principios atemporales para invertir con seguridad y rentabilidad.,320,1949
+Negocios y Emprendimiento,Top 9 libros sobre finanzas personales,El Secreto,Rhonda Byrne,978-1582701707,La ley de atracción aplicada a la abundancia y prosperidad.,224,2006
+Negocios y Emprendimiento,Top 9 libros sobre finanzas personales,El Hombre Más Rico de Babilonia,George S. Clason,978-0451205360,Parábolas sobre ahorro, inversión y manejo del dinero a través de la historia.,144,1926
+Negocios y Emprendimiento,Top 9 libros sobre finanzas personales,Piense y Hágase Rico,Napoleon Hill,978-1612680239,Mentalidad para alcanzar el éxito financiero mediante la persistencia.,256,1937
+Negocios y Emprendimiento,Top 9 libros sobre finanzas personales,El Duelo,Arturo Pérez-Reverte,978-8423357986,Novela sobre ambición, poder y corrupción en el mundo financiero.,448,2020
+Negocios y Emprendimiento,Top 9 libros sobre finanzas personales,La Psicología del Dinero,Morgan Housel,978-0857197689,Lecciones breves sobre comportamiento financiero y decisiones irracionales.,256,2020
+Negocios y Emprendimiento,Top 9 libros sobre finanzas personales,El Inversor Inteligente,Benjamin Graham,978-0060555665,Defensiva y especulación en mercados volátiles.,640,1949
+Negocios y Emprendimiento,Top 9 libros sobre finanzas personales,Rico para Siempre,Tomás Byrnes,978-8418057093,Estrategias para generar ingresos pasivos y libertad financiera.,288,2021
+Desarrollo Personal,Top 9 libros para superar la procrastinación,Comezón de Moverse,Mel Robbins,978-1473661238,Técnica de los 5 segundos para vencer la indecisión y actuar.,288,2017
+Desarrollo Personal,Top 9 libros para superar la procrastinación,El Arte de la Simplicidad,Dominique Loreau,978-0143009035,Minimalismo aplicado a la vida diaria para enfocarse en lo esencial.,224,2005
+Desarrollo Personal,Top 9 libros para superar la procrastinación,Hábitos Atómicos,James Clear,978-1847941831,Cómo construir buenos hábitos y eliminar malos con pequeños cambios diarios.,320,2018
+Desarrollo Personal,Top 9 libros para superar la procrastinación,La Sombra del Viento,Carlos Ruiz Zafón,978-0143126392,Novela sobre la pasión por los libros y la superación personal.,576,2001
+Desarrollo Personal,Top 9 libros para superar la procrastinación,El Poder del Ahora,Eckhart Tolle,978-1577314806,Vivir en el presente para liberarse de ansiedades y miedos.,224,1997
+Desarrollo Personal,Top 9 libros para superar la procrastinación,Minimalismo,Francine Jay,978-0345811844,Guía para deshacerse de lo innecesario và enfocarse en experiencias.,192,2016
+Desarrollo Personal,Top 9 libros para superar la procrastinación,Despierta el Gigante que Dormita,Anthony Robbins,978-0743409391,Técnicas para liberar potencial interior y tomar control de la vida.,560,1991
+Desarrollo Personal,Top 9 libros para superar la procrastinación,El Método,Greg McKeown,978-0804137386,La disciplina de enfocarse en lo esencial y decir "no" a lo trivial.,272,2014
+Desarrollo Personal,Top 9 libros para superar la procrastinación,La Magia del Orden,Marie Kondo,978-1607747307,Método KonMari para organizar el espacio y la mente.,224,2011
+Desarrollo Personal,Top 9 libros de psicología positiva,Fluir,Mihaly Csikszentmihalyi,978-0061339202,La psicología de la experiencia óptima y la felicidad.,320,1990
+Desarrollo Personal,Top 9 libros de psicología positiva,Felicidad,Ed Diener,978-0071458193,Ciencia de la felicidad y cómo cultivarla en la vida diaria.,288,2008
+Desarrollo Personal,Top 9 libros de psicología positiva,El Cerebro del Niño,Daniel J. Siegel,978-0553386691,Desarrollo infantil y cómo fomentar bienestar emocional.,336,2011
+Desarrollo Personal,Top 9 libros de psicología positiva,Resiliente,Rick Hanson,978-0451498848,Construir fortaleza mental para superar adversidades.,320,2018
+Desarrollo Personal,Top 9 libros de psicología positiva,La Felicidad es un Camino,Boris Cyrulnik,978-8499423183,Resiliencia y cómo encontrar sentido en el sufrimiento.,256,2014
+Desarrollo Personal,Top 9 libros de psicología positiva,El Proyecto Happiness,Gretchen Rubin,978-0061583261,Un año de experimentos para aumentar la felicidad.,304,2009
+Desarrollo Personal,Top 9 libros de psicología positiva,Optimismo,Martin Seligman,978-0671019112,Cómo cambiar el pensamiento pesimista por uno optimista.,320,1990
+Desarrollo Personal,Top 9 libros de psicología positiva,La Vida Secreta del Cerebro,David Eagleman,978-0307377333,Neurociencia de las emociones y la toma de decisiones.,288,2011
+Desarrollo Personal,Top 9 libros de psicología positiva,El Poder de los Hábitos,Charles Duhigg,978-0812981605,Cómo los hábitos moldean nuestras vidas y cómo cambiarlos.,400,2012
+Tecnología y Futuro,Top 9 libros sobre inteligencia artificial,Superinteligencia,Nick Bostrom,978-0199678112,Riesgos y oportunidades de la IA superhumana.,352,2014
+Tecnología y Futuro,Top 9 libros sobre inteligencia artificial,Vida 3.0,Max Tegmark,978-1101970317,Futuro de la IA y su impacto en la humanidad.,384,2017
+Tecnología y Futuro,Top 9 libros sobre inteligencia artificial,El Fin del Empleo,Ricardo Vargas,978-8423426303,Automatización y el futuro del trabajo en la era de la IA.,304,2018
+Tecnología y Futuro,Top 9 libros sobre inteligencia artificial,Homo Deus,Yuval Noah Harari,978-0062464316,El futuro de la humanidad con biotecnología e IA.,464,2015
+Tecnología y Futuro,Top 9 libros sobre inteligencia artificial,AI Superpowers,Kai-Fu Lee,978-1328546395,Carrera global por el dominio de la IA entre China y EE.UU.,288,2018
+Tecnología y Futuro,Top 9 libros sobre inteligencia artificial,La Cuarta Revolución Industrial,Klaus Schwab,978-1947866174,Fusión de tecnologías que transforman la economía y sociedad.,320,2016
+Tecnología y Futuro,Top 9 libros sobre inteligencia artificial,Arquitectura de Sistemas,Luis Joyanes,978-6073226098,Fundamentos de diseño de sistemas complejos.,512,2019
+Tecnología y Futuro,Top 9 libros sobre inteligencia artificial,Deep Learning,Ian Goodfellow,978-0262035613,Introducción a redes neuronales y aprendizaje profundo.,800,2016
+Tecnología y Futuro,Top 9 libros sobre inteligencia artificial,El Futuro de la Humanidad,Michio Kaku,978-0385542760,Predicciones sobre colonización espacial y tecnología.,352,2018
+Tecnología y Futuro,Top 9 libros de ciencia ficción distópica,1984,George Orwell,978-0451524935,Sociedad totalitaria bajo vigilancia constante.,328,1949
+Tecnología y Futuro,Top 9 libros de ciencia ficción distópica,Un Mundo Feliz,Aldous Huxley,978-0060850524,Sociedad controlada por ingeniería genética y drogas.,288,1932
+Tecnología y Futuro,Top 9 libros de ciencia ficción distópica,Fahrenheit 451,Ray Bradbury,978-1451673319,Sociedad donde los libros están prohibidos.,192,1953
+Tecnología y Futuro,Top 9 libros de ciencia ficción distópica,El Juego de Ender,Orson Scott Card,978-0812550702,Niños entrenados para salvar a la humanidad de alienígenas.,352,1985
+Tecnología y Futuro,Top 9 libros de ciencia ficción distópica,Neuromante,William Gibson,978-0441569595,Ciberespacio y realidad virtual en un futuro decadente.,320,1984
+Tecnología y Futuro,Top 9 libros de ciencia ficción distópica,La Trilogía de los Mundos,Cixin Liu,978-0765377067,Contacto con civilizaciones alienígenas y sus consecuencias.,400,2008
+Tecnología y Futuro,Top 9 libros de ciencia ficción distópica,Parque Jurásico,Michael Crichton,978-0345538987,Dinosaurios recreados mediante ingeniería genética.,448,1990
+Tecnología y Futuro,Top 9 libros de ciencia ficción distópica,El Hombre en el Castillo,Philip K. Dick,978-0547572482,Mundo alternativo donde las potencias del Eje ganaron la II Guerra Mundial.,256,1962
+Tecnología y Futuro,Top 9 libros de ciencia ficción distópica,Los Juegos del Hambre,Suzanne Collins,978-0439023528,Juvenes luchando en un reality show mortal.,384,2008
+Historia y Política,Top 9 libros sobre la Segunda Guerra Mundial,La Segunda Guerra Mundial,Antony Beevor,978-0316023740,Análisis exhaustivo de conflictos y estrategias bélicas.,864,2012
+Historia y Política,Top 9 libros sobre la Segunda Guerra Mundial,El Diario de Ana Frank,Ana Frank,978-0553296983,Vida de una adolescente escondida durante el Holocausto.,352,1947
+Historia y Política,Top 9 libros sobre la Segunda Guerra Mundial,Los Hijos de la Libertad,Ken Follett,978-0451235284,Espías y resistencia en la Europa ocupada.,640,2020
+Historia y Política,Top 9 libros sobre la Segunda Guerra Mundial,El Alba de la Tercera Edad,Winston Churchill,978-0395410565,Memoires de Churchill durante la guerra.,752,1948
+Historia y Política,Top 9 libros sobre la Segunda Guerra Mundial,La Noche Más Oscura,Mark Bowden,978-1594203476,Operación para capturar a Osama bin Laden.,448,2012
+Historia y Política,Top 9 libros sobre la Segunda Guerra Mundial,Día D,Stephen Ambrose,978-0743492533,Desembarco de Normandía y sus consecuencias.,656,1994
+Historia y Política,Top 9 libros sobre la Segunda Guerra Mundial,El Código Da Vinci,Dan Brown,978-0307474278,Misterios históricos y sociedades secretas.,512,2003
+Historia y Política,Top 9 libros sobre la Segunda Guerra Mundial,Sapiens,Yuval Noah Harari,978-0062316097,Breve historia de la humanidad y sus conflictos.,464,2011
+Historia y Política,Top 9 libros sobre la Segunda Guerra Mundial,El Puente de los Espías,Giles Whittell,978-0340991579,Intercambio de espías entre EE.UU. y URSS en la Guerra Fría.,320,2010
+Historia y Política,Top 9 libros de filosofía para principiantes,El Mundo de Sofía,Jostein Gaarder,978-0374530716,Introducción a la filosofía a través de una historia misteriosa.,544,1991
+Historia y Política,Top 9 libros de filosofía para principiantes,Así Habló Zaratustra,Friedrich Nietzsche,978-0486411181,Parábolas sobre el superhombre y la voluntad de poder.,352,1885
+Historia y Política,Top 9 libros de filosofía para principiantes,El Príncipe,Maquiavelo,978-0486272740,Manual para gobernar y mantener el poder.,240,1513
+Historia y Política,Top 9 libros de filosofía para principiantes,Fedón,Platón,978-0872206333,Diálogo sobre el alma y la inmortalidad.,128,380 a.C.
+Historia y Política,Top 9 libros de filosofía para principiantes,El Existencialismo es un Humanismo,Jean-Paul Sartre,978-0300115468,Defensa del existencialismo y su relación con el marxismo.,144,1946
+Historia y Política,Top 9 libros de filosofía para principiantes,Meditaciones,Marco Aurelio,978-0812968255,Reflexiones personal sobre ética y estoicismo.,256,180 d.C.
+Historia y Política,Top 9 libros de filosofía para principiantes,El Contrato Social,Rousseau,978-0486426921,Origen del poder político y bases de la democracia.,192,1762
+Historia y Política,Top 9 libros de filosofía para principiantes,La República,Platón,978-0872201363,Diálogo sobre justicia y el Estado ideal.,416,380 a.C.
+Historia y Política,Top 9 libros de filosofía para principiantes,Ética a Nicómaco,Aristóteles,978-0199213610,Teoría sobre la virtud y la felicidad humana.,368,350 a.C.
+Salud y Bienestar,Top 9 libros de nutrición saludable,Come, Reza, Ama,Elizabeth Gilbert,978-0143038417,Viaje de autodescubrimiento a través de la comida y espiritualidad.,352,2006
+Salud y Bienestar,Top 9 libros de nutrición saludable,El Plan Renal,Cristina Muñoz,978-8417277234,Dieta para proteger riñones y salud renal.,288,2019
+Salud y Bienestar,Top 9 libros de nutrición saludable,La Dieta de la Luna,Sergi Torres,978-8491111448,Ayunar según ciclos lunares para detoxificar.,224,2018
+Salud y Bienestar,Top 9 libros de nutrición saludable,El Libro de la Cocina Saludable,Jamie Oliver,978-0718193544,Recetas nutritivas y fáciles para el día a día.,320,2017
+Salud y Bienestar,Top 9 libros de nutrición saludable,El Método Kousmine,Catherine Kousmine,978-8472453720,Dieta basada en aceite de linaza y alimentos integrales.,256,1987
+Salud y Bienestar,Top 9 libros de nutrición saludable,Ayuno Intermitente,Jason Fung,978-1771641258,Cómo ayunar para perder peso y mejorar salud.,288,2016
+Salud y Bienestar,Top 9 libros de nutrición saludable,La Dieta de la Zona,Barry Sears,978-0060391902,Equilibrio hormonal mediante proporción de nutrientes.,320,1995
+Salud y Bienestar,Top 9 libros de nutrición saludable,El Poder del Metabolismo,Frank Suarez,978-1466267876,Acelerar metabolismo para quemar grasa.,304,20110
+Salud y Bienestar,Top 9 libros de nutrición saludable,Nutrición Deportiva,Anita Bean,978-1472976723,Alimentación para rendimiento deportivo.,352,2017
+Literatura Clásica,Top 9 novelas rusas imprescindibles,Guerra y Paz,León Tolstói,978-0140447934,Épica sobre invasión napoleónica y vidas de aristócratas.,1232,1869
+Literatura Clásica,Top 9 novelas rusas imprescindibles,Crimen y Castigo,Fiódor Dostoievski,978-0140449136,Asesinato, culpa y redención en San Petersburgo.,672,1866
+Literatura Clásica,Top 9 novelas rusas imprescindibles,Anna Karenina,León Tolstói,978-0143035008,Tragedia de una adúltera en la sociedad rusa del siglo XIX.,864,1877
+Literatura Clásica,Top 9 novelas rusas imprescindibles,Los Hermanos Karamázov,Fiódor Dostoievski,978-0374528379,Conflicto entre fe, razón y pasión en una familia.,960,1880
+Literatura Clásica,Top 9 novelas rusas imprescindibles,El Maestro y Margarita,Mijaíl Bulgákov,978-0679760801,Sátira sobre la sociedad soviética con elementos fantásticos.,480,1967
+Literatura Clásica,Top 9 novelas rusas imprescindibles,Un Hombre Feliz,Iván Turguénev,978-0140444254,Relatos sobre la vida rural rusa y sus contradicciones.,320,1856
+Literatura Clásica,Top 9 novelas rusas imprescindibles,Padres e Hijos,Iván Turguénev,978-0199536073,Conflicto generacional entre nihilistas y conservadores.,256,1862
+Literatura Clásica,Top 9 novelas rusas imprescindibles,El Idiota,Fiódor Dostoievski,978-0140447927,Inocencia y bondad en un mundo corrupto.,672,1869
+Literatura Clásica,Top 9 novelas rusas imprescindibles,Resurrección,León Tolstói,978-0199536189,Redención moral a través del amor y la justicia.,512,1899
+Viajes y Aventura,Top 9 libros de viajes por Latinoamérica,La Casa de los Espíritus,Isabel Allende,978-1501117016,Saga familiar en Chile con elementos mágicos.,464,1982
+Viajes y Aventura,Top 9 libros de viajes por Latinoamérica,Diario de Motocicleta,Che Guevara,978-0007172060,Viaje juvenil por Sudamérica que moldeó su ideología.,192,1993
+Viajes y Aventura,Top 9 libros de viajes por Latinoamérica,Cien Años de Soledad,Gabriel García Márquez,978-0060883287,Historia mítica de Macondo y la familia Buendía.,448,1967
+Viajes y Aventura,Top 9 libros de viajes por Latinoamérica,El Alquimista,Paulo Coelho,978-0062315007,Búsqueda del tesoro personal a través del desierto.,208,1988
+Viajes y Aventura,Top 9 libros de viajes por Latinoamérica,La Ciudad y los Perros,Mario Vargas Llosa,978-0060584705,Vida en un colegio militar peruano y corrupción.,320,1963
+Viajes y Aventura,Top 9 libros de viajes por Latinoamérica,El Huevo de la Serpiente,Carlos Fuentes,978-0374532208,México a través de la historia y sus mitos.,416,1962
+Viajes y Aventura,Top 9 libros de viajes por Latinoamérica,La Tía Julia y el Escribidor,Mario Vargas Llosa,978-0571225842,Comedia romántica y crítica social en Lima.,352,1977
+Viajes y Aventura,Top 9 libros de viajes por Latinoamérica,El Viejo y el Mar,Ernest Hemingway,978-0684801223,Pescador cubano lucha contra un pez espada en el Caribe.,128,1952
+Viajes y Aventura,Top 9 libros de viajes por Latinoamérica,Los Detectives Salvajes,Roberton Bolaño,978-0312427481,Búsqueda de poetas desaparecidos por México y el mundo.,656,1998
+Arte y Creatividad,Top 9 libros sobre historia del arte,Historia del Arte,E.H. Gombrich,978-0714832470,Introducción completa a la historia del arte occidental.,688,1950
+Arte y Creatividad,Top 9 libros sobre historia del arte,Los Secretos del Arte,Daniel Arasse,978-2080107403,Análisis de obras maestras y sus significados ocultos.,384,2006
+Arte y Creatividad,Top 9 libros sobre historia del arte,El Arte como Experiencia,John Dewey,978-0399531972,Teoría sobre el arte como interacción entre obra y espectador.,368,1934
+Arte y Creatividad,Top 9 libros sobre historia del arte,La Vida de los Artistas,Giorgio Vasari,978-0140445008,Biografías de artistas del Renacimiento italiano.,512,1550
+Arte y Creatividad,Top 9 libros sobre historia del arte,El Guernica,Gijs van Hensbergen,978-0060539378,Historia del cuadro más famoso de Picasso y su contexto.,320,2004
+Arte y Creatividad,Top 9 libros sobre historia del arte,Arte Moderno,Norbert Lynton,978-0500203957,Del impresionismo al arte contemporáneo.,448,1980
+Arte y Creatividad,Top 9 libros sobre historia del arte,La Historia del Arte,Frederick Hartt,978-0810914472,Arte occidental desde la prehistoria hasta el siglo XX.,1024,1976
+Arte y Creatividad,Top 9 libros sobre historia del arte,El Expresionismo,Shulamith Behr,978-0521786559,Movimiento artístico alemán y sus exponentes.,224,1999
+Arte y Creatividad,Top 9 libros sobre historia del arte,Arte Contemporáneo,Brandon Taylor,978-0500203933,Tendencias y artistas desde 1945 hasta hoy.,352,2004
+Ciencia y Naturaleza,Top 9 libros de divulgación científica,Breve Historia del Tiempo,Stephen Hawking,978-0553380163,Origen del universo, agujeros negros y viaje en el tiempo.,256,1988
+Ciencia y Naturaleza,Top 9 libros de divulgación científica,Cosmos,Carl Sagan,978-0345539434,Viaje por el universo y la evolución de la science.,384,1980
+Ciencia y Naturaleza,Top 9 libros de divulgación científica,El Origen de las Especies,Charles Darwin,978-0451529060,Teoría de la evolución por selección natural.,544,1859
+Ciencia y Naturaleza,Top 9 libros de divulgación científica,La Estructura de las Revoluciones Científicas,Thomas Kuhn,978-0226458120,Cómo la ciencia avanza mediante cambios de paradigma.,320,1962
+Ciencia y Naturaleza,Top 9 libros de divulgación científica,El Gen Egoísta,Richard Dawkins,978-0192860927,Evolución desde la perspectiva de los genes.,360,1976
+Ciencia y Naturaleza,Top 9 libros de divulgación científica,La Mente de Dios,Paul Davies,978-0671797183,Física y metafísica en la búsqueda del origen.,320,1992
+Ciencia y Naturaleza,Top 9 libros de divulgación científica,Sapiens,Yuval Noah Harari,978-0062316097,Breve historia de la humanidad y su dominio del planeta.,464,2011
+Ciencia y Naturaleza,Top 9 libros de divulgación científica,El Universo Elegante,Brian Greene,978-0375708114,Teoría de cuerdas y unificación de la física.,512,1999
+Ciencia y Naturaleza,Top 9 libros de divulgación científica,El Cerebro de Broca,Carl Sagan,978-0345336897,Reflexiones sobre ciencia, religión y evolución.,352,1979
+Misterio y Thriller,Top 9 thrillers psicológicos,La Chica del Tren,Paula Hawkins,978-1594634024,Mujer observa desde el tren un crimen que nadie más vio.,336,2015
+Misterio y Thriller,Top 9 thrillers psicológicos,El Silencio de los Inocentes,Thomas Harris,978-0312924584,Agente FBI persigue a un asesino en serie con ayuda de otro.,368,1988
+Misterio y Thriller,Top 9 thrillers psicológicos,Gone Girl,Gillian Flynn,978-0307588371,Matrimonio perfecto se desmorona tras desaparición de la esposa.,448,2012
+Misterio y Thriller,Top 9 thrillers psicológicos,El Psicópata de al Lado,M.J. Arlidge,978-0451471535,Detective persigue a un asesino que elige víctimas al azar.,384,2014
+Misterio y Thriller,Top 9 thrillers psicológicos,La Casa de al Lado,Shari Lapena,978-0735221086,Pareja descubre secretos oscuros de sus vecinos.,320,2016
+Misterio y Thriller,Top 9 thrillers psicológicos,El Código Da Vinci,Dan Brown,978-0307474278,Símbolos religiosos y conspiraciones en un asesinato.,512,2003
+Misterio y Thriller,Top 9 thrillers psicológicos,La Sombra del Viento,Carlos Ruiz Zafón,978-0143126392,Misterio en torno a un libro prohibido en la Barcelona posguerra.,576,2001
+Misterio y Thriller,Top 9 thrillers psicológicos,Requiem por un Sueño,Hubert Selby Jr.,978-1573225127,Adicciones y sus consecuencias destructivas.,224,1978
+Misterio y Thriller,Top 9 thrillers psicológicos,El Secreto,Ken Follett,978-0525955188,Conspiración para robar un manuscrito medieval.,512,2020
+Relaciones y Familia,Top 9 libros sobre crianza positiva,Disciplina sin Lágrimas,Daniel Siegel,978-0553386691,Criar hijos con empatía y conexión emocional.,336,2014
+Relaciones y Familia,Top 9 libros sobre crianza positiva,Cómo Hablar para que sus Hijos le Escuchen,Adele Faber,978-1451663884,Técnicas de comunicación efectiva con niños.,304,1980
+Relaciones y Familia,Top 9 libros sobre crianza positiva,El Cerebro del Niño,Daniel J. Siegel,978-0553386691,Desarrollo cerebral infantil y cómo estimularlo.,336,2011
+Relaciones y Familia,Top 9 libros sobre crianza positiva,Educar sin Lágrimas,Rosa Jové,978-8499086785,Crianza respetuosa y límites amorosos.,288,2003
+Relaciones y Familia,Top 9 libros sobre crianza positiva,Padres Presentes, Hijos Felices,Rafael Guerrero,978-8433029478,Importancia de la paternidad activa.,256,2017
+Relaciones y Familia,Top 9 libros sobre crianza positiva,La Disciplina Positiva,Jane Nelsen,978-0761524212,Educar con respeto y firmeza al mismo tiempo.,320,2006
+Relaciones y Familia,Top 9 libros sobre crianza positiva,El Misterio del Niño,Janusz Korczak,978-3868390726,Derechos del niño y su dignidad.,224,1920
+Relaciones y Familia,Top 9 libros sobre crianza positiva,Criar Bien a un Hijo,Carlos González,978-8499086792,Lactancia materna y crianza natural.,416,2003
+Relaciones y Familia,Top 9 libros sobre crianza positiva,Educar en el Asombro,Catherine L'Ecuyer,978-8423428642,Fomentar curiosidad y aprendizaje significativo.,304,2015
+Espiritualidad,Top 9 libros de mindfulness y meditación,El Poder del Ahora,Eckhart Tolle,978-1577314806,Vivir en el presente para liberarse de ansiedades.,224,1997
+Espiritualidad,Top 9 libros de mindfulness y meditación,Mindfulness,Mark Williams,978-1462510427,Terapia cognitiva basada en mindfulness para depresión.,288,2007
+Espiritualidad,Top 9 libros de mindfulness y meditación,El Camino del Artista,Julia Cameron,978-1585421466,Recuperar creatividad y superar bloqueos.,240,1992
+Espiritualidad,Top 9 libros de mindfulness y meditación,La Práctica de la Atención Plena,Jon Kabat-Zinn,978-0345836994,Reducción del estrés mediante meditación.,432,1990
+Espiritualidad,Top 9 libros de mindfulness y meditación,El Monje que Vendió su Ferrari,Robin Sharma,978-0062515674,Parábola sobre encontrar propósito y equilibrio.,208,1997
+Espiritualidad,Top 9 libros de mindfulness y meditación,Un Curso de Milagros,Helen Schucman,978-1883360267,Enseñanzas espirituales para paz interior.,672,1976
+Espiritualidad,Top 9 libros de mindfulness y meditación,El Libro Tibetano de la Vida y la Muerte,Sogyal Rimpoché,978-0062508348,Muerte y morir desde la perspectiva budista.,512,1992
+Espiritualidad,Top 9 libros de mindfulness y meditación,La Paz Interior,Thich Nhat Hanh,978-1888375929,Encontrar serenidad en un mundo caótico.,192,1991
+Espiritualidad,Top 9 libros de mindfulness y meditación,Meditación,Osho,978-0312187194,Técnicas para experimentar estados meditativos.,320,1988
+Economía y Sociedad,Top 9 libros sobre desigualdad económica,Capital en el Siglo XXI,Thomas Piketty,978-0674430006,Análisis de concentración de riqueza y sus soluciones.,976,2013
+Economía y Sociedad,Top 9 libros sobre desigualdad económica,El Capitalismo del Siglo XXI,Joseph Stiglitz,978-0393352240,Crítica al sistema económico actual y propuestas de cambio.,448,2015
+Economía y Sociedad,Top 9 libros sobre desigualdad económica,La Globalización y sus Descontentos,Joseph Stiglitz,978-0393324391,Efectos negativos de la globalización en países pobres.,304,2002
+Economía y Sociedad,Top 9 libros sobre desigualdad económica,23 Cosas que no te Cuentan sobre el Capitalismo,Ha-Joon Chang,978-1608191667,Mitos económicos desmentidos con datos históricos.,304,2010
+Economía y Sociedad,Top 9 libros sobre desigualdad económica,El Choque de Civilizaciones,Samuel Huntington,978-0684844411,Conflictos futuros entre culturas como eje de la política.,384,1996
+Economía y Sociedad,Top 9 libros sobre desigualdad económica,La Riqueza de las Naciones,Adam Smith,978-0553585975,Fundamentos del capitalismo y división del trabajo.,1152,1776
+Economía y Sociedad,Top 9 libros sobre desigualdad económica,El Fin de la Pobreza,Jeffrey Sachs,978-0143036586,Plan para erradicar pobreza extrema para 2025.,432,2005
+Economía y Sociedad,Top 9 libros sobre desigualdad económica,Economía para No Economistas,John Kenneth Galbraith,978-0395358585,Conceptos económicos explicados de forma sencilla.,336,1978
+Economía y Sociedad,Top 9 libros sobre desigualdad económica,El Mundo es Plano,Thomas Friedman,978-0374292882,Globalización y sus efectos en la economía mundial.,512,2005
+Deportes,Top 9 libros de fútbol,Fútbol Contra el Enemigo,Simon Kuper,978-1568584813,Cómo el fútbol refleja política y sociedad.,448,2006
+Deportes,Top 9 libros de fútbol,El Origen,Dan Brown,978-0385511213,Orígenes históricos del fútbol y sus reglas.,384,2017
+Deportes,Top 9 libros de fútbol,Soccernomics,Simon Kuper,978-1568584257,Estadísticas y economía aplicadas al fútbol.,432,2009
+Deportes,Top 9 libros de fútbol,Maradona: La Historia Oficial,Ariel Scher,978-9504915723,Biografía completa de Diego Armando Maradona.,576,2005
+Deportes,Top 9 libros de fútbol,El Clásico,Sid Lowe,978-1409131040,Rivalidad entre Real Madrid y Barcelona.,352,2013
+Deportes,Top 9 libros de fútbol,Fútbol Total,David Winner,978-1568584615,Filosofía del fútbol holandés y su influencia.,320,2000
+Deportes,Top 9 libros de fútbol,Invertir en Fútbol,Rodrigo Hernández,978-8423428659,Finanzas y negocios en el mundo del fútbol.,288,2018
+Deportes,Top 9 libros de fútbol,El Día Menos Pensado,Jorge Valdano,978-8466337608,Reflexiones sobre el fútbol y su trascendencia.,256,2015
+Deportes,Top 9 libros de fútbol,La Piel del Toro,Javier Cárdenas,978-8408224185,Cultura taurina y su relación con la identidad española.,304,2019
+Cocina,Top 9 libros de cocina vegana,Thug Kitchen,Thug Kitchen,978-1623363581,Recetas veganas con lenguaje irreverente.,288,2014
+Cocina,Top 9 libros de cocina vegana,Veganomicon,Isa Chandra Moskowitz,978-0761149716,Clásicos veganos reinventados.,320,2007
+Cocina,Top 9 libros de cocina vegana,La Cocina Vegana,Alicia García,978-8491111455,Recetas españolas adaptadas a la dieta vegana.,256,2016
+Cocina,Top 9 libros de cocina vegana,Vegan para Siempre,Lucía Martínez,978-8425357782,Nutrición vegana basada en evidencia científica.,384,2018
+Cocina,Top 9 libros de cocina vegana,El Libro de la Cocina Vegana,Jamie Oliver,978-0718188731,Recetas sencillas y deliciosas sin productos animales.,320,2017
+Cocina,Top 9 libros de cocina vegana,Recetas para Ser Feliz,Laura Barrado,978-8417277241,Postres veganos saludables.,224,2019
+Cocina,Top 9 libros de cocina vegana,Vegan México,Jason Wyrick,978-1592335978,Cocina mexicana tradicional en versión vegana.,288,2014
+Cocina,Top 9 libros de cocina vegana,Despensa Vegana,Celia Rodríguez,978-8418057109,Guía para organizar una cocina vegana.,192,2020
+Cocina,Top 9 libros de cocina vegana,Cocina Vegana Fácil,Bettina Campolucci,978-1784882496,Recetas rápidas con ingredientes accesibles.,256,2018
+Medio Ambiente,Top 9 libros sobre cambio climático,La Tierra en Peligro,Al Gore,978-1594201223,Evidencias científicas del calentamiento global y soluciones.,448,2006
+Medio Ambiente,Top 9 libros sobre cambio climático,Nuestra Final,Naomi Klein,978-1451697391,Cómo el cambio climático transforma la economía y política.,528,2014
+Medio Ambiente,Top 9 libros sobre cambio climático,El Futuro de la Tierra,James Lovelock,978-0465071816,Predicciones sobre el futuro del planeta y la humanidad.,304,2006
+Medio Ambiente,Top 9 libros sobre cambio climático,Colapso,Jared Diamond,978-0143036555,Cómo sociedades eligen fracasar o tener éxito.,608,2005
+Medio Ambiente,Top 9 libros sobre cambio climático,La Sexta Extinción,Elizabeth Kolbert,978-0805092998,Extinción masiva actual y sus causas.,352,2014
+Medio Ambiente,Top 9 libros sobre cambio climático,Cómo Evitar un Desastre Climático,Bill Gates,978-0385546133,Plan para reducir emisiones de CO2 a cero.,288,2021
+Medio Ambiente,Top 9 libros sobre cambio climático,El Efecto Sombra,Tim Flannery,978-0802144086,Impacto humano en el clima y la biodiversidad.,384,2005
+Medio Ambiente,Top 9 libros sobre cambio climático,Tierra,David Brin,978-0553573330,Futuro ecológico y soluciones sostenibles.,416,1990
+Medio Ambiente,Top 9 libros sobre cambio climático,La Vía Láctea,Isaac Asimov,978-0380011439,Exploración del universo y su relación con la Tierra.,320,1977
+Psicología,Top 9 libros sobre inteligencia emocional,Inteligencia Emocional,Daniel Goleman,978-0553383713,Importancia de las emociones en el éxito personal y profesional.,384,1995
+Psicología,Top 9 libros sobre inteligencia emocional,El Cerebro Emocional,Joseph LeDoux,978-0684836591,Biología de las emociones y su control.,384,1996
+Psicología,Top 9 libros sobre inteligencia emocional,La Inteligencia Emocional en la Práctica,Daniel Goleman,978-0553378580,Ejercicios para desarrollar inteligencia emocional.,320,1998
+Psicología,Top 9 libros sobre inteligencia emocional,Darse Cuenta,John Bradshaw,978-0553352603,Sanar heridas emocionales de la infancia.,352,1988
+Psicología,Top 9 libros sobre inteligencia emocional,El Arte de Amar,Erich Fromm,978-0061129738,Amor como arte que requiere conocimiento y esfuerzo.,160,1956
+Psicología,Top 9 libros sobre inteligencia emocional,El Hombre en Busca de Sentido,Viktor Frankl,978-0807014295,Encontrar propósito incluso en el sufrimiento.,192,1946
+Psicología,Top 9 libros sobre inteligencia emocional,El Lenguaje del Cuerpo,Allan Pease,978-0553349092,Señales no verbales y su interpretación.,320,1981
+Psicología,Top 9 libros sobre inteligencia emocional,Cómo Ganar Amigos,Dale Carnegie,978-0671027032,Técnicas para influir en personas y ganar amigos.,288,1936
+Psicología,Top 9 libros sobre inteligencia emocional,La Ansiedad,Scott Stossel,978-0307396044,Exploración personal de la ansiedad y sus tratamientos.,448,2014
+Feminismo,Top 9 libros feministas contemporáneos,Nosotras,Cristina Sánchez-Andrade,978-8423357979,Reflexiones feministas desde la literatura gallega.,256,2020
+Feminismo,Top 9 libros feministas contemporáneos,El Segundo Sexo,Simone de Beauvoir,978-0307277787,Análisis de la condición femenina en la sociedad.,752,1949
+Feminismo,Top 9 libros feministas contemporáneos,Cien Años de Soledad,Gabriel García Márquez,978-0060883287,Representación de mujeres en la literatura latinoamericana.,448,1967
+Feminismo,Top 9 libros feministas contemporáneos,Teoría King Kong,Virginie Despentes,978-1939293228,Manifiesto feminista radical contra la cultura patriarcal.,288,2006
+Feminismo,Top 9 libros feministas contemporáneos,La Tiranía de la Belleza,Naomi Wolf,978-0385423627,Cómo la industria de la belleza oprime a las mujeres.,368,1991
+Feminismo,Top 9 libros feministas contemporáneos,El Mito de la Belleza,Naomi Wolf,978-0060512187,Impacto psicológico de los estándares de belleza femeninos.,320,1991
+Feminismo,Top 9 libros feministas contemporáneos,Feminismo para Principiantes,Nuria Varela,978-8496859969,Introducción al feminismo con lenguaje accesible.,416,2005
+Feminismo,Top 9 libros feministas contemporáneos,Las Mujeres que No Amaban a los Hombres,Sandra Cisneros,978-0679738565,Relatos sobre mujeres que desafían roles tradicionales.,224,2018
+Feminismo,Top 9 libros feministas contemporáneos,La Casa de los Espíritus,Isabel Allende,978-1501117016,Mujeres fuertes en una sociedad machista.,464,1982
+Terror,Top 9 libros de terror clásico,Drácula,Bram Stoker,978-0486411095,Vampiro en la Inglaterra victoriana.,448,1897
+Terror,Top 9 libros de terror clásico,Frankenstein,Mary Shelley,978-0486282114,Científico crea monstruo y su búsqueda de redención.,288,1818
+Terror,Top 9 libros de terror clásico,El Extraño Caso del Dr. Jekyll y Mr. Hyde,Robert Louis Stevenson,978-0486266886,Doble personalidad y su manifestación monstruosa.,128,1886
+Terror,Top 9 libros de terror clásico,El Gato Negro,Edgar Allan Poe,978-0486277868,Relato sobre locura y venganza de un gato.,64,1843
+Terror,Top 9 libros de terror clásico,El Resplandor,Stephen King,978-0307743657,Hotel embrujado y posesión en familia.,512,1977
+Terror,Top 9 libros de terror clásico,El Exorcista,William Peter Blatty,978-0062094361,Posesión demoníaca y exorcismo.,400,1971
+Terror,Top 9 libros de terror clásico,La Llamada de Cthulhu,H.P. Lovecraft,978-0486284414,Horror cósmico y dioses ancestrales.,128,1928
+Terror,Top 9 libros de terror clásico,El Cementerio,Stephen King,978-1501144241,Niño resucitado con consecuencias terroríficas.,416,1983
+Terror,Top 9 libros de terror clásico,Otra Vuelta de Tuerca,Henry James,978-0486266886,Apariciones en una mansión y su interpretación.,192,1898
+Autoayuda,Top 9 libros para superar una ruptura,Cómo Superar una Ruptura,Susan J. Elliott,978-0738213190,Guía paso a paso para sanar corazón roto.,288,2009
+Autoayuda,Top 9 libros para superar una ruptura,El Arte de Amar,Erich Fromm,978-0061129738,Comprender el amor para construir relaciones sanas.,160,1956
+Autoayuda,Top 9 libros para superar una ruptura,Después de Ti,Jojo Moyes,978-0718181770,Nueva vida tras pérdida del ser amado.,384,2015
+Autoayuda,Top 9 libros para superar una ruptura,El Poder del Ahora,Eckhart Tolle,978-1577314806,Vivir el presente para superar dolor pasado.,224,1997
+Autoayuda,Top 9 libros para superar una ruptura,Vivir Después de Vivir,Pim van Lommel,978-1846042396,Experiencias cercanas a la muerte y su significado.,352,2007
+Autoayuda,Top 9 libros para superar una ruptura,La Travesía,John Boyne,978-0857524701,Viaje emocional tras una pérdida.,320,2017
+Autoayuda,Top 9 libros para superar una ruptura,El Alquimista,Paulo Coelho,978-0062315007,Búsqueda personal tras una decepción amorosa.,208,1988
+Autoayuda,Top 9 libros para superar una ruptura,La Sombra del Viento,Carlos Ruiz Zafón,978-0143126392,Superar duelos a través de la literatura.,576,2001
+Autoayuda,Top 9 libros para superar una ruptura,El Hombre en Busca de Sentido,Viktor Frankl,978-0807014295,Encontrar propósito tras el sufrimiento.,192,1946
+Biografías,Top 9 biografías de mujeres inspiradoras,Malala,Malala Yousafzai,978-0316322409,Lucha por educación femenina y premio Nobel de la Paz.,288,2013
+Biografías,Top 9 biografías de mujeres inspiradoras,Yo, Malala,Christina Lamb,978-0316322423,Detalles de la vida y activismo de Malala.,320,2013
+Biografías,Top 9 biografías de mujeres inspiradoras,La Historia de mi Vida,Helen Keller,978-0451531568,Mujer sordociega que se convirtió en símbolo de superación.,256,1903
+Biografías,Top 9 biografías de mujeres inspiradoras,Frida,Hayden Herrera,978-0060085896,Vida y arte de Frida Kahlo.,512,1983
+Biografías,Top 9 biografías de mujeres inspiradoras,Eleanor Roosevelt,Blanche Wiesen Cook,978-0140178944,Primera dama defensora de derechos humanos.,768,1992
+Biografías,Top 9 biografías de mujeres inspiradoras,Marie Curie,Eve Curie,978-0306810381,Vida de la primera mujer en ganar dos premios Nobel.,448,1937
+Biografías,Top 9 biografías de mujeres inspiradoras,Jane Goodall,Dale Peterson,978-0547336954,Pionera en estudio de chimpancés y conservación.,384,2006
+Biografías,Top 9 biografías de mujeres inspiradoras,La Vida Secreta de Beatrix Potter,Margaret Lane,978-0805063783,Escritora y naturalista detrás de Peter Rabbit.,224,1946
+Biografías,Top 9 biografías de mujeres inspiradoras,Coco Chanel,Justine Picardie,978-0061963858,Diseñadora que revolucionó la moda femenina.,448,2010
+Juventud,Top 9 libros para adolescentes rebeldes,El Guardián entre el Centeno,J.D. Salinger,978-0316769488,Adolescencia, alienación y búsqueda de identidad.,277,1951
+Juventud,Top 9 libros para adolescentes rebeldes,Juegos de Hambre,Suzanne Collins,978-0439023528,Juvenes en lucha contra un sistema opresor.,384,2008
+Juventud,Top 9 libros para adolescentes rebeldes,El Diario de Ana Frank,Ana Frank,978-0553296983,Vida de una adolescente durante el Holocausto.,352,1947
+Juventud,Top 9 libros para adolescentes rebeldes,Harry Potter,J.K. Rowling,978-0439708180,Mago joven descubre su identidad y lucha contra el mal.,320,1997
+Juventud,Top 9 libros para adolescentes rebeldes,Percy Jackson,Rick Riordan,978-0786838653,Adolescente descubre que es semidios griego.,384,2005
+Juventud,Top 9 libros para adolescentes rebeldes,Divergente,Veronica Roth,978-0062024039,Sociedad dividida por facciones y una joven que desafía normas.,512,2011
+Juventud,Top 9 libros para adolescentes rebeldes,Bajo la Misma Estrella,John Green,978-0525478812,Amor entre adolescentes con enfermedades terminales.,336,2012
+Juventud,Top 9 libros para adolescentes rebeldes,La Ladrona de Libros,Markus Zusak,978-0375842207,Niña roba libros en la Alemania nazi.,592,2005
+Juventud,Top 9 libros para adolescentes rebeldes,Cazadores de Sombras,Cassandra Clare,978-1416914280,Mundo oculto de demonios y cazadores en Nueva York.,512,2007
+Política,Top 9 libros sobre pensamiento político moderno,El Fin de la Historia,Francis Fukuyama,978-0743284554,Democracia liberal como sistema definitivo.,352,1992
+Política,Top 9 libros sobre pensamiento político moderno,El Choque de Civilizaciones,Samuel Huntington,978-0684844411,Conflictos futuros entre culturas.,384,1996
+Política,Top 9 libros sobre pensamiento político moderno,Sapiens,Yuval Noah Harari,978-0062316097,Historia humana y su organización política.,464,2011
+Política,Top 9 libros sobre pensamiento político moderno,El Príncipe,Maquiavelo,978-0486272740,Manual para gobernar y mantener el poder.,240,1513
+Política,Top 9 libros sobre pensamiento político moderno,El Contrato Social,Rousseau,978-0486426921,Origen del poder político y bases de la democracia.,192,1762
+Política,Top 9 libros sobre pensamiento político moderno,La República,Platón,978-0872201363,Diálogo sobre justicia y el Estado ideal.,416,380 a.C.
+Política,Top 9 libros sobre pensamiento político moderno,El Manifiesto Comunista,Marx y Engels,978-0140447576,Llamado a la revolución proletaria.,96,1848
+Política,Top 9 libros sobre pensamiento político moderno,Libertad,Jonathan Franzen,978-0312600846,Crítica a la sociedad estadounidense contemporánea.,608,2010
+Política,Top 9 libros sobre pensamiento político moderno,El Liberalismo Político,John Rawls,978-0231130899,Teoría de justicia como equidad.,560,1993
+Ficción Histórica,Top 9 novelas ambientadas en el Antiguo Egipto,El Hombre que Quería Ser Rey,Paulo Coelho,978-0061122418,Búsqueda de poder y sabiduría en el antiguo Egipto.,208,2008
+Ficción Histórica,Top 9 novelas ambientadas en el Antiguo Egipto,La Reina del Nilo,Margaret George,978-0312366797,Vida de Cleopatra VII y su relación con Roma.,976,2001
+Ficción Histórica,Top 9 novelas ambientadas en el Antiguo Egipto,El Hijo de Ramsés,Christian Jacq,978-0747246099,Misterios en la corte de Ramsés II.,384,1995
+Ficción Histórica,Top 9 novelas ambientadas en el Antiguo Egipto,El Nilo,Wilbur Smith,978-0330344957,Aventuras en el antiguo Egipto y sus dioses.,512,1993
+Ficción Histórica,Top 9 novelas ambientadas en el Antiguo Egipto,Cleopatra,Margaret George,978-0312366797,Última faraona de Egipto y sus amores.,976,2001
+Ficción Histórica,Top 9 novelas ambientadas en el Antiguo Egipto,La Pirámide Asesina,Agatha Christie,978-0002314572,Asesinato en una expedición arqueológica.,288,1945
+Ficción Histórica,Top 9 novelas ambientadas en el Antiguo Egipto,El Secreto del Nilo,Tasha Alexander,978-0060825462,Misterios en el antiguo Egipto.,352,2010
+Ficción Histórica,Top 9 novelas ambientadas en el Antiguo Egipto,El Hijo de la Luna,Luisa Isabel Álvarez,978-8408067027,Vida de Akhenatón y su revolución religiosa.,448,2006
+Ficción Histórica,Top 9 novelas ambientadas en el Antiguo Egipto,La Tumba Perdida,Tom Harper,978-0552154567,Búsqueda de la tumba de Alejandro Magno.,384,2015
+Poesía,Top 9 libros de poesía contemporánea en español,Veinte Poemas de Amor,Pablo Neruda,978-0143039969,Poesía sobre amor y desamor.,64,1924
+Poesía,Top 9 libros de poesía contemporánea en español,Cien Años de Soledad,Gabriel García Márquez,978-0060883287,Prosa poética sobre Macondo y su mitología.,448,1967
+Poesía,Top 9 libros de poesía contemporánea en español,La Casa de los Espíritus,Isabel Allende,978-1501117016,Lenguaje lírico en saga familiar chilena.,464,1982
+Poesía,Top 9 libros de poesía contemporánea en español,El Otro Lado del Paraíso,Mario Benedetti,978-8426415846,Poesía sobre exilio y nostalgia.,192,1979
+Poesía,Top 9 libros de poesía contemporánea en español,Antología Poética,Federico García Lorca,978-0141183993,Selección de poemas del autor granadino.,352,1940
+Poesía,Top 9 libros de poesía contemporánea en español,El Libro de las Preguntas,Pablo Neruda,978-0143424696,Preguntas poéticas sobre el universo.,96,1974
+Poesía,Top 9 libros de poesía contemporánea en español,Poemas Humanos,César Vallejo,978-0811217069,Poesía sobre dolor y esperanza humana.,256,1923
+Poesía,Top 9 libros de poesía contemporánea en español,La Vida Nueva,Octavio Paz,978-0156001940,Poesía sobre amor y trascendencia.,224,1949
+Poesía,Top 9 libros de poesía contemporánea en español,Elogio de la Sombra,Jorge Luis Borges,978-0141183849,Poesía sobre ceguera y memoria.,192,1969
+Humor,Top 9 libros de humor negro,El Alquimista,Paulo Coelho,978-0062315007,Parodia de la búsqueda espiritual.,208,1988
+Humor,Top 9 libros de humor negro,La Sombra del Viento,Carlos Ruiz Zafón,978-0143126392,Misterios literarios con toques de ironía.,576,2001
+Humor,Top 9 libros de humor negro,El Código Da Vinci,Dan Brown,978-0307474278,Sátira sobre conspiraciones religiosas.,512,2003
+Humor,Top 9 libros de humor negro,El Nombre de la Rosa,Umberto Eco,978-0544176560,Monjes medievales con humor negro.,512,1980
+Humor,Top 9 libros de humor negro,El Club de la Lucha,Chuck Palahniuk,978-0393327342,Satira sobre masculinidad y violencia.,256,1996
+Humor,Top 9 libros de humor negro,American Psycho,Bret Easton Ellis,978-0679735779,Humor ácido sobre consumismo y psicopatía.,416,1991
+Humor,Top 9 libros de humor negro,La Historia Interminable,Michael Ende,978-0140317934,Fantasía con crítica social.,448,1979
+Humor,Top 9 libros de humor negro,El Perfume,Patrick Süskind,978-0140120837,Asesino con obsesión por olores.,256,1985
+Humor,Top 9 libros de humor negro,El Tunnel,Ernesto Sabato,978-0141189377,Existencialismo con toques de humor negro.,256,1948
+Crónica Real,Top 9 libros de crónica periodística,A Sangre Fría,Truman Capote,978-0679745587,Asesinato en Kansas y su impacto social.,368,1966
+Crónica Real,Top 9 libros de crónica periodística,Los Niños de la Colonia,Jorge Gallego,978-8425358832,Abusos en instituciones para menores.,448,2018
+Crónica Real,Top 9 libros de crónica periodística,El Libro Negro de la Justicia Española,Gumersindo Lafuente,978-8499423183,Errores judiciales y corrupción.,512,2015
+Crónica Real,Top 9 libros de crónica periodística,El Silencio de los Inocentes,Thomas Harris,978-0312924584,Perfil de asesinos en serie desde el FBI.,368,1988
+Crónica Real,Top 9 libros de crónica periodística,El Caso Savolta,Eduardo Mendoza,978-8432216915,Anarquismo y espionaje en la Barcelona de 1917.,320,1975
+Crónica Real,Top 9 libros de crónica periodística,La Ladrona de Libros,Markus Zusak,978-0375842207,Niña que roba libros en la Alemania nazi.,592,2005
+Crónica Real,Top 9 libros de crónica periodística,El Arte de la Guerra,Sun Tzu,978-1590302255,Estrategia militar aplicada a negocios.,128,500 a.C.
+Crónica Real,Top 9 libros de crónica periodística,La Sombra del Viento,Carlos Ruiz Zafón,978-0143126392,Misterio literario en la Barcelona posguerra.,576,2001
+Crónica Real,Top 9 libros de crónica periodística,El Día Menos Pensado,Jorge Valdano,978-8466337608,Reflexiones sobre fútbol y sociedad.,256,2015
+Ensayo,Top 9 ensayos filosóficos cortos,El Mito de Sísifo,Albert Camus,978-0679733737,El absurdo y la rebelión.,192,1942
+Ensayo,Top 9 ensayos filosóficos cortos,El Existencialismo es un Humanismo,Jean-Paul Sartre,978-0300115468,Defensa del existencialismo.,144,1946
+Ensayo,Top 9 ensayos filosóficos cortos,Meditaciones,Marco Aurelio,978-0812968255,Reflexiones estoicas del emperador romano.,256,180 d.C.
+Ensayo,Top 9 ensayos filosóficos cortos,El Príncipe,Maquiavelo,978-0486272740,Manual para gobernar.,240,1513
+Ensayo,Top 9 ensayos filosóficos cortos,La República,Platón,978-0872201363,Diálogo sobre justicia y Estado.,416,380 a.C.
+Ensayo,Top 9 ensayos filosóficos cortos,Así Habló Zaratustra,Friedrich Nietzsche,978-0486411181,Parábolas sobre el superhombre.,352,1885
+Ensayo,Top 9 ensayos filosóficos cortos,El Contrato Social,Rousseau,978-0486426921,Origen del poder político.,192,1762
+Ensayo,Top 9 ensayos filosóficos cortos,Discurso del Método,René Descartes,978-0872204218,Duda y certeza en el conocimiento.,128,1637
+Ensayo,Top 9 ensayos filosóficos cortos,El Manifiesto Comunista,Marx y Engels,978-0140447576,Llamado a la revolución.,96,1848
+Drama,Top 9 obras de teatro clásicas,La Casa de Bernarda Alba,Federico García Lorca,978-0141180992,Represión y libertad en una familia andaluza.,128,1936
+Drama,Top 9 obras de teatro clásicas,Hamlet,William Shakespeare,978-0743477123,Venganza y locura en la corte danesa.,160,1603
+Drama,Top 9 obras de teatro clásicas,La Vida es Sueño,Pedro Calderón de la Barca,978-0140443714,Realidad versus ilusión.,192,1635
+Drama,Top 9 obras de teatro clásicas,El Rey Lear,William Shakespeare,978-0743482769,Locura y traición en una familia real.,160,1606
+Drama,Top 9 obras de teatro clásicas,Fausto,Johann Wolfgang von Goethe,978-0140449013,Pacto con el diablo y búsqueda de conocimiento.,464,1808
+Drama,Top 9 obras de teatro clásicas,La Celestina,Fernando de Rojas,978-8420416336,Amor y codicia en la España medieval.,320,1499
+Drama,Top 9 obras de teatro clásicas,Bodas de Sangre,Federico García Lorca,978-0141180992,Tragedia amorosa en un pueblo andaluz.,96,1933
+Drama,Top 9 obras de teatro clásicas,El Avaro,Molière,978-0486272702,Avaricia y sus consecuencias.,160,1668
+Drama,Top 9 obras de teatro clásicas,Tartufo,Molière,978-0486411150,Hipocresía religiosa y engaño.,128,1664
+Erotismo,Top 9 libros de erotismo literario,El Amante,Marguerite Duras,978-0060973209,Relato de una pasión prohibida en la Indochina colonial.,128,1984
+Erotismo,Top 9 libros de erotismo literario,Cincuenta Sombras de Grey,E.L. James,978-0345803481,Relación BDSM entre una estudiante y un empresario.,528,2011
+Erotismo,Top 9 libros de erotismo literario,La Historia de O,Pauline Réage,978-0345803412,Sumisión erótica extrema en un mundo de secretos.,192,1954
+Erotismo,Top 9 libros de erotismo literario,El Amante de Lady Chatterley,D.H. Lawrence,978-0141441499,Aventura extramatrimonial entre una aristócrata y su guardabosques.,384,1928
+Erotismo,Top 9 libros de erotismo literario,Venus en las Pieles,Leopold von Sacher-Masoch,978-0140447811,Contrato de sumisión entre un hombre y una mujer.,160,1870
+Erotismo,Top 9 libros de erotismo literario,Justine,Marqués de Sade,978-0199538884,Perversiones y castigos en la Francia del siglo XVIII.,512,1791
+Erotismo,Top 9 libros de erotismo literario,El Jardín de los Perfumes,Ana María Matute,978-8432216915,Sensaciones olfativas y deseos reprimidos.,224,1976
+Erotismo,Top 9 libros de erotismo literario,La Tía Julia y el Escribidor,Mario Vargas Llosa,978-0571225842,Relación entre un joven escritor y su divorciada tía.,352,1977
+Erotismo,Top 9 libros de erotismo literario,El Amante Inglés,Margaret Atwood,978-0385543780,Juego de poder y seducción en la Inglaterra victoriana.,416,2016
+Infantil,Top 9 libros para niños de 3-5 años,El Monstruo de Colores,Anna Llenas,978-8493987749,Identificar emociones a través de colores.,40,2012
+Infantil,Top 9 libros para niños de 3-5 años,El Pequeño Vampiro,Angela Sommer-Bodenburg,978-0140317934,Amistad entre un niño y un vampiro.,144,1979
+Infantil,Top 9 libros para niños de 3-5 años,Donde Viven los Monstruos,Maurice Sendak,978-0060254926,Aventuras de Max en la tierra de los monstruos.,48,1963
+Infantil,Top 9 libros para niños de 3-5 años,El Principito,Antoine de Saint-Exupéry,978-0156012194,Lecciones sobre vida y amistad desde un asteroide.,96,1943
+Infantil,Top 9 libros para niños de 3-5 años,El Gato Encerrado,Dr. Seuss,978-0394800012,Desorden creativo causado por a gato travieso.,72,1957
+Infantil,Top 9 libros para niños de 3-5 años,La Oruga Muy Hambrienta,Eric Carle,978-0399226908,Transformación de una oruga a través de la comida.,32,1969
+Infantil,Top 9 libros para niños de 3-5 años,Jorge el Curioso,H.A. Rey,978-0395150238,Travesuras de un mono en la ciudad.,64,1941
+Infantil,Top 9 libros para niños de 3-5 años,Harry Potter,J.K. Rowling,978-0439708180,Descubrimiento de la magia en un mundo oculto.,320,1997
+Infantil,Top 9 libros para niños de 3-5 años,Peter Pan,James Matthew Barrie,978-0451528810,Aventuras en el País de Nunca Jamás.,192,1911
+Aventura,Top 9 libros de aventuras en la selva,El Señor de los Anillos,J.R.R. Tolkien,978-0544003415,Épica para destruir un anillo maligno.,1216,1954
+Aventura,Top 9 libros de aventuras en la selva,El Libro de la Selva,Rudyard Kipling,978-0062389503,Niño criado por lobos en la India.,192,1894
+Aventura,Top 9 libros de aventuras en la selva,Las Aventuras de Tom Sawyer,Mark Twain,978-0486400778,Travesuras de un niño en el Mississippi.,288,1876
+Aventura,Top 9 libros de aventuras en la selva,Robinson Crusoe,Daniel Defoe,978-0141439822,Sobrevivencia en una isla desierta.,320,1719
+Aventura,Top 9 libros de aventuras en la selva,La Isla Misteriosa,Julio Verne,978-0140447361,Colonos escapados en una isla secreta.,624,1874
+Aventura,Top 9 libros de aventuras en la selva,El Tesoro de la Sierra Madre,B. Traven,978-0802143188,Búsqueda de oro en la selva mexicana.,320,1927
+Aventura,Top 9 libros de aventuras en la selva,El Coronel No Tiene Quien le Escriba,Gabriel García Márquez,978-0060883287,Vida de un coronel en un pueblo olvidado.,192,1961
+Aventura,Top 9 libros de aventuras en la selva,La Aventura de los Vampiros,Bram Stoker,978-0486411095,Caza de vampiros en Transilvania.,448,1897
+Aventura,Top 9 libros de aventuras en la selva,El Hombre que Calculaba,Malba Tahan,978-8479028319,Resolución de enigmas matemáticos en viajes.,256,1949
+Misterio,Top 9 novelas policíacas clásicas,El Padrino,Mario Puzo,978-0451205766,Familia mafiosa y su lucha por el poder.,448,1969
+Misterio,Top 9 novelas policíacas clásicas,El Caso del Cliente de las Ocho,Agatha Christie,978-0002314572,Hércules Poirot resuelve 9 crímenes.,256,1934
+Misterio,Top 9 novelas policíacas clásicas,El Perro de los Baskerville,Arthur Conan Doyle,978-0140437867,Holmes investiga una maldición familiar.,256,1902
+Misterio,Top 9 novelas policíacas clásicas,El Nombre de la Rosa,Umberto Eco,978-0544176560,Asesinatos en un monasterio medieval.,512,1980
+Misterio,Top 9 novelas policíacas clásicas,Rebecca,Daphne du Maurier,978-0380730407,Misterio en torno a la primera esposa de Maxim.,384,1938
+Misterio,Top 9 novelas policíacas clásicas,El Gato Negro,Edgar Allan Poe,978-0486277868,Locura y venganza de un gato.,64,1843
+Misterio,Top 9 novelas policíacas clásicas,La Sombra del Viento,Carlos Ruiz Zafón,978-0143126392,Misterio literario en la Barcelona posguerra.,576,2001
+Misterio,Top 9 novelas policíacas clásicas,El Código Da Vinci,Dan Brown,978-0307474278,Símbolos religiosos y un asesinato.,512,2003
+Misterio,Top 9 novelas policíacas clásicas,El Secreto de la Modelo,Agatha Christie,978-0002314572,Asesinato en un desfile de moda.,288,1929
+Ciencia Ficción,Top 9 libros de ciencia ficción cortos,Yo, Robot,Isaac Asimov,978-0553294385,Relatos sobre las tres leyes de la robótica.,256,1950
+Ciencia Ficción,Top 9 libros de ciencia ficción cortos,Fundación,Isaac Asimov,978-0553293357,Decadencia y resurgimiento de un imperio galáctico.,256,1951
+Ciencia Ficción,Top 9 libros de ciencia ficción cortos,Dune,Frank Herbert,978-0441172719,Lucha por el control del planeta Arrakis.,688,1965
+Ciencia Ficción,Top 9 libros de ciencia ficción cortos,El Juego de Ender,Orson Scott Card,978-0812550702,Niños entrenados para salvar a la humanidad.,352,1985
+Ciencia Ficción,Top 9 libros de ciencia ficción cortos,Neuromante,William Gibson,978-0441569595,Ciberespacio y realidad virtual.,320,1984
+Ciencia Ficción,Top 9 libros de ciencia ficción cortos,Fahrenheit 451,Ray Bradbury,978-1451673319,Sociedad donde los libros están prohibidos.,192,1953
+Ciencia Ficción,Top 9 libros de ciencia ficción cortos,Un Mundo Feliz,Aldous Huxley,978-0060850524,Sociedad controlada por ingeniería genética.,288,1932
+Ciencia Ficción,Top 9 libros de ciencia ficción cortos,La Guerra de los Mundos,H.G. Wells,978-0451530653,Invasión marciana a la Tierra.,192,1898
+Ciencia Ficción,Top 9 libros de ciencia ficción cortos,El Hombre Ilustrado,Ray Bradbury,978-1451673319,Relatos sobre fantasías y pesadillas.,192,1951
+Fantasía,Top 9 sagas de fantasía épica,El Señor de los Anillos,J.R.R. Tolkien,978-0544003415,Guerra por el Anillo Único en la Tierra Media.,1216,1954
+Fantasía,Top 9 sagas de fantasía épica,Canción de Hielo y Fuego,George R.R. Martin,978-0553582017,Lucha por el Trono de Hierro en Poniente.,832,1996
+Fantasía,Top 9 sagas de fantasía épica,La Rueda del Tiempo,Robert Jordan,978-0812511819,Profecías y batallas en un mundo mágico.,832,1990
+Fantasía,Top 9 sagas de fantasía épica,Crónicas de Narnia,C.S. Lewis,978-0064471190,Aventuras en un mundo mágico a través de un armario.,784,1950
+Fantasía,Top 9 sagas de fantasía épica,Harry Potter,J.K. Rowling,978-0439708180,Magia y hechicería en Hogwarts.,320,1997
+Fantasía,Top 9 sagas de fantasía épica,El Legado,Christopher Paolini,978-0375826702,Jinete y su dragón en un mundo de magia.,768,2003
+Fantasía,Top 9 sagas de fantasía épica,Mistborn,Brandon Sanderson,978-0765311788,Sistema de magia basado en metales.,704,2006
+Fantasía,Top 9 sagas de fantasía épica,La Tierra Media,J.R.R. Tolkien,978-0544003415,Mitología y historia de la Tierra Media.,1216,1977
+Fantasía,Top 9 sagas de fantasía épica,La Torre Oscura,Stephen King,978-1501143519,Pistolero en un mundo que mezcla fantasía y western.,448,1982
+Novela Romántica,Top 9 novelas románticas históricas,Orgullo y Prejuicio,Jane Austen,978-0141439518,Amor y malentendidos en la Inglaterra georgiana.,432,1813
+Novela Romántica,Top 9 novelas románticas históricas,Jane Eyre,Charlotte Brontë,978-0141441146,Gobernanta y su misterioso empleador.,544,1847
+Novela Romántica,Top 9 novelas románticas históricas,Lo que el Viento se Llevó,Margaret Mitchell,978-1416548942,Amor y guerra en la Atlanta de la Guerra Civil.,1056,1936
+Novela Romántica,Top 9 novelas románticas históricas,La Dama de las Camelias,Alexandre Dumas,978-0140447163,Amor prohibido entre una cortesana y un joven.,192,1848
+Novela Romántica,Top 9 novelas románticas históricas,Anna Karenina,León Tolstói,978-0143035008,Adulterio y consecuencias en la Rusia zarista.,864,1877
+Novela Romántica,Top 9 novelas románticas históricas,Cumbres Borrascosas,Emily Brontë,978-0141439556,Pasión destructiva en los páramos ingleses.,448,1847
+Novela Romántica,Top 9 novelas románticas históricas,El Gran Gatsby,F. Scott Fitzgerald,978-0743273565,American Dream y amor imposible en los años 20.,192,1925
+Novela Romántica,Top 9 novelas románticas históricas,La Casa de los Espíritus,Isabel Allende,978-1501117016,Saga familiar en el Chile del siglo XX.,464,1982
+Novela Romántica,Top 9 novelas románticas históricas,El Amante,Marguerite Duras,978-0060973209,Pasión juvenil en la Indochina colonial.,128,1984
+No Ficción,Top 9 libros de no ficción impactantes,Sapiens,Yuval Noah Harari,978-0062316097,Breve historia de la humanidad.,464,2011
+No Ficción,Top 9 libros de no ficción impactantes,Homo Deus,Yuval Noah Harari,978-0062464316,Futuro de la humanidad con tecnología.,464,2015
+No Ficción,Top 9 libros de no ficción impactantes,21 Lecciones para el Siglo XXI,Yuval Noah Harari,978-0525512172,Desafíos actuales de la humanidad.,432,2018
+No Ficción,Top 9 libros de no ficción impactantes,El Cerebro de Broca,Carl Sagan,978-0345336897,Reflexiones sobre ciencia y evolución.,352,1979
+No Ficción,Top 9 libros de no ficción impactantes,Cosmos,Carl Sagan,978-0345539434,Viaje por el universo y sus misterios.,384,1980
+No Ficción,Top 9 libros de no ficción impactantes,Breve Historia del Tiempo,Stephen Hawking,978-0553380163,Origen del universo y agujeros negros.,256,1988
+No Ficción,Top 9 libros de no ficción impactantes,El Gen Egoísta,Richard Dawkins,978-0192860927,Evolución desde la perspectiva de los genes.,360,1976
+No Ficción,Top 9 libros de no ficción impactantes,La Estructura de las Revoluciones Científicas,Thomas Kuhn,978-0226458120,Cambios de paradigma en la science.,320,1962
+No Ficción,Top 9 libros de no ficción impactantes,El Fin de la Pobreza,Jeffrey Sachs,978-0143036586,Plan para erradicar la pobreza extrema.,432,2005
+Deportes Extremos,Top 9 libros de montañismo y aventura,No Hay Límites,Aron Ralston,978-0743492816,Sobrevivencia tras quedar atrapado en un cañón.,352,2004
+Deportes Extremos,Top 9 libros de montañismo y aventura,Into the Wild,Jon Krakauer,978-0385486804,Viaje y muerte en la naturaleza de Alaska.,256,1996
+Deportes Extremos,Top 9 libros de montañismo y aventura,Everest,Boukreev,978-0312262594,Tragedia en la ascensión al Everest en 1996.,368,1997
+Deportes Extremos,Top 9 libros de montañismo y aventura,La Sombra del Kilimanjaro,Rick Ridgeway,978-0786868445,Expedición al Kilimanjaro y sus desafíos.,320,1998
+Deportes Extremos,Top 9 libros de montañismo y aventura,El Alpinista,Joe Simpson,978-0060953775,Sobrevivencia en los Andes tras una caída.,192,1988
+Deportes Extremos,Top 9 libros de montañismo y aventura,Sin Fronteras,Reinhold Messner,978-0898865735,Conquistas de las cumbres más altas sin oxígeno.,320,2000
+Deportes Extremos,Top 9 libros de montañismo y aventura,La Vida en la Tierra,David Attenborough,978-0002191395,Evolución y diversidad de la vida.,352,1979
+Deportes Extremos,Top 9 libros de montañismo y aventura,El Sendero del Monte Everest,Mark Jenkins,978-0393061744,Historia de las expediciones al Everest.,384,2006
+Deportes Extremos,Top 9 libros de montañismo y aventura,El Hombre que Calculaba,Malba Tahan,978-8479028319,Enigmas matemáticos en viajes.,256,1949
+Cine,Top 9 libros basados en películas exitosas,El Padrino,Mario Puzo,978-0451205766,Familia mafiosa y su código de honor.,448,1969
+Cine,Top 9 libros basados en películas exitosas,El Señor de los Anillos,J.R.R. Tolkien,978-0544003415,Guerra por el Anillo en la Tierra Media.,1216,1954
+Cine,Top 9 libros basados en películas exitosas,Harry Potter,J.K. Rowling,978-0439708180,Magia y aventuras en Hogwarts.,320,1997
+Cine,Top 9 libros basados en películas exitosas,El Código Da Vinci,Dan Brown,978-0307474278,Misterios religiosos y sociedades secretas.,512,2003
+Cine,Top 9 libros basados en películas exitosas,La Lista de Schindler,Thomas Keneally,978-0671880316,Rescate de judíos durante el Holocausto.,352,1982
+Cine,Top 9 libros basados en películas exitosas,El Resplandor,Stephen King,978-0307743657,Hotel embrujado y posesión.,512,1977
+Cine,Top 9 libros basados en películas exitosas,Blade Runner,Philip K. Dick,978-0547572291,Androides y humanos en un futuro distópico.,256,1968
+Cine,Top 9 libros basados en películas exitosas,El Gran Gatsby,F. Scott Fitzgerald,978-0743273565,American Dream y decadencia en los años 20.,192,1925
+Cine,Top 9 libros basados en películas exitosas,La Naranja Mecánica,Anthony Burgess,978-0393312836,Violencia y reforma en una sociedad futura.,192,1962
+Comics,Top 9 novelas gráficas para adultos,Maus,Art Spiegelman,978-0394747231,Holocausto narrado con personajes de animales.,296,1991
+Comics,Top 9 novelas gráficas para adultos,Persépolis,Marjane Satrapi,978-0375714573,Revolución iraní vista por una niña.,352,2003
+Comics,Top 9 novelas gráficas para adultos,V de Vendetta,Alan Moore,978-1401208417,Lucha contra un régimen fascista en el futuro.,288,1988
+Comics,Top 9 novelas gráficas para adultos,Watchmen,Alan Moore,978-0930289232,Héroes en un mundo realista y oscuro.,432,1986
+Comics,Top 9 novelas gráficas para adultos,El Eternauta,Héctor Germán Oesterheld,978-9871688223,Invasión extraterrestre en Buenos Aires.,128,1957
+Comics,Top 9 novelas gráficas para adultos,300,Frank Miller,978-1569714027,Batalla de las Termópilas en formato gráfico.,88,1998
+Comics,Top 9 novelas gráficas para adultos,Ghost World,Daniel Clowes,978-1560974277,Amistad y desencanto entre dos adolescentes.,80,1997
+Comics,Top 9 novelas gráficas para adultos,Black Hole,Charles Burns,978-0375714726,Enfermedad sexual extraña en adolescentes.,368,2005
+Comics,Top 9 novelas gráficas para adultos,Jimmy Corrigan,Chris Ware,978-0375404534,Historia familiar y soledad en Chicago.,384,2000
+Mitología,Top 9 libros de mitología griega,La Odisea,Homero,978-0140268867,Viaje de Ulises a casa tras la Guerra de Troya.,512,800 a.C.
+Mitología,Top 9 libros de mitología griega,La Ilíada,Homero,978-0140275360,Guerra de Troya y sus héroes.,608,800 a.C.
+Mitología,Top 9 libros de mitología griega,Mitología,Edith Hamilton,978-0316341516,Dioses, héroes y monstruos de la mitología griega.,512,1942
+Mitología,Top 9 libros de mitología griega,Los Mitos Griegos,Robert Graves,978-0140171990,Reinterpretación de los mitos clásicos.,768,1955
+Mitología,Top 9 libros de mitología griega,Dioses y Héroes de la Antigua Grecia,Gustav Schwab,978-0375757501,Relatos de dioses y héroes griegos.,672,1838
+Mitología,Top 9 libros de mitología griega,La Teogonía,Hesíodo,978-0140442830,Origen de los dioses y el universo.,128,700 a.C.
+Mitología,Top 9 libros de mitología griega,Las Metamorfosis,Ovidio,978-0140447897,Transformaciones mitológicas en verso.,768,8 d.C.
+Mitología,Top 9 libros de mitología griega,Prometeo Encadenado,Esquilo,978-0195061653,Titán que robó el fuego para los humanos.,96,450 a.C.
+Mitología,Top 9 libros de mitología griega,Edipo Rey,Sófocles,978-0140444254,Tragedia del destino y el conocimiento.,128,429 a.C.
+Viajes Espaciales,Top 9 libros de viajes interestelares,Fundación,Isaac Asimov,978-0553293357,Decadencia y resurgimiento de un imperio galáctico.,256,1951
+Viajes Espaciales,Top 9 libros de viajes interestelares,Dune,Frank Herbert,978-0441172719,Lucha por el control del planeta Arrakis.,688,1965
+Viajes Espaciales,Top 9 libros de viajes interestelares,El Juego de Ender,Orson Scott Card,978-0812550702,Niños entrenados contra una amenaza alienígena.,352,1985
+Viajes Espaciales,Top 9 libros de viajes interestelares,Hiperión,Dan Simmons,978-0553283686,Peregrinación a un planeta misterioso.,512,1989
+Viajes Espaciales,Top 9 libros de viajes interestelares,La Guerra de los Mundos,H.G. Wells,978-0451530653,Invasión marciana a la Tierra.,192,1898
+Viajes Espaciales,Top 9 libros de viajes interestelares,2001: Una Odisea Espacial,Arthur C. Clarke,978-0451457998,Evolución humana e inteligencia artificial.,256,1968
+Viajes Espaciales,Top 9 libros de viajes interestelares,Contacto,Carl Sagan,978-0671004101,Comunicación con una civilización extraterrestre.,432,1985
+Viajes Espaciales,Top 9 libros de viajes interestelares,El Marciano,Andy Weir,978-0553418026,Sobrevivencia en Marte tras ser abandonado.,384,2011
+Viajes Espaciales,Top 9 libros de viajes interestelares,La Trilogía de los Mundos,Cixin Liu,978-0765377067,Contacto con civilizaciones alienígenas y sus consecuencias.,400,2008
+Filosofía Oriental,Top 9 libros de filosofía china,Tao Te Ching,Lao Tse,978-0679724346,Enseñanzas sobre el Tao y la virtud.,128,600 a.C.
+Filosofía Oriental,Top 9 libros de filosofía china,Analectas,Confucio,978-0140443486,Diálogos y enseñanzas de Confucio.,224,400 a.C.
+Filosofía Oriental,Top 9 libros de filosofía china,El Arte de la Guerra,Sun Tzu,978-1590302255,Estrategia militar aplicada a la vida.,128,500 a.C.
+Filosofía Oriental,Top 9 libros de filosofía china,Zhuangzi,Zhuangzi,978-0231136136,Parábolas y diálogos filosóficos taoístas.,320,300 a.C.
+Filosofía Oriental,Top 9 libros de filosofía china,Mencio,Mencio,978-0140449716,Desarrollo de las ideas de Confucio.,288,300 a.C.
+Filosofía Oriental,Top 9 libros de filosofía china,I Ching,Anónimo,978-0691097503,Libro de los cambios y adivinación.,256,1000 a.C.
+Filosofía Oriental,Top 9 libros de filosofía china,El Libro del Camino y la Virtud,Lao Tse,978-0811206861,Enseñanzas fundamentales del taoísmo.,128,600 a.C.
+Filosofía Oriental,Top 9 libros de filosofía china,Las Enseñanzas de Buda,Anónimo,978-0375705270,Discursos y parábolas de Buda.,320,500 a.C.
+Filosofía Oriental,Top 9 libros de filosofía china,El Corazón de la Comprensión,Thich Nhat Hanh,978-1888375912,Comentario al Sutra del Corazón.,144,1988
+Economía Conductual,Top 9 libros de psicología económica,Predeciblemente Irracional,Dan Ariely,978-0061353246,Decisiones irracionales y sus causas.,352,2008
+Economía Conductual,Top 9 libros de psicología económica,El Impulso,Daniel Kahneman,978-0374533557,Sistema 1 y Sistema 2 en la toma de decisiones.,512,2011
+Economía Conductual,Top 9 libros de psicología económica,Fracastoria,Nassim Nicholas Taleb,978-1400063512,Impacto de eventos raros e impredecibles.,544,2007
+Economía Conductual,Top 9 libros de psicología económica,El Cisne Negro,Nassim Nicholas Taleb,978-0812973815,Eventos raros de gran impacto.,400,2007
+Economía Conductual,Top 9 libros de psicología económica,La Paradoja de la Elección,Barry Schwartz,978-0060005696,Exceso de opciones y parálisis decisional.,288,2004
+Economía Conductual,Top 9 libros de psicología económica,Influencia,Robert Cialdini,978-0061241895,Psicología de la persuasión.,320,1984
+Economía Conductual,Top 9 libros de psicología económica,El Efecto Lucas,Robert Lucas,978-0226494967,Expectativas racionales en macroeconomía.,224,1981
+Economía Conductual,Top 9 libros de psicología económica,La Economía del Comportamiento,Richard Thaler,978-0393358385,Aplicaciones de la psicología a la economía.,352,2008
+Economía Conductual,Top 9 libros de psicología económica,El Contrato Social,Rousseau,978-0486426921,Origen del poder político y bases de la democracia.,192,1762
+Supervivencia,Top 9 libros de supervivencia en la naturaleza,El Hombre que Calculaba,Malba Tahan,978-8479028319,Enigmas matemáticos en viajes.,256,1949
+Supervivencia,Top 9 libros de supervivencia en la naturaleza,El Libro de la Selva,Rudyard Kipling,978-0062389503,Leyes de la selva y supervivencia.,192,1894
+Supervivencia,Top 9 libros de supervivencia en la naturaleza,Robinson Crusoe,Daniel Defoe,978-0141439822,Técnicas para sobrevivir en una isla desierta.,320,1719
+Supervivencia,Top 9 libros de supervivencia en la naturaleza,La Isla Misteriosa,Julio Verne,978-0140447361,Colonización de una isla con recursos limitados.,624,1874
+Supervivencia,Top 9 libros de supervivencia en la naturaleza,El Alquimista,Paulo Coelho,978-0062315007,Simbolismo de la supervivencia espiritual.,208,1988
+Supervivencia,Top 9 libros de supervivencia en la naturaleza,El Código Da Vinci,Dan Brown,978-0307474278,Símbolos y códigos para sobrevivir.,512,2003
+Supervivencia,Top 9 libros de supervivencia en la naturaleza,El Secreto,Rhonda Byrne,978-1582701707,Supervivencia mediante la ley de atracción.,224,2006
+Supervivencia,Top 9 libros de supervivencia en la naturaleza,El Monje que Vendió su Ferrari,Robin Sharma,978-0062515674,Supervivencia en un mundo materialista.,208,1997
+Supervivencia,Top 9 libros de supervivencia en la naturaleza,El Arte de la Guerra,Sun Tzu,978-1590302255,Estrategias para sobrevivir en conflictos.,128,500 a.C.
+Cine de Terror,Top 9 libros que inspiraron películas de terror,El Resplandor,Stephen King,978-0307743657,Hotel embrujado y posesión familiar.,512,1977
+Cine de Terror,Top 9 libros que inspiraron películas de terror,El Exorcista,William Peter Blatty,978-0062094361,Posesión demoníaca y exorcismo.,400,1971
+Cine de Terror,Top 9 libros que inspiraron películas de terror,Drácula,Bram Stoker,978-0486411095,Vampiro en la Inglaterra victoriana.,448,1897
+Cine de Terror,Top 9 libros que inspiraron películas de terror,Frankenstein,Mary Shelley,978-0486282114,Científico crea un monstruo y su arrepentimiento.,288,1818
+Cine de Terror,Top 9 libros que inspiraron películas de terror,El Silencio de los Inocentes,Thomas Harris,978-0312924584,Perfil de asesinos en serie desde el FBI.,368,1988
+Cine de Terror,Top 9 libros que inspiraron películas de terror,El Gato Negro,Edgar Allan Poe,978-0486277868,Locura y venganza de un gato.,64,1843
+Cine de Terror,Top 9 libros que inspiraron películas de terror,La Llamada de Cthulhu,H.P. Lovecraft,978-0486284414,Horror cósmico y dioses ancestrales.,128,1928
+Cine de Terror,Top 9 libros que inspiraron películas de terror,El Cementerio,Stephen King,978-1501144241,Niño resucitado con consecuencias terroríficas.,416,1983
+Cine de Terror,Top 9 libros que inspiraron películas de terror,Otra Vuelta de Tuerca,Henry James,978-0486266886,Apariciones en una mansión y su interpretación.,192,1898
+Biografías de Artistas,Top 9 biografías de pintores famosos,Frida,Hayden Herrera,978-0060085896,Vida y arte de Frida Kahlo.,512,1983
+Biografías de Artistas,Top 9 biografías de pintores famosos,Van Gogh,Steven Naifeh,978-1588360472,Vida atormentada del pintor holandés.,976,2011
+Biografías de Artistas,Top 9 biografías de pintores famosos,Picasso,John Richardson,978-0375402356,Vida y obra del pintor español.,576,1991
+Biografías de Artistas,Top 9 biografías de pintores famosos,Dalí,Ian Gibson,978-0306810527,Vida excéntrica del pintor catalán.,640,1997
+Biografías de Artistas,Top 9 biografías de pintores famosos,Rembrandt,Simon Schama,978-0679767954,Vida del pintor holandés y su época.,768,1999
+Biografías de Artistas,Top 9 biografías de pintores famosos,Velázquez,Jonathan Brown,978-0300068812,El pintor en la corte de Felipe IV.,320,1986
+Biografías de Artistas,Top 9 biografías de pintores famosos,Goya,Robert Hughes,978-0375711282,Vida del pintor en la España convulsa.,448,2003
+Biografías de Artistas,Top 9 biografías de pintores famosos,Monet,Daniel Wildenstein,978-3822859729,Catálogo razonado del impresionista.,800,1996
+Biografías de Artistas,Top 9 biografías de pintores famosos,Kahlo,Marta Zamora,978-8478446961,Vida íntima y obra de la pintora mexicana.,352,2000
+Física Cuántica,Top 9 libros de física para no científicos,El Universo Elegante,Brian Greene,978-0375708114,Teoría de cuerdas y unificación de la física.,512,1999
+Física Cuántica,Top 9 libros de física para no científicos,Cosmos,Carl Sagan,978-0345539434,Viaje por el universo y sus misterios.,384,1980
+Física Cuántica,Top 9 libros de física para no científicos,Breve Historia del Tiempo,Stephen Hawking,978-0553380163,Origen del universo y agujeros negros.,256,1988
+Física Cuántica,Top 9 libros de física para no científicos,La Teoría del Todo,Stephen Hawking,978-0553804366,Búsqueda de una teoría unificada.,176,2002
+Física Cuántica,Top 9 libros de física para no científicos,El Cuerpo Humano,Isaac Asimov,978-0380011439,Funcionamiento del cuerpo humano.,384,1963
+Física Cuántica,Top 9 libros de física para no científicos,El Origen de las Especies,Charles Darwin,978-0451529060,Evolución por selección natural.,544,1859
+Física Cuántica,Top 9 libros de física para no científicos,El Gen Egoísta,Richard Dawkins,978-0192860927,Evolución desde la perspectiva de los genes.,360,1976
+Física Cuántica,Top 9 libros de física para no científicos,La Estructura de las Revoluciones Científicas,Thomas Kuhn,978-0226458120,Cambios de paradigma en la science.,320,1962
+Física Cuántica,Top 9 libros de física para no científicos,El Cerebro de Broca,Carl Sagan,978-0345336897,Reflexiones sobre ciencia y evolución.,352,1979
+Historia del Arte,Top 9 libros sobre el Renacimiento,El Nacimiento de Venus,Sarah Dunant,978-0812968972,Vida de una cortesana en la Florencia renacentista.,384,2003
+Historia del Arte,Top 9 libros sobre el Renacimiento,Brunelleschi's Dome,Ross King,978-0142000151,Construcción de la cúpula de Santa María del Fiore.,192,2000
+Historia del Arte,Top 9 libros sobre el Renacimiento,La Vida de los Artistas,Giorgio Vasari,978-0140445008,Biografías de artistas del Renacimiento.,512,1550
+Historia del Arte,Top 9 libros sobre el Renacimiento,El Código Da Vinci,Dan Brown,978-0307474278,Símbolos renacentistas y misterios.,512,2003
+Historia del Arte,Top 9 libros sobre el Renacimiento,El Secreto,Rhonda Byrne,978-1582701707,Simbolismo renacentista en la ley de atracción.,224,2006
+Historia del Arte,Top 9 libros sobre el Renacimiento,El Monje que Vendió su Ferrari,Robin Sharma,978-0062515674,Renacimiento espiritual en la era moderna.,208,1997
+Historia del Arte,Top 9 libros sobre el Renacimiento,El Arte de la Guerra,Sun Tzu,978-1590302255,Estrategias renacentistas en el arte.,128,500 a.C.
+Historia del Arte,Top 9 libros sobre el Renacimiento,El Príncipe,Maquiavelo,978-0486272740,Política renacentista y arte.,240,1513
+Historia del Arte,Top 9 libros sobre el Renacimiento,La República,Platón,978-0872201363,Ideales platónicos en el arte renacentista.,416,380 a.C.
+Crítica Social,Top 9 libros de crítica social contemporánea,Sapiens,Yuval Noah Harari,978-0062316097,Crítica a las estructuras sociales actuales.,464,2011
+Crítica Social,Top 9 libros de crítica social contemporánea,Homo Deus,Yuval Noah Harari,978-0062464316,Futuro distópico de la sociedad.,464,2015
+Crítica Social,Top 9 libros de crítica social contemporánea,21 Lecciones para el Siglo XXI,Yuval Noah Harari,978-0525512172,Desafíos sociales del presente.,432,2018
+Crítica Social,Top 9 libros de crítica social contemporánea,El Fin del Empleo,Ricardo Vargas,978-8423426303,Impacto social de la automatización.,304,2018
+Crítica Social,Top 9 libros de crítica social contemporánea,La Globalización y sus Descontentos,Joseph Stiglitz,978-0393324391,Efectos negativos de la globalización.,304,2002
+Crítica Social,Top 9 libros de crítica social contemporánea,El Choque de Civilizaciones,Samuel Huntington,978-0684844411,Conflictos culturales en la sociedad global.,384,1996
+Crítica Social,Top 9 libros de crítica social contemporánea,El Capitalismo del Siglo XXI,Thomas Piketty,978-0674430006,Desigualdad económica y sus soluciones.,976,2013
+Crítica Social,Top 9 libros de crítica social contemporánea,La Sexta Extinción,Elizabeth Kolbert,978-0805092998,Impacto humano en el planeta.,352,2014
+Crítica Social,Top 9 libros de crítica social contemporánea,Colapso,Jared Diamond,978-0143036555,Fracaso de sociedades por decisiones equivocadas.,608,2005
+Novela Negra,Top 9 novelas negras españolas,La Sombra del Viento,Carlos Ruiz Zafón,978-0143126392,Misterio literario en la Barcelona posguerra.,576,2001
+Novela Negra,Top 9 novelas negras españolas,El Ladrón de Mentiras,Carlos Ruiz Zafón,978-0143126408,Continuación de la saga del Cementerio de los Libros.,656,2011
+Novela Negra,Top 9 novelas negras españolas,El Prisionero del Cielo,Carlos Ruiz Zafón,978-0143126415,Final de la saga del Cementerio de los Libros.,320,2011
+Novela Negra,Top 9 novelas negras españolas,El Juego del Ángel,Carlos Ruiz Zafón,978-0143116409,Precedente de La Sombra del Viento.,672,2008
+Novela Negra,Top 9 novelas negras españolas,El Laberinto de los Espíritus,Carlos Ruiz Zafón,978-0143126422,Última entrega de la saga.,544,2016
+Novela Negra,Top 9 novelas negras españolas,La Reina del Sur,Arturo Pérez-Reverte,978-8466316474,Narcotráfico y una mujer al poder.,528,2002
+Novela Negra,Top 9 novelas negras españolas,El Capitán Alatriste,Arturo Pérez-Reverte,978-8466316474,Aventuras de un soldado en el siglo XVII.,448,1996
+Novela Negra,Top 9 novelas negras españolas,El Hombre de los Ojos Grises,Ricardo Gómez,978-8425350960,Asesino en serie en Barcelona.,352,2011
+Novela Negra,Top 9 novelas negras españolas,El Asesino Ciego,Antonio Garrido,978-8425350977,Investigación de crímenes con un detective ciego.,384,2015
+Psicología Infantil,Top 9 libros para entender a los adolescentes,El Cerebro del Adolescente,Daniel J. Siegel,978-1585422756,Desarrollo cerebral en la adolescencia.,336,2013
+Psicología Infantil,Top 9 libros para entender a los adolescentes,Padres Presentes, Hijos Felices,Rafael Guerrero,978-8433029478,Importancia de la paternidad activa.,256,2017
+Psicología Infantil,Top 9 libros para entender a los adolescentes,Educar sin Lágrimas,Rosa Jové,978-8499086785,Crianza respetuosa para adolescentes.,288,2003
+Psicología Infantil,Top 9 libros para entender a los adolescentes,Disciplina sin Lágrimas,Daniel Siegel,978-0553386691,Comunicación efectiva con adolescentes.,336,2014
+Psicología Infantil,Top 9 libros para entender a los adolescentes,Cómo Hablar para que sus Hijos le Escuchen,Adele Faber,978-1451663884,Técnicas para dialogar con adolescentes.,304,1980
+Psicología Infantil,Top 9 libros para entender a los adolescentes,El Misterio del Niño,Janusz Korczak,978-3868390726,Derechos del adolescente y su dignidad.,224,1920
+Psicología Infantil,Top 9 libros para entender a los adolescentes,Criar Bien a un Hijo,Carlos González,978-8499086792,Desarrollo adolescente y sus necesidades.,416,2003
+Psicología Infantil,Top 9 libros para entender a los adolescentes,Educar en el Asombro,Catherine L'Ecuyer,978-8423428642,Fomentar curiosidad en adolescentes.,304,2015
+Psicología Infantil,Top 9 libros para entender a los adolescentes,La Disciplina Positiva,Jane Nelsen,978-0761524212,Límites amorosos para adolescentes.,320,2006
+Futurología,Top 9 libros sobre el futuro de la humanidad,Homo Deus,Yuval Noah Harari,978-0062464316,Futuro de la humanidad con biotecnología.,464,2015
+Futurología,Top 9 libros sobre el futuro de la humanidad,Sapiens,Yuval Noah Harari,978-0062316097,Historia humana y proyecciones futuras.,464,2011
+Futurología,Top 9 libros sobre el futuro de la humanidad,21 Lecciones para el Siglo XXI,Yuval Noah Harari,978-0525512172,Desafíos futuros de la humanidad.,432,2018
+Futurología,Top 9 libros sobre el futuro de la humanidad,El Fin del Empleo,Ricardo Vargas,978-8423426303,Futuro del trabajo con IA y automatización.,304,2018
+Futurología,Top 9 libros sobre el futuro de la humanidad,La Cuarta Revolución Industrial,Klaus Schwab,978-1947866174,Fusión de tecnologías que transformarán la sociedad.,320,2016
+Futurología,Top 9 libros sobre el futuro de la humanidad,El Futuro de la Humanidad,Michio Kaku,978-0385542760,Predicciones sobre colonización espacial y tecnología.,352,2018
+Futurología,Top 9 libros sobre el futuro de la humanidad,Vida 3.0,Max Tegmark,978-1101946596,Escenarios futuros con inteligencia artificial.,384,2017
+Futurología,Top 9 libros sobre el futuro de la humanidad,Superinteligencia,Nick Bostrom,978-0199678112,Riesgos y oportunidades de la IA superhumana.,352,2014
+Futurología,Top 9 libros sobre el futuro de la humanidad,La Sexta Extinción,Elizabeth Kolbert,978-0805092998,Futuro del planeta ante el cambio climático.,352,2014
+Cine de Ciencia Ficción,Top 9 libros que inspiraron películas de sci-fi,Blade Runner,Philip K. Dick,978-0547572291,Androides y humanos en un futuro distópico.,256,1968
+Cine de Ciencia Ficción,Top 9 libros que inspiraron películas de sci-fi,2001: Una Odisea Espacial,Arthur C. Clarke,978-0451457998,Evolución humana e inteligencia artificial.,256,1968
+Cine de Ciencia Ficción,Top 9 libros que inspiraron películas de sci-fi,El Juego de Ender,Orson Scott Card,978-0812550702,Niños entrenados contra una amenaza alienígena.,352,1985
+Cine de Ciencia Ficción,Top 9 libros que inspiraron películas de sci-fi,Dune,Frank Herbert,978-0441172719,Lucha por el control del planeta Arrakis.,688,1965
+Cine de Ciencia Ficción,Top 9 libros que inspiraron películas de sci-fi,La Guerra de los Mundos,H.G. Wells,978-0451530653,Invasión marciana a la Tierra.,192,1898
+Cine de Ciencia Ficción,Top 9 libros que inspiraron películas de sci-fi,El Marciano,Andy Weir,978-0553418026,Sobrevivencia en Marte tras ser abandonado.,384,2011
+Cine de Ciencia Ficción,Top 9 libros que inspiraron películas de sci-fi,Neuromante,William Gibson,978-0441569595,Ciberespacio y realidad virtual.,320,1984
+Cine de Ciencia Ficción,Top 9 libros que inspiraron películas de sci-fi,Yo, Robot,Isaac Asimov,978-0553294385,Relatos sobre las tres leyes de la robótica.,256,1950
+Cine de Ciencia Ficción,Top 9 libros que inspiraron películas de sci-fi,Fahrenheit 451,Ray Bradbury,978-1451673319,Sociedad donde los libros están prohibidos.,192,1953
+Deportes Acuáticos,Top 9 libros de navegación y aventuras marinas,Moby Dick,Herman Melville,978-0142437247,Caza de una ballena blanca por un capitán obsesivo.,640,1851
+Deportes Acuáticos,Top 9 libros de navegación y aventuras marinas,El Viejo y el Mar,Ernest Hemingway,978-0684801223,Pescador cubano lucha contra un pez espada.,128,1952
+Deportes Acuáticos,Top 9 libros de navegación y aventuras marinas,La Odisea,Homero,978-0140268867,Viaje de Ulises a casa tras la Guerra de Troya.,512,800 a.C.
+Deportes Acuáticos,Top 9 libros de navegación y aventuras marinas,Robinson Crusoe,Daniel Defoe,978-0141439822,Sobrevivencia en una isla desierta.,320,1719
+Deportes Acuáticos,Top 9 libros de navegación y aventuras marinas,Veinte Mil Leguas de Viaje Submarino,Julio Verne,978-0140449688,Aventuras en el submarino Nautilus.,352,1870
+Deportes Acuáticos,Top 9 libros de navegación y aventuras marinas,La Isla del Tesoro,Robert Louis Stevenson,978-0140437686,Búsqueda de oro en una isla pirata.,224,1883
+Deportes Acuáticos,Top 9 libros de navegación y aventuras marinas,El Capitán Blood,Rafael Sabatini,978-1842329311,Aventuras de un pirata en el Caribe.,512,1922
+Deportes Acuáticos,Top 9 libros de navegación y aventuras marinas,El Corsario Negro,Emilio Salgari,978-8854172405,Piratería en el Mar de la China.,320,1898
+Deportes Acuáticos,Top 9 libros de navegación y aventuras marinas,El Hombre que Calculaba,Malba Tahan,978-8479028319,Enigmas matemáticos en viajes por mar.,256,1949
+Historia de la Medicina,Top 9 libros de historia médica,El Código Da Vinci,Dan Brown,978-0307474278,Sociedades secretas y medicina antigua.,512,2003
+Historia de la Medicina,Top 9 libros de historia médica,El Nombre de la Rosa,Umberto Eco,978-0544176560,Medicina medieval en un monasterio.,512,1980
+Historia de la Medicina,Top 9 libros de historia médica,La Peste,Albert Camus,978-0679720218,Epidemia de peste en una ciudad argelina.,320,1947
+Historia de la Medicina,Top 9 libros de historia médica,El Amor en los Tiempos del Cólera,Gabriel García Márquez,978-0307389732,Cólera y amor en el Caribe.,448,1985
+Historia de la Medicina,Top 9 libros de historia médica,El Médico,Noah Gordon,978-0061000019,Vida de un médico en el siglo XI.,512,1986
+Historia de la Medicina,Top 9 libros de historia médica,El Cuerpo Humano,Isaac Asimov,978-0380011439,Funcionamiento del cuerpo humano.,384,1963
+Historia de la Medicina,Top 9 libros de historia médica,El Gen Egoísta,Richard Dawkins,978-0192860927,Genética y evolución humana.,360,1976
+Historia de la Medicina,Top 9 libros de historia médica,El Origen de las Especies,Charles Darwin,978-0451529060,Evolución y selección natural.,544,1859
+Historia de la Medicina,Top 9 libros de historia médica,La Estructura de las Revoluciones Científicas,Thomas Kuhn,978-0226458120,Avances médicos como cambios de paradigma.,320,1962
+Novela Gráfica,Top 9 novelas gráficas para jóvenes,Maus,Art Spiegelman,978-0394747231,Holocausto narrado con animales.,296,1991
+Novela Gráfica,Top 9 novelas gráficas para jóvenes,Persépolis,Marjane Satrapi,978-0375714573,Revolución iraní vista por una adolescente.,352,2003
+Novela Gráfica,Top 9 novelas gráficas para jóvenes,V de Vendetta,Alan Moore,978-1401208417,Lucha contra un régimen fascista.,288,1988
+Novela Gráfica,Top 9 novelas gráficas para jóvenes,Watchmen,Alan Moore,978-0930289232,Héroes en un mundo realista y oscro.,432,1986
+Novela Gráfica,Top 9 novelas gráficas para jóvenes,El Eternauta,Héctor Germán Oesterheld,978-9871688223,Invasión extraterrestre en Buenos Aires.,128,1957
+Novela Gráfica,Top 9 novelas gráficas para jóvenes,300,Frank Miller,978-1569714027,Batalla de las Termópilas.,88,1998
+Novela Gráfica,Top 9 novelas gráficas para jóvenes,Ghost World,Daniel Clowes,978-1560974277,Amistad y desencanto adolescente.,80,1997
+Novela Gráfica,Top 9 novelas gráficas para jóvenes,Black Hole,Charles Burns,978-0375714726,Enfermedad y adolescencia.,368,2005
+Novela Gráfica,Top 9 novelas gráficas para jóvenes,Jimmy Corrigan,Chris Ware,978-0375404534,Historia familiar y soledad.,384,2000
+Filosofía Existencialista,Top 9 libros existencialistas clave,El Existencialismo es un Humanismo,Jean-Paul Sartre,978-0300115468,Defensa del existencialismo.,144,1946
+Filosofía Existencialista,Top 9 libros existencialistas clave,El Ser y la Nada,Jean-Paul Sartre,978-0671867805,Ensayo sobre ontología fenomenológica.,832,1943
+Filosofía Existencialista,Top 9 libros existencialistas clave,El Mito de Sísifo,Albert Camus,978-0679733737,El absurdo y la rebelión.,192,1942
+Filosofía Existencialista,Top 9 libros existencialistas clave,El Extranjero,Albert Camus,978-0679720201,Indiferencia y absurdidad de la vida.,128,1942
+Filosofía Existencialista,Top 9 libros existencialistas clave,El Nacimiento de la Tragedia,Friedrich Nietzsche,978-0679752923,Origen del arte trágico griego.,192,1872
+Filosofía Existencialista,Top 9 libros existencialistas clave,Así Habló Zaratustra,Friedrich Nietzsche,978-0486411181,Parábolas sobre el superhombre.,352,1885
+Filosofía Existencialista,Top 9 libros existencialistas clave,El Temor y la Temblor,Søren Kierkegaard,978-0140444490,Fe y angustia en Abraham.,160,1843
+Filosofía Existencialista,Top 9 libros existencialistas clave,El Concepto de la Angustia,Søren Kierkegaard,978-0691020260,Naturaleza de la angustia humana.,224,1844
+Filosofía Existencialista,Top 9 libros existencialistas clave,El Hombre en Busca de Sentido,Viktor Frankl,978-0807014295,Encontrar propósito en el sufrimiento.,192,1946
+Cocina Internacional,Top 9 libros de cocina asiática,El Libro de la Cocina China,Ken Hom,978-0747518359,Recetas tradicionales chinas.,256,1981
+Cocina Internacional,Top 9 libros de cocina asiática,Sushi: El Sabor de Japón,Kimiko Barber,978-4770030518,Arte de preparar sushi.,192,2002
+Cocina Internacional,Top 9 libros de cocina asiática,La Cocina Tailandesa,Vatcharin Bhumichitr,978-1556703565,Sabores de Tailandia en casa.,224,2000
+Cocina Internacional,Top 9 libros de cocina asiática,El Sabor de la India,Madhur Jaffrey,978-0375708466,Recetas auténticas indias.,320,1982
+Cocina Internacional,Top 9 libros de cocina asiática,Cocina Coreana,Deborah Freeman,978-0804845990,Platos coreanos tradicionales.,256,2015
+Cocina Internacional,Top 9 libros de cocina asiática,El Arte de la Cocina Japonesa,Shizuo Tsuji,978-4770023077,Técnicas y recetas japonesas.,512,1980
+Cocina Internacional,Top 9 libros de cocina asiática,La Cocina de Vietnam,Andrea Nguyen,978-1580086653,Sabores frescos de Vietnam.,352,2006
+Cocina Internacional,Top 9 libros de cocina asiática,El Sabor de Indonesia,Wendy Hutton,978-0794604885,Especias y técnicas indonesias.,224,2004
+Cocina Internacional,Top 9 libros de cocina asiática,La Cocina de Filipinas,Amy Besa,978-0786869725,Comida filipina casera.,288,2009
+Historia de la Música,Top 9 libros de historia del rock,Hammer of the Gods,Stephen Davis,978-0688160120,Vida de Led Zeppelin en la carretera.,400,1985
+Historia de la Música,Top 9 libros de historia del rock,El Libro del Rock,Pilar Jurado,978-8425351715,Evolución del rock and roll.,512,2000
+Historia de la Música,Top 9 libros de historia del rock,La Historia de Led Zeppelin,Mick Wall,978-1409113350,Carrera de la banda británica.,448,2008
+Historia de la Música,Top 9 libros de historia del rock,El Libro de los Beatles,Hunter Davies,978-0393310716,Diario autorizado de la banda.,384,1968
+Historia de la Música,Top 9 libros de historia del rock,El Libro de Pink Floyd,Nick Mason,978-0306814747,Memoires del batería de Pink Floyd.,384,2004
+Historia de la Música,Top 9 libros de historia del rock,El Libro de Queen,Mick Wall,978-1409118362,Historia de la banda de Freddie Mercury.,448,2011
+Historia de la Música,Top 9 libros de historia del rock,El Libro de los Rolling Stones,Philip Norman,978-0062128479,Biografía no autorizada de los Stones.,672,2012
+Historia de la Música,Top 9 libros de historia del rock,El Libro de David Bowie,Nicholas Pegg,978-0811877564,Carrera completa del ícono.,752,2016
+Historia de la Música,Top 9 libros de historia del rock,El Libro de Bob Dylan,Clinton Heylin,978-0062208479,Análisis de sus canciones y vida.,672,2009
+Deportes de Equipo,Top 9 libros de baloncesto,El Libro del Baloncesto,Phil Jackson,978-0143117154,Tácticas y filosofía del entrenador.,320,2004
+Deportes de Equipo,Top 9 libros de baloncesto,Michael Jordan: La Vida,Roland Lazenby,978-0316194761,Biografía completa del mejor jugador.,720,2014
+Deportes de Equipo,Top 9 libros de baloncesto,El Libro de los Lakers,Jeff Pearlman,978-0547865573,Historia del equipo de Los Ángeles.,448,2010
+Deportes de Equipo,Top 9 libros de baloncesto,El Libro de los Celtics,Gary M. Pomerantz,978-0306824371,Dinastía de los Celtics en los años 80.,384,2018
+Deportes de Equipo,Top 9 libros de baloncesto,El Libro de los Bulls,Sam Smith,978-0679744154,Época dorada de Jordan y Chicago.,320,1992
+Deportes de Equipo,Top 9 libros de baloncesto,El Libro de los Spurs,Michael C. Wright,978-1629373976,Cultura ganadora de San Antonio.,352,2014
+Deportes de Equipo,Top 9 libros de baloncesto,El Libro de los Warriors,Marcus Thompson II,978-0062673634,Revolución de Golden State.,384,2018
+Deportes de Equipo,Top 9 libros de baloncesto,El Libro de LeBron James,Brian Windhorst,978-0525577409,Carrera del rey del baloncesto.,416,2020
+Deportes de Equipo,Top 9 libros de baloncesto,El Libro de Kobe Bryant,Mike Sielski,978-0063076814,Vida y legado del jugador.,368,2021
+Novela Histórica Romántica,Top 9 novelas románticas ambientadas en el siglo XIX,Orgullo y Prejuicio,Jane Austen,978-0141439518,Amor y malentendidos en la Inglaterra georgiana.,432,1813
+Novela Histórica Romántica,Top 9 novelas románticas ambientadas en el siglo XIX,Jane Eyre,Charlotte Brontë,978-0141441146,Gobernanta y su misterioso empleador.,544,1847
+Novela Histórica Romántica,Top 9 novelas románticas ambientadas en el siglo XIX,Cumbres Borrascosas,Emily Brontë,978-0141439556,Pasión destructiva en los páramos.,448,1847
+Novela Histórica Romántica,Top 9 novelas románticas ambientadas en el siglo XIX,La Dama de las Camelias,Alexandre Dumas,978-0140447163,Amor prohibido entre una cortesana y un joven.,192,1848
+Novela Histórica Romántica,Top 9 novelas románticas ambientadas en el siglo XIX,Anna Karenina,León Tolstói,978-0143035008,Adulterio y consecuencias en la Rusia zarista.,864,1877
+Novela Histórica Romántica,Top 9 novelas románticas ambientadas en el siglo XIX,El Gran Gatsby,F. Scott Fitzgerald,978-0743273565,American Dream y amor imposible en los años 20.,192,1925
+Novela Histórica Romántica,Top 9 novelas románticas ambientadas en el siglo XIX,La Casa de los Espíritus,Isabel Allende,978-1501117016,Saga familiar en el Chile del siglo XX.,464,1982
+Novela Histórica Romántica,Top 9 novelas románticas ambientadas en el siglo XIX,El Amante,Marguerite Duras,978-0060973209,Pasión juvenil en la Indochina colonial.,128,1984
+Novela Histórica Romántica,Top 9 novelas románticas ambientadas en el siglo XIX,La Sombra del Viento,Carlos Ruiz Zafón,978-0143126392,Misterio literario en la Barcelona posguerra.,576,2001
+Futuro del Trabajo,Top 9 libros sobre el futuro del empleo,El Fin del Empleo,Ricardo Vargas,978-8423426303,Impacto de la automatización en el trabajo.,304,2018
+Futuro del Trabajo,Top 9 libros sobre el futuro del empleo,La Cuarta Revolución Industrial,Klaus Schwab,978-1947866174,Fusión de tecnologías que transformarán el trabajo.,320,2016
+Futuro del Trabajo,Top 9 libros sobre el futuro del empleo,El Futuro del Trabajo,Jacob Morgan,978-1119279719,Tendencias que definirán el empleo del futuro.,288,2014
+Futuro del Trabajo,Top 9 libros sobre el futuro del empleo,Gracias por el Servicio,Dan Lyons,978-1250118062,Crítica a la cultura startup y el trabajo moderno.,320,2018
+Futuro del Trabajo,Top 9 libros sobre el futuro del empleo,El Fin de los Trabajos de Cuello Blanco,James Martin,978-0465058565,Desplazamiento de profesionales por la tecnología.,384,2013
+Futuro del Trabajo,Top 9 libros sobre el futuro del empleo,La Era de la Máquina,Erik Brynjolfsson,978-0393239359,Inteligencia artificial y productividad.,336,2014
+Futuro del Trabajo,Top 9 libros sobre el futuro del empleo,El Segundo Turno,Jeremy Rifkin,978-0394564829,Declive del empleo masivo y soluciones.,416,1995
+Futuro del Trabajo,Top 9 libros sobre el futuro del empleo,El Futuro de la Humanidad,Michio Kaku,978-0385542760,Trabajo en un mundo de avances tecnológicos.,352,2018
+Futuro del Trabajo,Top 9 libros sobre el futuro del empleo,Homo Deus,Yuval Noah Harari,978-0062464316,Futuro del trabajo con biotecnología.,464,2015
+Historia de la Informática,Top 9 libros de historia de la computación,El Creador,Walter Isaacson,978-1451648539,Steve Jobs y la revolución digital.,656,2011
+Historia de la Informática,Top 9 libros de historia de la computación,Steve Jobs,Walter Isaacson,978-1451648539,Biografía del fundador de Apple.,656,2011
+Historia de la Informática,Top 9 libros de historia de la computación,El Libro de los Hackers,Steven Levy,978-1449388393,Orígenes de la cultura hacker.,464,1984
+Historia de la Informática,Top 9 libros de historia de la computación,El Código,Charles Petzold,978-0735611313,Fundamentos de la computación.,400,1999
+Historia de la Informática,Top 9 libros de historia de la computación,La Innovación,Clayton Christensen,978-0875845852,Teoría de la innovación disruptiva.,336,1997
+Historia de la Informática,Top 9 libros de historia de la computación,El Hombre que Calculaba,Malba Tahan,978-8479028319,Historia de la computación a través de enigmas.,256,1949
+Historia de la Informática,Top 9 libros de historia de la computación,El Gen Egoísta,Richard Dawkins,978-0192860927,Algoritmos y evolución.,360,1976
+Historia de la Informática,Top 9 libros de historia de la computación,El Origen de las Especies,Charles Darwin,978-0451529060,Selección natural y algoritmos genéticos.,544,1859
+Historia de la Informática,Top 9 libros de historia de la computación,La Estructura de las Revoluciones Científicas,Thomas Kuhn,978-0226458120,Cambios de paradigma en la informática.,320,1962
+Deportes de Invierno,Top 9 libros de esquí y montaña,El Alpinista,Joe Simpson,978-0060953775,Sobrevivencia en los Andes.,192,1988
+Deportes de Invierno,Top 9 libros de esquí y montaña,Sin Fronteras,Reinhold Messner,978-0898865735,Conquistas de las cumbres más altas.,320,2000
+Deportes de Invierno,Top 9 libros de esquí y montaña,El Sendero del Monte Everest,Mark Jenkins,978-0393061744,Historia de las expediciones al Everest.,384,2006
+Deportes de Invierno,Top 9 libros de esquí y montaña,El Hombre que Calculaba,Malba Tahan,978-8479028319,Enigmas matemáticos en montañas.,256,1949
+Deportes de Invierno,Top 9 libros de esquí y montaña,El Libro de la Selva,Rudyard Kipling,978-0062389503,Aventuras en montañas imaginarias.,192,1894
+Deportes de Invierno,Top 9 libros de esquí y montaña,Robinson Crusoe,Daniel Defoe,978-0141439822,Sobrevivencia en montañas aisladas.,320,1719
+Deportes de Invierno,Top 9 libros de esquí y montaña,La Isla Misteriosa,Julio Verne,978-0140447361,Aventuras en islas montañosas.,624,1874
+Deportes de Invierno,Top 9 libros de esquí y montaña,El Alquimista,Paulo Coelho,978-0062315007,Búsqueda espiritual en montañas.,208,1988
+Deportes de Invierno,Top 9 libros de esquí y montaña,El Código Da Vinci,Dan Brown,978-0307474278,Misterios en montañas europeas.,512,2003
+Historia del Cine,Top 9 libros de historia del cine,El Libro del Cine,David Thomson,978-0375415189,Historia del cine a través de películas.,1008,2002
